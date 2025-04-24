@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>[산출물] 구현 계획 2.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%EC%8A%A4%ED%8F%AC%EC%B8%A0-e-%EB%9F%AC%EB%8B%9D-%ED%8F%AC%ED%84%B8-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EB%AA%85%EC%84%B8%EC%84%9C">스포츠 e-러닝 포털 요구사항 명세서</h1>
+<h2 id="1-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94">1. 프로젝트 개요</h2>
+<ul>
+<li>체육인재개발원 학습운영시스템 구축</li>
+<li>교육과정 개설, 신청, 수강, 수료증 발급 등의 기능 포함</li>
+<li>관리자, 학습자, 강사 등 다양한 사용자 역할 고려</li>
+</ul>
+<h2 id="2-%EA%B8%B0%EB%8A%A5-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD">2. 기능 요구사항</h2>
+<h3 id="req-001001---%EC%9B%B9%EB%AA%A8%EB%B0%94%EC%9D%BC-%EA%B8%B0%EB%B0%98-%EA%B5%90%EC%9C%A1%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B0%9C%EB%B0%9C">REQ-001001 - 웹/모바일 기반 교육플랫폼 개발</h3>
+<ul>
+<li><strong>분류</strong>: 공통 사용자 기능</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: RFP_16p_SFR-001</li>
+<li><strong>설명:</strong>
+<ul>
+<li>표준화된 프레임워크(전자정부 표준프레임워크 포함)를 기반으로 개발</li>
+<li>웹접근성, 웹호환성, 소프트웨어 개발보안을 철저히 준수하여 개발</li>
+<li>웹브라우저 호환성 확보를 위해 크로스 브라우징 지원(Chrome, Edge, FireFox, Safari 등)</li>
+<li>웹사이트 내 개인정보는 최소로 활용하고 반드시 암호화</li>
+<li>인터넷 웹페이지는 모바일 기기에서도 이용 가능하도록 반응형 웹으로 구축</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001002---%EA%B5%90%EC%9C%A1-%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%A0%95%EB%B3%B4%EA%B5%AC%EC%A1%B0-%EB%B0%8F-uiux">REQ-001002 - 교육 정보시스템 정보구조 및 UI/UX</h3>
+<ul>
+<li><strong>분류</strong>: 사용자 인터페이스</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: RFP_17p_SFR-002</li>
+<li><strong>설명:</strong>
+<ul>
+<li>사용자 친화적인 정보구조 설계</li>
+<li>사용자 경험과 편의성을 보장하는 UI/UX 구성</li>
+<li>웹 표준 및 웹 호환성을 고려한 반응형 웹페이지 구성</li>
+<li>모바일 환경에서 교육 콘텐츠 활용이 가능하도록 구성</li>
+<li>교육운영 과정에 대한 전체 목록 기능 제공</li>
+<li>회원별 상태에 맞는 추천 교육과정 정보 제공</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001003---%EA%B5%90%EC%9C%A1-%EA%B8%B0%EB%B3%B8%EC%A0%95%EB%B3%B4-%EA%B4%80%EB%A6%AC">REQ-001003 - 교육 기본정보 관리</h3>
+<ul>
+<li><strong>분류</strong>: 교육 정보 관리</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_17p_SFR-003</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육 유형/내용별 분류체계 관리 기능 개발</li>
+<li>통합 회원관리시스템 개발(포털, 교육시스템)</li>
+<li>회원가입 시 본인인증 기능</li>
+<li>PC버전 및 모바일 홈페이지 회원가입, 로그인, 아이디 찾기, 패스워드 찾기 등의 로그인 관련 기능 구현</li>
+<li>학습자 현황 및 이력 정보 통합 관리</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001004---%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%B0%8F-%EA%B3%BC%EC%A0%95-%EA%B0%9C%EC%84%A4">REQ-001004 - 프로그램 및 과정 개설</h3>
+<ul>
+<li><strong>분류</strong>: 교육 과정 관리</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_18p_SFR-004</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육 과정, 교육 내역을 교육일자, 교육차수, 학습자 등을 고려한 교육 과정 개설 관리 기능 구현</li>
+<li>다량 교육과정 등록 시 엑셀 업로드 기능 구현</li>
+<li>교육과정 개설을 위한 교육과정, 차수, 교육일자, 교육장소, 시험, 설문 등 관리 기능 구현</li>
+<li>교육과정 실시 정보 변경 관리 기능</li>
+<li>교육요금 관리 기능</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001005---%EC%98%A8%EB%9D%BC%EC%9D%B8%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8%ED%98%BC%ED%95%A9-%EA%B5%90%EC%9C%A1-%EC%9A%B4%EC%98%81%EA%B4%80%EB%A6%AC">REQ-001005 - 온라인/오프라인/혼합 교육 운영관리</h3>
+<ul>
+<li><strong>분류</strong>: 교육 과정 운영</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_19p_SFR-005</li>
+<li><strong>설명:</strong>
+<ul>
+<li>기수 등록, 수정, 삭제, 추가, 복사 등 기수관리 기능 구현</li>
+<li>기수별 커뮤니티 생성 및 관리 기능</li>
+<li>개인별/과정별 입과관리 기능</li>
+<li>출결, 평가, 설문 등 점수 등록 및 관리</li>
+<li>수료/미수료 처리</li>
+<li>설문결과 과정소개에 연동 기능</li>
+<li>혼합교육 기수관리 및 신청관리</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001006---%EA%B5%90%EC%9C%A1%EA%B3%BC%EC%A0%95-%EC%8B%A0%EC%B2%AD-%EA%B4%80%EB%A6%AC%EA%B8%B0%EB%8A%A5">REQ-001006 - 교육과정 신청 관리기능</h3>
+<ul>
+<li><strong>분류</strong>: 교육 신청</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_20p_SFR-006</li>
+<li><strong>설명:</strong>
+<ul>
+<li>마이페이지를 통해 신청 과정에 대한 조회 및 진행현황, 결제 및 처리 내역 등을 쉽게 확인할 수 있는 대시보드 구성</li>
+<li>수강 신청한 과목에 대한 유사 과정에 대한 리스트 조회 기능</li>
+<li>동일 과목 수강 불가 기능 구현</li>
+<li>교육과정 신청 내역, 신청 상태 확인 및 취소</li>
+<li>정원 및 현 신청인원 수에 따른 접수 마감</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001007---%EA%B5%90%EC%9C%A1%EC%9D%B4%EC%88%98-%EA%B4%80%EB%A6%AC%EA%B8%B0%EB%8A%A5">REQ-001007 - 교육이수 관리기능</h3>
+<ul>
+<li><strong>분류</strong>: 교육 이수</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_20p_SFR-007</li>
+<li><strong>설명:</strong>
+<ul>
+<li>마이페이지 기능을 통해 학습활동, 이수현황 등 나의 학습현황 조회 기능 구현</li>
+<li>학습활동, 이수현황(신청중/학습중/학습완료 등) 교육과정 내역 조회 기능 구현</li>
+<li>웹과 모바일 학습진도 연동 기능 구현</li>
+<li>수료 기준에 따른 수료 처리 및 이수증 출력 기능 구현</li>
+<li>이수증은 활용이 가능하도록 PDF로 다운이 가능하도록 구현</li>
+<li>학습자에 대한 학습현황, 년/월간 교육일정 조회 기능 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001008---%EA%B5%90%EC%9C%A1%EC%9E%A5-%EC%8B%9C%EC%84%A4-%EA%B4%80%EB%A6%AC">REQ-001008 - 교육장 시설 관리</h3>
+<ul>
+<li><strong>분류</strong>: 시설 관리</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_21p_SFR-008</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육장 시설 등록 기능 구현(교육장명, 위치, 전화번호 등)</li>
+<li>교육장 별 교육시설 소개 등록(체육시설 내용 등)</li>
+<li>오프라인 교육 등록 시 교육장 데이터를 연계하여 등록할 수 있도록 구현</li>
+<li>시설의 모든 검색은 기본검색과 상세검색 모두 제공하도록 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001009---%EC%84%A4%EB%AC%B8%EA%B4%80%EB%A6%AC-%EA%B8%B0%EB%8A%A5">REQ-001009 - 설문관리 기능</h3>
+<ul>
+<li><strong>분류</strong>: 설문</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_21p_SFR-009</li>
+<li><strong>설명:</strong>
+<ul>
+<li>온라인/모바일 답변 기능 구현</li>
+<li>용도, 사용주체, 기간, 문항 관리가 가능하도록 관리 기능 구현</li>
+<li>주관식, 객관식, O/X 등 다양한 설문 유형을 등록할 수 있도록 구현</li>
+<li>설문결과에 대한 응답자 현황/통계 등을 확인이 쉽도록 구현</li>
+<li>교육 과정별 설문문항 등록(강사/강의내역/시설 등 분류에 따른 설문 관리 기능)</li>
+<li>미 답변 대상자만 대상으로 설문 재발송 기능 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001010---%EA%B5%90%EC%9C%A1-%EA%B2%B0%EA%B3%BC-%EA%B4%80%EB%A6%AC-%EA%B8%B0%EB%8A%A5">REQ-001010 - 교육 결과 관리 기능</h3>
+<ul>
+<li><strong>분류</strong>: 교육 결과</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_22p_SFR-010</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육별 결과보고서 관리 기능 구현</li>
+<li>출석부, 이수자명단 관리 기능</li>
+<li>교육별 실시 현황, 결과처리 등 조회 및 관리</li>
+<li>교육 미이수자 수강 독려 등 자동화 기능 구현</li>
+<li>교육 미이수자에 대한 메일, SMS, 마이페이지 알림 등 자동화 방식의 알림 기능 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001011---%EC%88%98%EA%B0%95%EC%8B%A0%EC%B2%AD-%EC%A0%95%EC%82%B0%EA%B4%80%EB%A6%AC-%EA%B8%B0%EB%8A%A5">REQ-001011 - 수강신청 정산관리 기능</h3>
+<ul>
+<li><strong>분류</strong>: 결제 및 정산</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_22p_SFR-011</li>
+<li><strong>설명:</strong>
+<ul>
+<li>간편결제, 카드, 계좌이체 등 다양한 결제 방법(웹사이트, 모바일 등)</li>
+<li>비용 정산 처리 및 실시기관 교육비 정산, PG사 교육비 정산 내역 등 교육비용 정산처리 관리 기능 구현</li>
+<li>조건에 따른 환불 처리 자동화 기능</li>
+<li>교육 과정 수강신청 결제 내역, 취소 내역, 환불 내역 확인 기능</li>
+<li>계산서 발행, 처리, 내역 관리 기능</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001012---%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B4%80%EB%A6%AC-%EA%B8%B0%EB%8A%A5">REQ-001012 - 시스템 관리 기능</h3>
+<ul>
+<li><strong>분류</strong>: 시스템 관리</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_23p_SFR-012</li>
+<li><strong>설명:</strong>
+<ul>
+<li>게시판 관리 기능 구현(갤러리형, 리스트형 등 게시판 유형 다양화)</li>
+<li>커뮤니티 관리 기능 구현(1:1 상담, 공지사항, FAQ 등)</li>
+<li>코드관리 기능 구현</li>
+<li>팝업 관리 기능 구현</li>
+<li>사용주체별 권한관리 기능 구현</li>
+<li>메뉴관리 기능(대/중/소 단위 관리)</li>
+<li>SMS 관리 기능 구현</li>
+<li>약관 관리 기능 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001013---%ED%86%B5%EA%B3%84-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84">REQ-001013 - 통계 기능 구현</h3>
+<ul>
+<li><strong>분류</strong>: 통계</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: RFP_24p_SFR-013</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육과정별, 연도별, 지역별, 기간별 등 다양한 통계 제공</li>
+<li>일자별, 단말기별 웹페이지 방문자 통계</li>
+<li>교육계획부터 교육 이수까지 교육 플랫폼 내의 일련의 활동에 대한 다양한 관점의 통계 기능 제공</li>
+<li>학습통계 현황 대시보드 구현</li>
+<li>데이터 시각화 기능 구현</li>
+<li>년도별, 월별, 일자별 교육신청자, 교육이수자, 교육시간, 교육비 등 조회 및 엑셀 다운 기능</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001014---%EC%B2%B4%EC%9C%A1%EC%9D%B8%EC%9E%AC%EA%B0%9C%EB%B0%9C%EC%9B%90-%ED%8F%AC%ED%84%B8-%EA%B5%AC%EC%B6%95">REQ-001014 - 체육인재개발원 포털 구축</h3>
+<ul>
+<li><strong>분류</strong>: 포털</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: RFP_25p_SFR-014</li>
+<li><strong>설명:</strong>
+<ul>
+<li>기본정보 조회(인사말, 연혁, 교육비전, 교육일정, 부서안내, 찾아오시는 길)</li>
+<li>교육안내(교육신청절차, 수료기준, 준수사항, 연간교육계획, 교육훈련근거 등)</li>
+<li>교육신청(과정별 안내 및 교육 검색기능, 집합교육과 온라인교육 구분, 선수/지도자/심판/행정가/일반체육인 분류)</li>
+<li>학습자 마이페이지 기능(출결조회, 교육이력, 이수증 발급, 만족도 평가, 학습자 Q&amp;A 등)</li>
+<li>게시판 관리(공지사항, 고객지원 등)</li>
+<li>강사 지원 기능</li>
+<li>시설 현황 조회 및 대관 기능</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001015---api-%EC%97%B0%EA%B3%84-%EA%B5%AC%EC%B6%95">REQ-001015 - API 연계 구축</h3>
+<ul>
+<li><strong>분류</strong>: 시스템 연계</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: RFP_26p_SFR-015</li>
+<li><strong>설명:</strong>
+<ul>
+<li>교육과정 연계 API 구축</li>
+<li>교육수료내역 연계 API 구축</li>
+<li>교육수료증 발급신청 연계 API 구축</li>
+<li>교육수료증 수료내역 연계 API 구축</li>
+<li>교육수료증 발급이력 연계 API 구축</li>
+<li>대한체육회 증명서발급/관리 시스템과 데이터 연계환경 구축</li>
+<li>체육정보시스템(스포츠지원포털)과의 통합, 연계하여 구축</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001025---%EB%82%B4%EB%B6%80-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%97%B0%EA%B3%84">REQ-001025 - 내부 시스템 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: 제안요청서_29p[SIR-002]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>대한체육회 홈페이지, 체육포털, 체육인통합관리시스템 등 기구축된 내부 시스템과 연계</li>
+<li>체육인정보관리(선수/지도자/심판, 대회등록 등) 시스템의 데이터 연계</li>
+<li>DB공유 방식으로 체육인 정보 송수신 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001026---%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%9B%B9%EB%B0%98%EC%9D%91%ED%98%95-%EC%9B%B9-%EC%A7%80%EC%9B%90">REQ-001026 - 모바일 웹(반응형 웹) 지원</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: 제안요청서_29-30p[SIR-003]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>대국민 모바일 서비스를 반응형 웹 형태로 구축</li>
+<li>다양한 형태의 스마트 모바일 기기 웹브라우저에 최적화된 웹페이지 구현</li>
+<li>화면 크기에 자동으로 최적화되도록 조절되는 웹 페이지 구현</li>
+<li>모바일 전자정부 서비스 관리지침 준수</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001027---%EC%BB%A4%EC%8A%A4%ED%84%B0%EB%A7%88%EC%9D%B4%EC%A7%95-%EC%9A%A9%EC%9D%B4%EC%84%B1">REQ-001027 - 커스터마이징 용이성</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_30p[SIR-004]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>향후 변동에 대한 대응을 위해 관리자가 기능을 커스터마이징할 수 있도록 설계</li>
+<li>확장 및 변경이 용이하게 설계(입력, 출력 데이터의 변동 가능성, 화면의 추가 및 변동 가능성)</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001028---%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%B9%9C%ED%99%94%EC%A0%81-ui-%EC%A7%80%EC%9B%90">REQ-001028 - 사용자 친화적 UI 지원</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_30p[SIR-005]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>사용자 경험(UX)을 반영한 UI 구현(실용성, 사용성, 가용성, 심미성, 친화성 적용)</li>
+<li>시스템 간 통일성, 사용자 편의성, 유지관리 편의성 강화를 위한 UI 표준 수립 및 적용</li>
+<li>사용자 정보 접근성 향상을 위한 UI 지원</li>
+<li>이미지, 동영상 등 콘텐츠의 특성에 맞는 웹 UI 제공</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001029---uiux-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EC%A0%9C%EC%95%88">REQ-001029 - UI/UX 요구사항 분석 및 제안</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_31p[SIR-006]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>구축 대상 UX 분석 및 구체적 UI 설계안 제시</li>
+<li>행정안전부 '디지털 정부서비스 UI/UX 가이드라인' 준수</li>
+<li>사용자 경험을 고려한 최적화된 인터페이스 구현(유사 우수 서비스 벤치마킹, 최신 트렌드 반영)</li>
+<li>간결하고 직관적인 미니멀리즘 디자인 구현</li>
+<li>다양한 단말기 해상도에 따른 최적 레이아웃 제공(PC, 모바일 등)</li>
+<li>연계 대상 시스템(스포츠지원포털, 체육정보시스템)과 통일성 확보</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001030---%EA%B0%81%EC%A2%85-%EC%86%94%EB%A3%A8%EC%85%98-%EC%97%B0%EA%B3%84">REQ-001030 - 각종 솔루션 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_31p[SIR-007]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>모바일/하이브리드 앱 개발 시 키패드보안, 앱위변조방지, 모바일백신, 문서뷰어 솔루션 등 연계</li>
+<li>연계에 소요되는 솔루션 및 기술지원 비용은 제안사 부담</li>
+<li>시스템 출력물에 대한 레포트 솔루션 적용</li>
+<li>신규 WEB/WAS/DB 서버 구축 시 신규 솔루션 적용 지원</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001031---%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B0%84-%EC%97%B0%EA%B3%84-%EC%A0%95%EC%9D%98">REQ-001031 - 시스템 간 연계 정의</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: 제안요청서_32p[SIR-008]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>스포츠지원포털(기구축), 체육정보시스템(기구축), 학습관리시스템(본 사업 대상) 간 연계 구현</li>
+<li>각 시스템 업무요구 분석에 따라 데이터 연계 정의 및 구현</li>
+<li>연계방식은 API 방식 적용</li>
+<li>양방향 연계 구현(학습관리시스템과 대한체육회 스포츠지원포털/체육정보시스템)</li>
+<li>보안을 위한 사이트키 발급 및 IP 접근 제한 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001032---ssosingle-sign-on-%EC%A0%81%EC%9A%A9">REQ-001032 - SSO(Single Sign On) 적용</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_32p[SIR-009]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>스포츠지원포털 통합회원 적용</li>
+<li>학습관리시스템에서 회원가입 시 스포츠지원포털로 이동하여 회원가입</li>
+<li>학습관리시스템에서 로그인 시 SSO를 통해 스포츠지원포털 로그인 화면으로 이동하여 로그인 수행</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001032---%EA%B5%90%EC%9C%A1%EA%B3%BC%EC%A0%95%EC%A0%95%EB%B3%B4-%EC%97%B0%EA%B3%84">REQ-001032 - 교육과정정보 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_33p[SIR-010]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>학습관리시스템에 등록된 교육과정을 스포츠지원포털에서 조회할 수 있도록 데이터 연계</li>
+<li>API 방식으로 연계하며 실시간 연계주기 적용</li>
+<li>학습관리시스템의 교육과정 정보, 코드정보 송수신 연계</li>
+<li>검색조건에 따른 연계 자료 필터링(교육 카테고리, 교육명, 교육기간, 교육방식 등)</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001033---%EA%B5%90%EC%9C%A1%EC%88%98%EB%A3%8C%EC%A0%95%EB%B3%B4-%EC%97%B0%EA%B3%84">REQ-001033 - 교육수료정보 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_33p[SIR-011]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>학습관리시스템의 사용자 교육 이수 및 수강중인 정보를 스포츠지원포털에서 조회 가능하도록 연계</li>
+<li>API 방식으로 연계하며 실시간 연계주기 적용</li>
+<li>사용자 교육 이수 및 수강중인 정보, 교육정보, 수료여부, 교육진도 정보 연계</li>
+<li>교육수료증발급 신청 및 수기발급 시 수료 내역 조회 기능 구현</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001034---%EA%B5%90%EC%9C%A1%EC%88%98%EB%A3%8C%EC%A6%9D-%EC%8B%A0%EC%B2%AD%EC%A0%95%EB%B3%B4-%EC%97%B0%EA%B3%84">REQ-001034 - 교육수료증 신청정보 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_34p[SIR-012]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>스포츠지원포털 교육수료증 발급신청 정보를 학습관리시스템과 데이터 연계</li>
+<li>API 방식으로 연계하며 실시간 연계주기 적용</li>
+<li>신청 일련번호, 신청자 정보, 신청자 ID, 휴대폰번호, 이메일, 주소, 발급용도, 발급부수 등 정보 연계</li>
+<li>교육수료정보, 승인여부 정보 연계</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001035---%EA%B5%90%EC%9C%A1%EC%88%98%EB%A3%8C%EC%A6%9D-%EB%B0%9C%EA%B8%89%EC%9D%B4%EB%A0%A5%EC%A0%95%EB%B3%B4-%EC%97%B0%EA%B3%84">REQ-001035 - 교육수료증 발급이력정보 연계</h3>
+<ul>
+<li><strong>분류</strong>: 인터페이스</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_34p[SIR-013]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>스포츠지원포털에서 교육수료증 발급 이력을 학습관리시스템과 데이터 연계</li>
+<li>API 방식으로 연계하며 실시간 연계주기 적용</li>
+<li>신청 정보, 회원정보, CI, 발급용도, 발급부수, 발급일시 등 연계</li>
+<li>출력여부, 출력일시, 교육정보(교육명, 교육장소, 교육일시, 수료여부 등) 연계</li>
+<li>체육정보시스템 교육수료증관리에서 수기발급 시 발급이력 학습관리시스템 전송</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001036---%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B5%AC%ED%98%84">REQ-001036 - 데이터베이스 설계 및 구현</h3>
+<ul>
+<li><strong>분류</strong>: 데이터</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: 제안요청서_35p[DAR-001]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>발주기관 기 운영 중인 DBMS(ORACLE) 기준으로 활용</li>
+<li>데이터 모델링 도구를 통한 설계, 무결성/정교화 작업 수행</li>
+<li>시계열성 데이터 관리를 위한 효율적인 설계 구현</li>
+<li>공공기관의 데이터베이스 표준화 지침(행정안전부고시 제2023-18호) 준수</li>
+<li>대용량 데이터의 빠른 접근 및 추출, 적재가 용이한 데이터 구조 설계</li>
+<li>데이터 정합성 유지하면서 시스템 성능 저하되지 않는 설계</li>
+<li>공간데이터는 GIS표준에 맞게 변환하여 구축</li>
+<li>개인정보 비식별화 처리 필요시 적용</li>
+<li>Table, Column 등 생성시 한글 comment 정보 필수 입력</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001037---%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%92%88%EC%A7%88%EA%B4%80%EB%A6%AC-%EC%B2%B4%EA%B3%84-%EC%A4%80%EC%88%98">REQ-001037 - 데이터 품질관리 체계 준수</h3>
+<ul>
+<li><strong>분류</strong>: 데이터</li>
+<li><strong>중요도</strong>: 중</li>
+<li><strong>근거</strong>: 제안요청서_35p[DAR-002]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>DB 구축 대상에 대한 대한체육회 데이터표준화 요구 준수</li>
+<li>대한체육회 데이터 표준사전 참조</li>
+<li>구축 설계 결과물을 대한체육회 메타시스템에 등록(범정부 데이터관리 45개 항목)</li>
+<li>구축된 데이터에 대한 품질 진단 실시</li>
+<li>공공정보개방을 위한 기술 지원(SQL, View 작성 등)</li>
+</ul>
+</li>
+</ul>
+<h3 id="req-001038---db-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EB%B0%8F-%EC%BD%94%EB%93%9C-%EC%84%A4%EA%B3%84">REQ-001038 - DB 시스템 및 코드 설계</h3>
+<ul>
+<li><strong>분류</strong>: 데이터</li>
+<li><strong>중요도</strong>: 상</li>
+<li><strong>근거</strong>: 제안요청서_35-36p[DAR-003]</li>
+<li><strong>설명:</strong>
+<ul>
+<li>DB 설계 유경험자로 각 서브시스템 설계자들과 협업/리딩 가능한 전문가 투입</li>
+<li>체육인통합관리시스템의 코드와 연동을 고려한 통합 코드 설계</li>
+<li>여러 시스템에서 공통으로 사용하는 DB를 공통구조로 설계</li>
+<li>클라우드 이전 및 오픈소스기반 DBMS로의 마이그레이션 감안한 설계</li>
+<li>데이터베이스 설계시 공공기관의 데이터베이스 표준화 지침 준수</li>
+<li>타 단체, 타 시스템과의 원활한 정보연동을 감안한 설계</li>
+<li>공간데이터는 GIS표준에 맞게 변환하여 구축</li>
+<li>필요시 법령상 해당하는 개인정보 필터링 후 비식별화 처리</li>
+</ul>
+</li>
+</ul>
+
+</body>
+</html>

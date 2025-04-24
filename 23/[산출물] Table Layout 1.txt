@@ -1,0 +1,247 @@
+Table users {
+  id            integer    [primary key]
+  username      varchar    [unique, not null]
+  password      varchar    [not null]
+  email         varchar    [unique, not null]
+  full_name     varchar
+  role          varchar
+  created_at    timestamp  [not null]
+  last_login    timestamp
+}
+
+Table roles {
+  id            integer    [primary key]
+  name          varchar    [unique, not null]
+  description   text
+}
+
+Table user_roles {
+  user_id       integer    [foreign key → users.id, not null]
+  role_id       integer    [foreign key → roles.id, not null]
+  assigned_at   timestamp  [not null]
+}
+
+Table courses {
+  id            integer    [primary key]
+  external_id   varchar    [unique]           — 스포츠지원포털 연계 ID
+  title         varchar    [not null]
+  category      varchar
+  description   text
+  start_date    date
+  end_date      date
+  created_at    timestamp  [not null]
+  last_synced   timestamp
+}
+
+Table course_offerings {
+  id            integer    [primary key]
+  course_id     integer    [foreign key → courses.id, not null]
+  session_name  varchar
+  session_date  date
+  capacity      integer
+  location_id   integer    [foreign key → venues.id]
+}
+
+Table enrollments {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id, not null]
+  offering_id   integer    [foreign key → course_offerings.id, not null]
+  status        varchar    [not null]           — e.g. “applied”, “cancelled”, “completed”
+  enrolled_at   timestamp  [not null]
+  cancelled_at  timestamp
+}
+
+Table course_progress {
+  id            integer    [primary key]
+  enrollment_id integer    [foreign key → enrollments.id, not null]
+  progress_pct  integer    [not null]           — 0~100
+  updated_at    timestamp  [not null]
+}
+
+Table certificate_requests {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id, not null]
+  enrollment_id integer    [foreign key → enrollments.id, not null]
+  request_date  timestamp  [not null]
+  purpose       varchar
+  copies        integer
+  status        varchar    [not null]           — “pending”, “approved”, “denied”
+}
+
+Table certificate_issuances {
+  id                   integer    [primary key]
+  request_id           integer    [foreign key → certificate_requests.id, not null]
+  issued_at            timestamp  [not null]
+  printed_by           varchar
+  print_count          integer
+}
+
+Table surveys {
+  id            integer    [primary key]
+  course_id     integer    [foreign key → courses.id]
+  title         varchar    [not null]
+  created_at    timestamp  [not null]
+  expires_at    timestamp
+}
+
+Table survey_questions {
+  id            integer    [primary key]
+  survey_id     integer    [foreign key → surveys.id, not null]
+  question_text text       [not null]
+  question_type varchar    [not null]           — e.g. “single_choice”, “text”
+  ord           integer    [not null]
+}
+
+Table survey_options {
+  id            integer    [primary key]
+  question_id   integer    [foreign key → survey_questions.id, not null]
+  option_text   varchar    [not null]
+  ord           integer    [not null]
+}
+
+Table survey_responses {
+  id            integer    [primary key]
+  survey_id     integer    [foreign key → surveys.id, not null]
+  user_id       integer    [foreign key → users.id, not null]
+  responded_at  timestamp  [not null]
+}
+
+Table survey_answers {
+  response_id   integer    [foreign key → survey_responses.id, not null]
+  question_id   integer    [foreign key → survey_questions.id, not null]
+  option_id     integer    [foreign key → survey_options.id]
+  answer_text   text
+}
+
+Table statistics_logs {
+  id            integer    [primary key]
+  metric        varchar    [not null]        — e.g. “page_view”, “enrollment_count”
+  dimension     varchar                       — JSON or key name (e.g. “course_id”)
+  value         numeric   [not null]
+  logged_at     timestamp [not null]
+}
+
+Table announcements {
+  id            integer    [primary key]
+  title         varchar    [not null]
+  content       text       [not null]
+  starts_at     timestamp
+  ends_at       timestamp
+  created_at    timestamp  [not null]
+}
+
+Table help_pages {
+  id            integer    [primary key]
+  page_key      varchar    [unique, not null] — e.g. “login”, “signup”
+  content       text       [not null]
+  updated_at    timestamp
+}
+
+Table notifications {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id]
+  message       text       [not null]
+  is_read       boolean    [default false]
+  created_at    timestamp  [not null]
+}
+
+Table popups {
+  id            integer    [primary key]
+  title         varchar
+  content       text
+  start_at      timestamp
+  end_at        timestamp
+  is_active     boolean    [default true]
+}
+
+Table system_codes {
+  id            integer    [primary key]
+  code_type     varchar    [not null]     — e.g. “COURSE_CATEGORY”
+  code_value    varchar    [not null]
+  description   varchar
+  ord           integer
+}
+
+Table permissions {
+  id            integer    [primary key]
+  perm_key      varchar    [unique, not null] — e.g. “course.create”
+  description   varchar
+}
+
+Table role_permissions {
+  role_id       integer    [foreign key → roles.id, not null]
+  permission_id integer    [foreign key → permissions.id, not null]
+}
+
+Table api_integrations {
+  id            integer    [primary key]
+  system_name   varchar    [not null]
+  base_url      varchar    [not null]
+  api_key       varchar
+  enabled       boolean    [default true]
+  updated_at    timestamp
+}
+
+Table sso_sessions {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id, not null]
+  provider      varchar    [not null]     — e.g. “SPORTS_PORTAL”
+  session_token varchar    [unique, not null]
+  created_at    timestamp  [not null]
+  expires_at    timestamp
+}
+
+Table venues {
+  id            integer    [primary key]
+  name          varchar    [not null]
+  address       varchar
+  phone         varchar
+  capacity      integer
+}
+
+Table venue_reservations {
+  id            integer    [primary key]
+  venue_id      integer    [foreign key → venues.id, not null]
+  course_offering_id integer [foreign key → course_offerings.id]
+  reserved_by   integer    [foreign key → users.id]
+  start_time    timestamp  [not null]
+  end_time      timestamp  [not null]
+}
+
+Table payments {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id, not null]
+  amount        numeric    [not null]
+  method        varchar    [not null]     — e.g. “card”, “bank_transfer”
+  status        varchar    [not null]     — e.g. “paid”, “refunded”
+  paid_at       timestamp
+}
+
+Table refunds {
+  id            integer    [primary key]
+  payment_id    integer    [foreign key → payments.id, not null]
+  amount        numeric    [not null]
+  refunded_at   timestamp  [not null]
+}
+
+Table instructors {
+  id            integer    [primary key]
+  name          varchar    [not null]
+  email         varchar    [unique]
+  phone         varchar
+  bio           text
+}
+
+Table course_instructors {
+  course_id     integer    [foreign key → courses.id, not null]
+  instructor_id integer    [foreign key → instructors.id, not null]
+}
+
+Table activity_logs {
+  id            integer    [primary key]
+  user_id       integer    [foreign key → users.id]
+  action        varchar    [not null]
+  target_type   varchar                        — e.g. “course”, “enrollment”
+  target_id     integer
+  timestamp     timestamp [not null]
+}
