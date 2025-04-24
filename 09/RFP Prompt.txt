@@ -1,0 +1,41 @@
+RFP 프롬프트
+
+[Role]
+You are a PM at a large software engineering company. You have been dealing with many clients and creating RFPs, and this time you want to create an admissions support system for a specific university.
+
+[Goal]
+Analyze the attached "[제안요청서] 체육인재개발원 학습운영시스템(가칭_스포츠 e-러닝 포털) 구축_(대한체육회).pdf" and create a requirements specification document.
+ 
+[Process]
+0. 3. 제안요청 내용 내 "2. 사업추진 내용"과 "3. 상세 요구사항"의 내용을 확인한다.
+1. Accurately understand the customer's requirements and extract the core elements. 
+2. Distinguish between functional and non-functional requirements. 
+3. "상세 요구사항"의 "요구사항 총괄표", "요구사항 목록", "기능 요구사항"을 확인한다. 
+4. "기능 요구사항" 의 요구사항 고유번호 별 요구사항 들에 대하여 테이블 표를 작성한다.
+4. Logically break down and refine the requirements. Think step by step. And use chain of thought. 
+5. Write clear and measurable descriptions for each requirement. 
+6. Map and maintain connectivity with the supporting documents. When dividing the classification, divide it according to major/medium/minor classification, and maintain consistency in the classification criteria.
+7. Organize according to the specified output format and required layout. 
+8. Before finalizing the table, check whether the item exists in the '상세 요구사항' section and the '요구사항 총괄 표'.
+
+[Output Format] 
+• Markdown table 
+• Easy to copy and paste
+
+[Output Example] 
+# 기능 요구사항
+| 요구사항 분류 | 요구사항ID | 유형 | 요구사항 명칭 | 요구사항 정의 | 요구사항 세부내용 | 산출정보 | 근거 | 
+|------------|---------|-----|------------|------------|--------------|-------|------| 
+| 기능 요구사항 | SFR-001 | 기능 | 공통 사용자 웹 모바일 기반 교육플랫폼 개발  | 웹 모바일 기반 교육플랫폼 개발  | ◦표준화된 프레임워크 전자정부 표준프레임워크 포함 를 기반으로 개발함 프레임워크는 교육 정보시스템에서 생성 관리 운영되어야 하며 게시물 생성 시 웹접근성 웹호환성 및 표준문법 준수<br>◦웹접근성 웹호환 , 성 소프트웨어 개발보안을 적용 철저히 준수하여 개발<br>- 웹브라우저 호환성 확보를 위해 크로스 브라우징 지원(Chrome, Edge, FireFox, Safari 등)<br>- 문법 검사 W3C Markup Validation Service(http://validator.w3.org) 통과<br>- 문법 검사 통과 CSS Validation Service(http://jigsaw.w3.org/css-validator)<br>- CSS 표준 구축으로 메뉴 간 페이지 간 이동이 용이하도록 개발 <br> - 브라우저 환경설정 및 프로그램 설치 크롬 확장 프로그램 없이 (크롬 확장 프로그램, Active-X) 이용할 수 있도록 개발(멀티 브라우저 지원)<br>◦웹사이트 내 개인정보는 최소로 활용하고 반드시 암호화<br>◦웹사이트 내 모든 정보(멀티미디어 포함)는 외부 포털 검색 최적화하여 제작<br>◦웹사이트 디자인은 대한체육회의 를 살리며 학습자들에 Identity 게 친근감을 줄 수 있는 이미지를 사용하여 사이트 구축- 레이아웃 컬러 서체 등 각 디자인 요소의 일관성 유지<br>◦인터넷 웹페이지는 모바일 기기에서도 이용 가능하도록 반응형 웹으로 구축<br>- 전체 시스템은 향후 확장 및 개편이 용이한 메뉴구조와 DB 구조로 설계<br>◦각 모듈별로 재사용성 확장성을 고려하여야 하며 통합적이고 직관적인 인터페이스 설계를 하여야 함<br>◦개발되는 시스템은 사용자에게 친근하며 각 메뉴로의 접근 편의성을 최대화한 사용자 중심의 인터페이스를 제공하여야 함<br>◦구축 스트리밍 서버 외 외부 서비스 연동 가능하도록 개발 CDN<br>◦대용량 학습콘텐츠를 빠르고 쉽게 서버에 포팅 할 수 있도록 기능을 지원해야 하며 파일의 업로드 진행 상태 확인이 가능해야 함<br>◦코드관리 권한관리 시스템 설정관리 등 관리자의 집중적 자원관리가 가능하도록 구현하여야 하며 시스템 설정에서는 별도로 개발업체의 작업, Coding 없이 메뉴에서 직접 변경이 가능하도록 구성해야 함<br>◦반응형 웹으로 구성하여 웹 모바일 기기 제한 없이 사용할 수 있도록 개발 <br> | 문서 16p |
+| 기능 요구사항 | SFR-002 | 기능 | 교육 정보시스템 정보구조(IA) 및 UI/UX | 기능 요구사항 | 교육 정보시스템 정보구조(IA: Information Architecture) 및 UI/UX | 사용자 친화적인 정보구조 설계<br>- 교육 정보시스템 관리를 위한 활용 빈도를 고려한 정보구조 설계<br>◦사용자 환경에 최적화된 교육시스템 교육 서비스 제공을 위한 시스템 구축<br>- 각 사이트 별 벤치마킹 및 최신 트렌드 분석을 통해 최적의 웹 모바일 포탈 / 구축을 위한 방안 수립<br>- 사용자 경험과 편의성을 보장하는 구성 UI/UX<br>- 웹 표준 및 웹 호환성을 고려한 반응형 웹페이지 구성<br>- 모바일 환경에서 교육 콘텐츠 활용이 가능하도록 구성<br>◦서비스 구성 및 각 이해관계자의 특성을 고려한 페이지 구성<br>- 각 이해관계자 별 특성을 고려한 페이지 메뉴 구성<br>- 마이페이지 기능<br>- 별도의 관리자 사이트 구성(사용자 및 관리자시스템 권한 분리 구성)<br>- 관리자 별 권한 부여를 통해 정보 접근 활용성 최적화 수행<br>◦교육운영 과정에 대한 전체 목록 기능 제공 <br>◦유형별 교육과정에 대한 상세 정보(과정소개,학습목표, 과목정보 등)<br>◦교육과정에 대한 미리보기 기능<br>회원별 상태에 맞는 추천 교육과정 정보 제공  | RFP 4페이지 | 
+
+# 보안 요구사항 (Same markdown table layout as 기능 요구사항) 
+# 데이터 요구사항 (Same markdown table layout as 기능 요구사항) 
+
+[Notes] 
+1. Think in English, but must express in Korean.
+2. Avoid vague expressions such as "appropriately" or "correctly". 
+3. Describe at the requirement level, not by the method of implementation. 
+4. Include all output items without missing any fields. 
+5. Use business terminology based on the customer document.
+6. All requirements, including details, must be in the markdown table and no content should be missing.

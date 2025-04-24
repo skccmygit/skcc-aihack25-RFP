@@ -1,0 +1,173 @@
+1. 공통 프롬프트 (모든 화면 공통)
+
+• 레이아웃   : 상단(Global Top Bar)‑좌측(Global Side Nav)‑본문‑하단 Footer 4‑구역 반응형 그리드
+• 내비게이션 : Top Bar ― 로고·사이트명·글로벌 검색·언어(KR/EN)·도움말·알림·다크모드·사용자 아바타
+               Side Nav ― 1‑차 메뉴(요구사항 별칭) 아이콘+텍스트, Hover Tooltip, Active Highlight
+• 접근성     : WCAG 2.1 AA · 키보드 탭 순서 · 컬러 대비 ≥ 4.5 : 1
+• 공통 UI    : Toast Alert, Modal, Drawer, Skeleton Loader, Empty State
+• 전역 상태  : Vue Pinia / React Redux 스토어 ― authToken, userProfile, roles, notifications
+• 라우팅     : SPA Hash Router, Guard (권한 없는 화면→403), 404→메인
+• 디자인     : CI Primary #CC0033, Secondary #003366, Font “Pretendard”
+• 반응형     : ≤ 768 px Top Bar→Hamburger, Side Nav 슬라이드 오버
+• 개발 규칙  : 컴포넌트 ID = 백엔드 REST 엔드포인트 slug, 모든 API 403/401 시 로그아웃
+• 공통 SFR   : SFR‑001(웹표준·보안), SFR‑002(IA·UX) 원칙 전 화면 적용
+​
+
+2️⃣ 초기 접근 및 인증 화면
+
+2‑1. SFR‑014 메인 페이지 (도메인 접속 시 첫 Landing)
+• Top Bar  : 로고·사이트명, 글로벌 검색, KR/EN, [로그인] [회원가입]
+• 히어로   : “스포츠 e‑러닝 포털” 비주얼 + CTA ①교육 검색 ②기관 소개
+• 퀵검색   : 직군(선수·지도자·심판·행정가·일반)·분야(스포츠·어학·자격)·키워드
+• Featured : 최신/인기 과정 캐러셀(8) ― “로그인 후 신청” 뱃지 · 즐겨찾기 토글
+• 기관소개 : 인사말 · 연혁 타임라인 · 연간계획 PDF DL
+• 공지      : 리스트 + “더보기”, 팝업 배너 Swipe
+• Footer    : 부서 연락처·저작권·개인정보·SNS
+• SEO       : OG태그·Schema.org Breadcrumb·robots.txt Allow
+• API       : GET /courses/popular, GET /notices/recent, GET /institute/overview
+• 제한      : “교육 신청” 클릭→로그인 Modal, 로그인 성공 시 리다이렉트 유지
+​
+
+2‑2. 회원가입 (Join)
+• Step 1 약관동의 : 서비스·개인정보·저작권 체크박스(모두동의), “다음”
+• Step 2 정보입력 : 이메일(ID)·PW·PW확인·이름·휴대폰(PASS 3‑CI)·생년월일 DatePicker
+                   권한선택 Radio(학습자·강사) → 권한별 Terms Tooltip
+                   필드 실시간 Validation, PW강도 Progress
+• Step 3 인증완료 : 축하 일러스트 + [로그인 이동]·[메인으로]
+• Social Join     : 네이버·카카오 버튼 → OAuth 팝업, 이메일 불러오기
+• API             : POST /auth/register, POST /auth/social/{provider}
+2‑3. 로그인 (Sign‑in)
+• 필드       : 이메일·PW, “자동 로그인”, [로그인], [카카오], [네이버]
+• 5회 실패   : reCAPTCHA v3 노출·발동
+• 비밀번호찾기: “PW 찾기” 링크 → Reset PW 화면
+• 성공 후    : roles 포함 JWT(Token+Refresh 쿠키) 저장, 원래 경로 or 메인
+• API        : POST /auth/login
+2‑4. 비밀번호 찾기 (Reset PW)
+• Step 1 이메일 입력 → 인증코드 발송 버튼
+• Step 2 코드(6자리)·새 PW·PW확인 입력, 남은시간 Progress Bar
+• 완료 화면 : “로그인 화면으로” 버튼
+• API       : POST /auth/reset‑request, POST /auth/reset‑confirm
+3️⃣ 업무 기능 화면 (SFR‑003 ~ SFR‑015)
+
+화면명 = 요구사항 ID 별칭, 필수 기능은 RFP 세부내용 전부 반영했습니다.
+3‑1. SFR‑003 교육 기본정보 관리
+• 상단 탭  : 교육유형, 교육내용, 교육방법, 회원, 강사
+• 공통뷰    : 데이터그리드(검색·정렬·필터), +[신규] 버튼 → 오른쪽 Drawer 폼
+• 교육유형  : 계층 트리 CRUD, Drag 재정렬 → PATCH /categories/reorder
+• 회원      : 통합회원 검색, 상세 Drawer → 내역 수정→통합등록시스템 PATCH
+              소셜(Naver/Kakao) 로그인 연동 상태 Badge
+• 강사풀    : 리스트 검색·태그필터, 평점★ Inline Edit, 계약금액 Numeric Stepper
+• 대량등록  : 학습자 CSV 업로드 모달 → 검증결과 표 → 일괄 INSERT
+• 권한      : ROLE_ADMIN, 모든 변경 → 변경로그 WebSocket 실시간 Toast
+• API       : /master‑data/** (categories, members, instructors…)
+​
+
+3‑2. SFR‑004 프로그램 및 과정 개설
+• 마법사   : ①과정개요 ②일정/차수 ③장소/시험/설문 ④요금정책 ⑤확인
+• 개요     : 과정명·설명·유형·교육방법(온/오프/혼합)·목표·모집정원
+• 일정/차수 : 달력 Drag‑Select → 차수 생성, Excel 대량 업로드 (Template DL)
+• 장소     : 교육장 Auto‑Complete (연동 SFR‑008), 시험·설문 체크박스 선택
+• 요금     : 정책 그리드(일괄·일자별) ― 금액·VAT·할인율 Inline Edit
+• 대상자   : [대상자 조회] Right Drawer 리스트, “추가” 시 그리드 Append
+• 변경/취소 : 차수 Card → 메뉴(변경·취소). 취소 시 Confirm Modal + 자동 알림
+• API      : /courses, /batches, /uploads/excel, /targets/**
+​
+
+3‑3. SFR‑005 온·오프라인 혼합 교육 운영관리
+• 상단 카운터 카드 : 총기수, 진행중, 종료, 설문응답률(%)
+• 기수 카드리스트  : 상태칩(준비/진행/종료), 출결률 Progress
+• 출결 입력        : QR 스캔 모바일 뷰 (등록 즉시 WebSocket), 수기 표 편집
+• 평가·설문        : 점수 Table, [설문 링크] 버튼 → 설문 빌더(SFR‑009)
+• 수료증 발급      : 체크박스 선택 → [PDF Batch DL] & [메일/SMS 발송]
+• 커뮤니티         : “생성/삭제” 토글 → 커뮤니티 URL 복사
+• 권한구성         : 관리자, 운영담당, 강사권한별 메뉴 필터
+• 로그            : 메뉴별 사용·권한 변경 실시간 Log Drawer
+• API             : /cohorts, /attendances, /certificates, /logs/**
+​
+
+3‑4. SFR‑006 교육과정 신청 관리
+• 마이페이지 대시보드 : KPI 카드(신청, 결제, 처리) + 필터(기간·상태)
+• 신청리스트          : 중복신청 방지 알림(Fade Banner), 유사과정 추천 사이드패널
+• 단체수강            : [단체 CSV 업로드] 모달, 결과 검증 Table
+• 정원 통제           : 과정 카드 ProgressBar, 정원 도달 시 “접수마감” 자동 라벨
+• 취소·수정           : 상태 드롭다운(신청·완료·취소) Inline, 수기 수정 토글
+• API                : /applications, /payments, /bulk‑apply/**
+​
+
+3‑5. SFR‑007 교육이수 관리
+• 대시보드 Timeline  : 신청→학습중→완료 카드 흐름, 진행률 Circular Graph
+• 맞춤 추천          : 관심분야 기반 Carousel, “관심과정 등록” ♥ 토글
+• 진도 연동          : 모바일 App 진도 % 실시간 Sync (WebSocket)
+• 시험/설문 탭       : 리스트 + 상태 Badge, 자동·수동 수료 토글 Switch
+• 이수증 발급        : PDF DL, QR 검증 코드 삽입
+• 학습 현황          : 년/월 그래프(Bar), CSV DL
+• API               : /progress, /exams, /surveys, /certificates/**
+​
+
+3‑6. SFR‑008 교육장 시설 관리
+• 지도‑리스트 Split  : Leaflet 지도 핀 + 좌측 리스트(무한스크롤)
+• 상세 Drawer        : 사진 갤러리 Lightbox, 시설·체육설비 표(Gym, Track 등)
+• 검색               : 키워드, 주소 Auto‑Complete, 시설유형 Checkbox, Capacity Range
+• CRUD               : [신규 등록] → 폼(명·위치·전화·소개), 편집 펜 아이콘
+• API                : /venues, /facilities/search, /uploads/image/**
+​
+
+3‑7. SFR‑009 설문관리
+• 설문 템플릿 빌더: 좌측 문항 팔레트(객관식·주관식·OX·Likert), 중앙 Drag‑Drop 캔버스
+• 옵션 패널       : 기간, 대상 그룹(기수·강사·시설), 필수/선택 항목 토글
+• 배포            : [설문 배포] → 대상 목록 미리보기, SMS·메일 옵션
+• 응답현황        : 파이·스택 차트, 미응답자 필터→[재발송]
+• API             : /surveys, /responses, /notifications/**
+​
+
+3‑8. SFR‑010 교육 결과 관리
+• 출석부 업로드   : Excel Drag‑Drop, 결과 매핑(일치/불일치) Table
+• 이수자 편집     : 수료·미수료 토글, 실시간 합계, Undo Stack
+• 결과보고서 PDF : 미리보기, 기관로고 자동 머리말
+• 미이수자 알림   : 리스트 선택→[메일]·[SMS]·[푸시] 자동 전송, 템플릿 선택
+• API            : /results, /reports/pdf, /notifications/mass/**
+​
+
+3‑9. SFR‑011 수강신청 정산관리
+• KPI 카드       : 총매출, 건수, 환불액, PG사 정산액
+• 결제내역 그리드 : 간편결제·카드·계좌 컬럼, 상태필터(결제/취소/환불)
+• 환불 조건 에디터: 조건식 빌더(기간, 사유, 비율), 미리보기 시뮬레이터
+• 계산서 발행     : 선택 → [세금계산서 PDF]·[이메일 발송]
+• API            : /settlements, /refund‑rules, /invoices/**
+​
+
+3‑10. SFR‑012 공통관리 시스템관리
+• 탭            : 게시판, 팝업/배너, 1:1 상담, FAQ, 코드, 권한, SMS, 약관
+• 게시판        : 유형(갤러리/리스트) 토글, 썸네일 업로드, Sticky 설정
+• 팝업/배너     : 노출 기간 달력, 위치 프리뷰(Grid Overlay)
+• 코드 관리     : 그룹→세부 코드 트리, 신규/병합/삭제
+• 권한 그룹     : 트리 Drag‑Drop, 승인 체크박스
+• SMS 발송      : 템플릿 관리, 예약 시간 DateTimePicker, 발송 이력 그리드
+• API           : /cms/boards, /cms/banners, /cms/codes, /cms/roles, /cms/sms/**
+​
+
+3‑11. SFR‑013 통계관리
+• 기간 필터     : 년·월·사용자 지정, 단일·다중 범위 선택
+• 대시보드 KPI  : 신청, 수료, 합격률, 매출, 방문자
+• 차트         : 막대(연도별 과정), 라인(월별 접속), 도넛(모바일/PC 비율)
+                차트 토글 Switch, 항목 On/Off Legend
+• 데이터 변동 로그: 테이블 + CSV DL, 필터(테이블, 사용자, 일자)
+• 위젯 추가     : [+] → 통계 유형 선택, 위치 Drag 배치
+• API          : /stats/applications, /stats/revenue, /stats/traffic, /stats/logs/**
+​
+
+3‑12. SFR‑015 연계 API 모니터링
+• 상태 Board   : 스포츠지원포털, 체육정보시스템, SSO, 증명서발급 API
+                 각 항목 Green/Yellow/Red Chip(응답시간, 오류율)
+• 호출 로그    : 테이블(IP, SiteKey, URL, Status, ms), 검색·날짜 범위
+• 실패 재시도  : 선택 → [재시도], 결과 실시간 Badge 업데이트
+• 설정 모달    : IP 화이트리스트 편집, SiteKey 재발급, “보안 수준” Slider
+• API         : /integrations/status, /integrations/logs, /integrations/settings/**
+​
+
+4️⃣ 사용 지침
+
+공통 프롬프트를 Readdy 프로젝트 최상단에 삽입합니다.
+이어서 각 화면 프롬프트를 순서대로 붙여넣습니다.
+디자인 생성 후 글로벌 네비 링크·권한 가드·모바일 브레이크포인트를 모두 프로토타입 테스트하세요.
+화면 하단 API 스펙을 백엔드 팀
