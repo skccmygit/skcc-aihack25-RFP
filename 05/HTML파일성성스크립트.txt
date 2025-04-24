@@ -1,0 +1,77 @@
+아래 경로에 해당하는 HTML 파일들을 생성해줘. 각 HTML은 빈 HTML5 기본 템플릿으로 시작하며, 주석으로 파일 목적을 명시해줘.
+
+📁 기본 경로: `src/main/resources/templates/`
+
+### intro 페이지
+- intro/intGreetings.html <!-- 개발원 소개 > 인사말 -->
+- intro/intHistory.html <!-- 개발원 소개 > 연혁 -->
+- intro/intDirections.html <!-- 개발원 소개 > 찾아오시는 길 -->
+- intro/intSchedule.html <!-- 개발원 소개 > 교육일정 -->
+- intro/intCampusView.html <!-- 개발원 소개 > 교육전경 -->
+- intro/intDepartments.html <!-- 개발원 소개 > 부서안내 -->
+- intro/intVision.html <!-- 개발원 소개 > 교육비전 -->
+
+### guide 페이지
+- guide/guideStudentProcedure.html <!-- 교육안내 > 교육생절차 -->
+- guide/guideCompletionCriteria.html <!-- 교육안내 > 수료기준 -->
+- guide/guideGuidelines.html <!-- 교육안내 > 준수사항 -->
+- guide/guideAnnualPlan.html <!-- 교육안내 > 연간계획 -->
+- guide/guideTrainingBasis.html <!-- 교육안내 > 연수기준 -->
+
+### apply 페이지
+- apply/applyCourseInfo.html <!-- 과정안내 > 과정정보 -->
+- apply/applyLeaderCourse.html <!-- 과정안내 > 리더과정 -->
+- apply/applyRefereeCourse.html <!-- 과정안내 > 심판과정 -->
+- apply/applyAdminCourse.html <!-- 과정안내 > 행정과정 -->
+- apply/applyGeneralCourse.html <!-- 과정안내 > 일반과정 -->
+- apply/applyAthleteCourse.html <!-- 과정안내 > 선수과정 -->
+
+### mypage 페이지
+- mypage/myLectureRoom.html <!-- 마이페이지 > 나의 강의실 -->
+- mypage/myCourseInfoChange.html <!-- 마이페이지 > 수강정보변경 -->
+- mypage/myFavoriteCourse.html <!-- 마이페이지 > 즐겨찾는 과정 -->
+- mypage/myCourseRecommendation.html <!-- 마이페이지 > 추천과정 -->
+- mypage/myCertificateIssue.html <!-- 마이페이지 > 수료증 발급 -->
+- mypage/myProfileEdit.html <!-- 마이페이지 > 프로필 수정 -->
+
+### notice 페이지
+- notice/noticeList.html <!-- 공지사항 > 목록 -->
+- notice/noticeNews.html <!-- 공지사항 > 보도자료 -->
+- notice/noticeResources.html <!-- 공지사항 > 자료실 -->
+
+### support 페이지
+- support/supportFAQ.html <!-- 고객지원 > FAQ -->
+- support/supportWishContent.html <!-- 고객지원 > 희망 콘텐츠 -->
+- support/supportCommunity.html <!-- 고객지원 > 커뮤니티 -->
+- support/supportHelp.html <!-- 고객지원 > 도움말 -->
+
+### lecturer 페이지
+- lecturer/lecturerRegistration.html <!-- 강사등록 > 등록 -->
+- lecturer/lecturerRegistrationResult.html <!-- 강사등록 > 결과 -->
+
+### facility 페이지
+- facility/facilityRoomStatus.html <!-- 시설이용 > 강의실 현황 -->
+- facility/facilityUsageProcedure.html <!-- 시설이용 > 이용절차 -->
+- facility/facilityUsageFee.html <!-- 시설이용 > 이용요금 -->
+- facility/facilityRentalRequest.html <!-- 시설이용 > 대관 신청 -->
+- facility/facilityReservationStatus.html <!-- 시설이용 > 예약 현황 -->
+- facility/facilityUsageGuide.html <!-- 시설이용 > 이용 안내 -->
+
+### cms 페이지
+- cms/boardManagement.html <!-- CMS > 게시판 관리 -->
+- cms/communityManagement.html <!-- CMS > 커뮤니티 관리 -->
+- cms/codeManagement.html <!-- CMS > 코드 관리 -->
+- cms/popupManagement.html <!-- CMS > 팝업 관리 -->
+- cms/permissionManagement.html <!-- CMS > 권한 관리 -->
+- cms/menuManagement.html <!-- CMS > 메뉴 관리 -->
+- cms/smsManagement.html <!-- CMS > SMS 관리 -->
+- cms/termsManagement.html <!-- CMS > 약관 관리 -->
+
+- cms/courseCompletionStats.html <!-- 통계 > 과정 수료 통계 -->
+- cms/websiteVisitStats.html <!-- 통계 > 웹사이트 방문 통계 -->
+- cms/learningActivityStats.html <!-- 통계 > 학습 활동 통계 -->
+- cms/dashboardStats.html <!-- 통계 > 대시보드 통계 -->
+- cms/educationStatusByPeriod.html <!-- 통계 > 기간별 교육현황 -->
+- cms/courseStats.html <!-- 통계 > 과정 통계 -->
+- cms/instructorStats.html <!-- 통계 > 강사 통계 -->
+- cms/courseApplicationStats.html <!-- 통계 > 수강신청 통계 -->

@@ -1,0 +1,328 @@
+### introViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/intro/view/introViewController.java
+
+@GetMapping("/intro/view/intGreetings")
+public String viewIntgreetings(HttpServletRequest request, Model model) {
+    return "intro/intGreetings";
+}
+
+@GetMapping("/intro/view/intHistory")
+public String viewInthistory(HttpServletRequest request, Model model) {
+    return "intro/intHistory";
+}
+
+@GetMapping("/intro/view/intDirections")
+public String viewIntdirections(HttpServletRequest request, Model model) {
+    return "intro/intDirections";
+}
+
+@GetMapping("/intro/view/intSchedule")
+public String viewIntschedule(HttpServletRequest request, Model model) {
+    return "intro/intSchedule";
+}
+
+@GetMapping("/intro/view/intCampusView")
+public String viewIntcampusview(HttpServletRequest request, Model model) {
+    return "intro/intCampusView";
+}
+
+@GetMapping("/intro/view/intDepartments")
+public String viewIntdepartments(HttpServletRequest request, Model model) {
+    return "intro/intDepartments";
+}
+
+@GetMapping("/intro/view/intVision")
+public String viewIntvision(HttpServletRequest request, Model model) {
+    return "intro/intVision";
+}
+
+
+
+
+### guideViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/guide/view/guideViewController.java
+
+@GetMapping("/guide/view/guideStudentProcedure")
+public String viewGuidestudentprocedure(HttpServletRequest request, Model model) {
+    return "guide/guideStudentProcedure";
+}
+
+@GetMapping("/guide/view/guideCompletionCriteria")
+public String viewGuidecompletioncriteria(HttpServletRequest request, Model model) {
+    return "guide/guideCompletionCriteria";
+}
+
+@GetMapping("/guide/view/guideGuidelines")
+public String viewGuideguidelines(HttpServletRequest request, Model model) {
+    return "guide/guideGuidelines";
+}
+
+@GetMapping("/guide/view/guideAnnualPlan")
+public String viewGuideannualplan(HttpServletRequest request, Model model) {
+    return "guide/guideAnnualPlan";
+}
+
+@GetMapping("/guide/view/guideTrainingBasis")
+public String viewGuidetrainingbasis(HttpServletRequest request, Model model) {
+    return "guide/guideTrainingBasis";
+}
+
+
+
+
+### applyViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/apply/view/applyViewController.java
+
+@GetMapping("/apply/view/applyCourseInfo")
+public String viewApplycourseinfo(HttpServletRequest request, Model model) {
+    return "apply/applyCourseInfo";
+}
+
+@GetMapping("/apply/view/applyLeaderCourse")
+public String viewApplyleadercourse(HttpServletRequest request, Model model) {
+    return "apply/applyLeaderCourse";
+}
+
+@GetMapping("/apply/view/applyRefereeCourse")
+public String viewApplyrefereecourse(HttpServletRequest request, Model model) {
+    return "apply/applyRefereeCourse";
+}
+
+@GetMapping("/apply/view/applyAdminCourse")
+public String viewApplyadmincourse(HttpServletRequest request, Model model) {
+    return "apply/applyAdminCourse";
+}
+
+@GetMapping("/apply/view/applyGeneralCourse")
+public String viewApplygeneralcourse(HttpServletRequest request, Model model) {
+    return "apply/applyGeneralCourse";
+}
+
+@GetMapping("/apply/view/applyAthleteCourse")
+public String viewApplyathletecourse(HttpServletRequest request, Model model) {
+    return "apply/applyAthleteCourse";
+}
+
+
+
+
+### mypageViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/mypage/view/mypageViewController.java
+
+@GetMapping("/mypage/view/myLectureRoom")
+public String viewMylectureroom(HttpServletRequest request, Model model) {
+    return "mypage/myLectureRoom";
+}
+
+@GetMapping("/mypage/view/myCourseInfoChange")
+public String viewMycourseinfochange(HttpServletRequest request, Model model) {
+    return "mypage/myCourseInfoChange";
+}
+
+@GetMapping("/mypage/view/myFavoriteCourse")
+public String viewMyfavoritecourse(HttpServletRequest request, Model model) {
+    return "mypage/myFavoriteCourse";
+}
+
+@GetMapping("/mypage/view/myCourseRecommendation")
+public String viewMycourserecommendation(HttpServletRequest request, Model model) {
+    return "mypage/myCourseRecommendation";
+}
+
+@GetMapping("/mypage/view/myCertificateIssue")
+public String viewMycertificateissue(HttpServletRequest request, Model model) {
+    return "mypage/myCertificateIssue";
+}
+
+@GetMapping("/mypage/view/myProfileEdit")
+public String viewMyprofileedit(HttpServletRequest request, Model model) {
+    return "mypage/myProfileEdit";
+}
+
+
+
+
+### noticeViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/notice/view/noticeViewController.java
+
+@GetMapping("/notice/view/noticeList")
+public String viewNoticelist(HttpServletRequest request, Model model) {
+    return "notice/noticeList";
+}
+
+@GetMapping("/notice/view/noticeNews")
+public String viewNoticenews(HttpServletRequest request, Model model) {
+    return "notice/noticeNews";
+}
+
+@GetMapping("/notice/view/noticeResources")
+public String viewNoticeresources(HttpServletRequest request, Model model) {
+    return "notice/noticeResources";
+}
+
+
+
+
+### supportViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/support/view/supportViewController.java
+
+@GetMapping("/support/view/supportFAQ")
+public String viewSupportfaq(HttpServletRequest request, Model model) {
+    return "support/supportFAQ";
+}
+
+@GetMapping("/support/view/supportWishContent")
+public String viewSupportwishcontent(HttpServletRequest request, Model model) {
+    return "support/supportWishContent";
+}
+
+@GetMapping("/support/view/supportCommunity")
+public String viewSupportcommunity(HttpServletRequest request, Model model) {
+    return "support/supportCommunity";
+}
+
+@GetMapping("/support/view/supportHelp")
+public String viewSupporthelp(HttpServletRequest request, Model model) {
+    return "support/supportHelp";
+}
+
+
+
+
+### lecturerViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/lecturer/view/lecturerViewController.java
+
+@GetMapping("/lecturer/view/lecturerRegistration")
+public String viewLecturerregistration(HttpServletRequest request, Model model) {
+    return "lecturer/lecturerRegistration";
+}
+
+@GetMapping("/lecturer/view/lecturerRegistrationResult")
+public String viewLecturerregistrationresult(HttpServletRequest request, Model model) {
+    return "lecturer/lecturerRegistrationResult";
+}
+
+
+
+
+### facilityViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/facility/view/facilityViewController.java
+
+@GetMapping("/facility/view/facilityRoomStatus")
+public String viewFacilityroomstatus(HttpServletRequest request, Model model) {
+    return "facility/facilityRoomStatus";
+}
+
+@GetMapping("/facility/view/facilityUsageProcedure")
+public String viewFacilityusageprocedure(HttpServletRequest request, Model model) {
+    return "facility/facilityUsageProcedure";
+}
+
+@GetMapping("/facility/view/facilityUsageFee")
+public String viewFacilityusagefee(HttpServletRequest request, Model model) {
+    return "facility/facilityUsageFee";
+}
+
+@GetMapping("/facility/view/facilityRentalRequest")
+public String viewFacilityrentalrequest(HttpServletRequest request, Model model) {
+    return "facility/facilityRentalRequest";
+}
+
+@GetMapping("/facility/view/facilityReservationStatus")
+public String viewFacilityreservationstatus(HttpServletRequest request, Model model) {
+    return "facility/facilityReservationStatus";
+}
+
+@GetMapping("/facility/view/facilityUsageGuide")
+public String viewFacilityusageguide(HttpServletRequest request, Model model) {
+    return "facility/facilityUsageGuide";
+}
+
+
+
+
+### cmsViewController.java
+// Path: src/main/java/com/skcc/ra/bff/controller/cms/view/cmsViewController.java
+
+@GetMapping("/cms/view/boardManagement")
+public String viewBoardmanagement(HttpServletRequest request, Model model) {
+    return "cms/boardManagement";
+}
+
+@GetMapping("/cms/view/communityManagement")
+public String viewCommunitymanagement(HttpServletRequest request, Model model) {
+    return "cms/communityManagement";
+}
+
+@GetMapping("/cms/view/codeManagement")
+public String viewCodemanagement(HttpServletRequest request, Model model) {
+    return "cms/codeManagement";
+}
+
+@GetMapping("/cms/view/popupManagement")
+public String viewPopupmanagement(HttpServletRequest request, Model model) {
+    return "cms/popupManagement";
+}
+
+@GetMapping("/cms/view/permissionManagement")
+public String viewPermissionmanagement(HttpServletRequest request, Model model) {
+    return "cms/permissionManagement";
+}
+
+@GetMapping("/cms/view/menuManagement")
+public String viewMenumanagement(HttpServletRequest request, Model model) {
+    return "cms/menuManagement";
+}
+
+@GetMapping("/cms/view/smsManagement")
+public String viewSmsmanagement(HttpServletRequest request, Model model) {
+    return "cms/smsManagement";
+}
+
+@GetMapping("/cms/view/termsManagement")
+public String viewTermsmanagement(HttpServletRequest request, Model model) {
+    return "cms/termsManagement";
+}
+
+@GetMapping("/cms/view/courseCompletionStats")
+public String viewCoursecompletionstats(HttpServletRequest request, Model model) {
+    return "cms/courseCompletionStats";
+}
+
+@GetMapping("/cms/view/websiteVisitStats")
+public String viewWebsitevisitstats(HttpServletRequest request, Model model) {
+    return "cms/websiteVisitStats";
+}
+
+@GetMapping("/cms/view/learningActivityStats")
+public String viewLearningactivitystats(HttpServletRequest request, Model model) {
+    return "cms/learningActivityStats";
+}
+
+@GetMapping("/cms/view/dashboardStats")
+public String viewDashboardstats(HttpServletRequest request, Model model) {
+    return "cms/dashboardStats";
+}
+
+@GetMapping("/cms/view/educationStatusByPeriod")
+public String viewEducationstatusbyperiod(HttpServletRequest request, Model model) {
+    return "cms/educationStatusByPeriod";
+}
+
+@GetMapping("/cms/view/courseStats")
+public String viewCoursestats(HttpServletRequest request, Model model) {
+    return "cms/courseStats";
+}
+
+@GetMapping("/cms/view/instructorStats")
+public String viewInstructorstats(HttpServletRequest request, Model model) {
+    return "cms/instructorStats";
+}
+
+@GetMapping("/cms/view/courseApplicationStats")
+public String viewCourseapplicationstats(HttpServletRequest request, Model model) {
+    return "cms/courseApplicationStats";
+}
+
+
+
