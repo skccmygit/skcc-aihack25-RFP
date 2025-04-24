@@ -1,0 +1,1 @@
+- CommonSpec의 md 파일을 기반으로 UI 및 Frontend, Backend 코드를 생성하여, 산출물로 대신 합니다.

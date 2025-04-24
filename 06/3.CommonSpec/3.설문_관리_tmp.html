@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3.설문_관리.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%EC%84%A4%EB%AC%B8-%EA%B4%80%EB%A6%AC-%ED%99%94%EB%A9%B4-%EB%AA%85%EC%84%B8%EC%84%9C">설문 관리 화면 명세서</h1>
+<h2 id="1-%EC%84%A4%EB%AC%B8-%EC%83%9D%EC%84%B1-%EA%B4%80%EB%A6%AC">1. 설문 생성 관리</h2>
+<ul>
+<li>기능 요건 모두 충족</li>
+<li>API를 고려한 버튼 등 이벤트 구성</li>
+<li>테이블 컬럼을 고려한 필드명</li>
+</ul>
+<h3 id="%EA%B8%B0%EB%8A%A5-%EC%9A%94%EA%B1%B4">기능 요건</h3>
+<ul>
+<li>설문 등록, 조회, 수정, 삭제 기능</li>
+<li>설문 유형별(과정 설문, 강사 설문, 일반 설문 등) 관리</li>
+<li>설문 기간 설정 및 활성화/비활성화 관리</li>
+<li>익명/필수 설문 여부 설정</li>
+</ul>
+<h3 id="api">API</h3>
+<table>
+<thead>
+<tr>
+<th>API 명</th>
+<th>HTTP 메서드</th>
+<th>엔드포인트</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설문 등록</td>
+<td>POST</td>
+<td>/api/v1/surveys</td>
+<td>설문 등록</td>
+</tr>
+<tr>
+<td>설문 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/{survey_id}</td>
+<td>설문 정보 조회</td>
+</tr>
+<tr>
+<td>설문 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys</td>
+<td>설문 목록 조회</td>
+</tr>
+<tr>
+<td>설문 수정</td>
+<td>PUT</td>
+<td>/api/v1/surveys/{survey_id}</td>
+<td>설문 정보 수정</td>
+</tr>
+<tr>
+<td>설문 삭제</td>
+<td>DELETE</td>
+<td>/api/v1/surveys/{survey_id}</td>
+<td>설문 삭제</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%EA%B4%80%EB%A0%A8-%ED%85%8C%EC%9D%B4%EB%B8%94">관련 테이블</h3>
+<ul>
+<li><strong>TB_SURVEY</strong>: 설문 정보
+<ul>
+<li>survey_id: 설문 ID (PK, INT)</li>
+<li>survey_name: 설문명 (VARCHAR(200))</li>
+<li>survey_desc: 설문 설명 (TEXT)</li>
+<li>survey_type: 설문 유형 (VARCHAR(50))</li>
+<li>course_id: 과정 ID (FK -&gt; TB_COURSE.course_id, INT)</li>
+<li>class_id: 차수 ID (FK -&gt; TB_COURSE_CLASS.class_id, INT)</li>
+<li>start_date: 시작일 (DATETIME)</li>
+<li>end_date: 종료일 (DATETIME)</li>
+<li>is_anonymous: 익명 여부 (TINYINT(1))</li>
+<li>is_required: 필수 여부 (TINYINT(1))</li>
+<li>is_active: 활성 여부 (TINYINT(1))</li>
+<li>reg_user_id: 등록자 ID (VARCHAR(50))</li>
+<li>reg_date: 등록일 (DATETIME)</li>
+<li>mod_user_id: 수정자 ID (VARCHAR(50))</li>
+<li>mod_date: 수정일 (DATETIME)</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-%EC%84%A4%EB%AC%B8-%EB%AC%B8%ED%95%AD-%EA%B4%80%EB%A6%AC">2. 설문 문항 관리</h2>
+<ul>
+<li>기능 요건 모두 충족</li>
+<li>API를 고려한 버튼 등 이벤트 구성</li>
+<li>테이블 컬럼을 고려한 필드명</li>
+</ul>
+<h3 id="%EA%B8%B0%EB%8A%A5-%EC%9A%94%EA%B1%B4">기능 요건</h3>
+<ul>
+<li>설문 문항 등록, 조회, 수정, 삭제 기능</li>
+<li>문항 유형(객관식 단일, 객관식 복수, 주관식 등) 관리</li>
+<li>필수 응답 여부 설정</li>
+<li>문항 순서 관리</li>
+</ul>
+<h3 id="api">API</h3>
+<table>
+<thead>
+<tr>
+<th>API 명</th>
+<th>HTTP 메서드</th>
+<th>엔드포인트</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설문 문항 등록</td>
+<td>POST</td>
+<td>/api/v1/surveys/{survey_id}/questions</td>
+<td>설문 문항 등록</td>
+</tr>
+<tr>
+<td>설문 문항 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/{survey_id}/questions</td>
+<td>설문 문항 목록 조회</td>
+</tr>
+<tr>
+<td>설문 문항 수정</td>
+<td>PUT</td>
+<td>/api/v1/surveys/{survey_id}/questions/{question_id}</td>
+<td>설문 문항 수정</td>
+</tr>
+<tr>
+<td>설문 문항 삭제</td>
+<td>DELETE</td>
+<td>/api/v1/surveys/{survey_id}/questions/{question_id}</td>
+<td>설문 문항 삭제</td>
+</tr>
+<tr>
+<td>설문 선택지 등록</td>
+<td>POST</td>
+<td>/api/v1/questions/{question_id}/options</td>
+<td>설문 선택지 등록</td>
+</tr>
+<tr>
+<td>설문 선택지 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/questions/{question_id}/options</td>
+<td>설문 선택지 목록 조회</td>
+</tr>
+<tr>
+<td>설문 선택지 수정</td>
+<td>PUT</td>
+<td>/api/v1/questions/{question_id}/options/{option_id}</td>
+<td>설문 선택지 수정</td>
+</tr>
+<tr>
+<td>설문 선택지 삭제</td>
+<td>DELETE</td>
+<td>/api/v1/questions/{question_id}/options/{option_id}</td>
+<td>설문 선택지 삭제</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%EA%B4%80%EB%A0%A8-%ED%85%8C%EC%9D%B4%EB%B8%94">관련 테이블</h3>
+<ul>
+<li>
+<p><strong>TB_SURVEY_QUESTION</strong>: 설문 문항 정보</p>
+<ul>
+<li>question_id: 문항 ID (PK, INT)</li>
+<li>survey_id: 설문 ID (FK -&gt; TB_SURVEY.survey_id, INT)</li>
+<li>question_text: 문항 내용 (TEXT)</li>
+<li>question_type: 문항 유형 (VARCHAR(50))</li>
+<li>is_required: 필수 여부 (TINYINT(1))</li>
+<li>order_no: 정렬 순서 (INT)</li>
+<li>reg_date: 등록일 (DATETIME)</li>
+<li>mod_date: 수정일 (DATETIME)</li>
+</ul>
+</li>
+<li>
+<p><strong>TB_SURVEY_OPTION</strong>: 설문 선택지 정보</p>
+<ul>
+<li>option_id: 선택지 ID (PK, INT)</li>
+<li>question_id: 문항 ID (FK -&gt; TB_SURVEY_QUESTION.question_id, INT)</li>
+<li>option_text: 선택지 내용 (VARCHAR(500))</li>
+<li>score: 점수 (INT)</li>
+<li>order_no: 정렬 순서 (INT)</li>
+<li>reg_date: 등록일 (DATETIME)</li>
+<li>mod_date: 수정일 (DATETIME)</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-%EC%84%A4%EB%AC%B8-%EC%9D%91%EB%8B%B5-%EA%B4%80%EB%A6%AC">3. 설문 응답 관리</h2>
+<ul>
+<li>기능 요건 모두 충족</li>
+<li>API를 고려한 버튼 등 이벤트 구성</li>
+<li>테이블 컬럼을 고려한 필드명</li>
+</ul>
+<h3 id="%EA%B8%B0%EB%8A%A5-%EC%9A%94%EA%B1%B4">기능 요건</h3>
+<ul>
+<li>설문 응답 시작 및 완료 처리</li>
+<li>응답 데이터 수집 및 조회</li>
+<li>설문별 응답 현황 모니터링</li>
+<li>설문 결과 통계 분석</li>
+</ul>
+<h3 id="api">API</h3>
+<table>
+<thead>
+<tr>
+<th>API 명</th>
+<th>HTTP 메서드</th>
+<th>엔드포인트</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설문 응답 시작</td>
+<td>POST</td>
+<td>/api/v1/surveys/{survey_id}/responses</td>
+<td>설문 응답 시작</td>
+</tr>
+<tr>
+<td>설문 응답 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/{survey_id}/responses/{response_id}</td>
+<td>설문 응답 조회</td>
+</tr>
+<tr>
+<td>사용자별 설문 응답 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/responses/user/{user_id}</td>
+<td>사용자별 설문 응답 목록 조회</td>
+</tr>
+<tr>
+<td>설문별 응답 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/{survey_id}/responses</td>
+<td>설문별 응답 목록 조회</td>
+</tr>
+<tr>
+<td>설문 답변 등록</td>
+<td>POST</td>
+<td>/api/v1/responses/{response_id}/answers</td>
+<td>설문 답변 등록</td>
+</tr>
+<tr>
+<td>설문 답변 목록 조회</td>
+<td>GET</td>
+<td>/api/v1/responses/{response_id}/answers</td>
+<td>설문 답변 목록 조회</td>
+</tr>
+<tr>
+<td>설문 응답 완료 처리</td>
+<td>PATCH</td>
+<td>/api/v1/responses/{response_id}/complete</td>
+<td>설문 응답 완료 처리</td>
+</tr>
+<tr>
+<td>설문 결과 통계 조회</td>
+<td>GET</td>
+<td>/api/v1/surveys/{survey_id}/statistics</td>
+<td>설문 결과 통계 조회</td>
+</tr>
+</tbody>
+</table>
+<h3 id="%EA%B4%80%EB%A0%A8-%ED%85%8C%EC%9D%B4%EB%B8%94">관련 테이블</h3>
+<ul>
+<li>
+<p><strong>TB_SURVEY_RESPONSE</strong>: 설문 응답 정보</p>
+<ul>
+<li>response_id: 응답 ID (PK, INT)</li>
+<li>survey_id: 설문 ID (FK -&gt; TB_SURVEY.survey_id, INT)</li>
+<li>user_id: 사용자 ID (FK -&gt; TB_USER.user_id, VARCHAR(50))</li>
+<li>enrollment_id: 수강신청 ID (FK -&gt; TB_ENROLLMENT.enrollment_id, INT)</li>
+<li>response_date: 응답일 (DATETIME)</li>
+<li>is_complete: 완료 여부 (TINYINT(1))</li>
+<li>complete_date: 완료일 (DATETIME)</li>
+<li>ip_address: IP 주소 (VARCHAR(50))</li>
+</ul>
+</li>
+<li>
+<p><strong>TB_SURVEY_ANSWER</strong>: 설문 답변 정보</p>
+<ul>
+<li>answer_id: 답변 ID (PK, INT)</li>
+<li>response_id: 응답 ID (FK -&gt; TB_SURVEY_RESPONSE.response_id, INT)</li>
+<li>question_id: 문항 ID (FK -&gt; TB_SURVEY_QUESTION.question_id, INT)</li>
+<li>option_id: 선택지 ID (FK -&gt; TB_SURVEY_OPTION.option_id, INT)</li>
+<li>text_answer: 텍스트 답변 (TEXT)</li>
+<li>reg_date: 등록일 (DATETIME)</li>
+</ul>
+</li>
+</ul>
+
+</body>
+</html>
