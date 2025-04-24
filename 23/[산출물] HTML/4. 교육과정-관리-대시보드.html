@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로그램 및 과정 개설</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',secondary:'#818CF8'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9fafb;
+        }
+        .custom-shadow {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .custom-checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+        }
+        .custom-checkbox:checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4F46E5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .tab-active {
+            color: #4F46E5;
+            border-bottom: 2px solid #4F46E5;
+        }
+        .pagination-active {
+            background-color: #4F46E5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen bg-gray-50">
+        <!-- 사이드바 -->
+        <div class="w-64 bg-white shadow-md">
+            <div class="p-4 flex items-center">
+                <span class="font-['Pacifico'] text-2xl text-primary">logo</span>
+            </div>
+            <div class="mt-6">
+                <div class="px-4 py-2 text-sm font-medium text-gray-400">메뉴</div>
+                <div class="mt-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-dashboard-line"></i>
+                        </div>
+                        <span>대시보드</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 bg-gray-100 text-primary">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-book-open-line"></i>
+                        </div>
+                        <span>프로그램 및 과정</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        <span>수강생 관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-file-list-line"></i>
+                        </div>
+                        <span>시험 관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-survey-line"></i>
+                        </div>
+                        <span>설문 관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-money-dollar-circle-line"></i>
+                        </div>
+                        <span>결제 관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-settings-line"></i>
+                        </div>
+                        <span>환경설정</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 헤더 -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-800">프로그램 및 과정 개설</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 rounded-full hover:bg-gray-100">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-notification-3-line"></i>
+                                </div>
+                            </button>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </div>
+                        <div class="flex items-center">
+                            <img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20an%20Asian%20educator%2C%20high%20quality%20portrait%2C%20neutral%20background%2C%20professional%20attire&width=40&height=40&seq=1&orientation=squarish" alt="프로필" class="w-8 h-8 rounded-full object-cover">
+                            <span class="ml-2 text-sm font-medium text-gray-700">김민준 관리자</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 컨텐츠 영역 -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <!-- 검색 및 필터 -->
+                <div class="bg-white rounded shadow-sm p-6 mb-6">
+                    <div class="flex flex-wrap items-center justify-between mb-4">
+                        <h2 class="text-lg font-medium text-gray-800">교육과정 검색</h2>
+                        <div class="flex space-x-3">
+                            <button id="btnAdvancedSearch" class="text-sm text-gray-600 flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-filter-3-line"></i>
+                                </div>
+                                고급 검색
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 기간</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm" value="2025-04-01">
+                                <span class="text-gray-500">~</span>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm" value="2025-05-30">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">과정명</label>
+                            <input type="text" placeholder="과정명 검색" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">상태</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm pr-8 appearance-none bg-white">
+                                <option>전체</option>
+                                <option>진행 중</option>
+                                <option>예정</option>
+                                <option>종료</option>
+                                <option>취소</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="advancedSearchArea" class="hidden mt-4 pt-4 border-t border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">교육 장소</label>
+                                <input type="text" placeholder="교육 장소 검색" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">교육 차수</label>
+                                <input type="text" placeholder="차수 입력" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">담당자</label>
+                                <input type="text" placeholder="담당자명 검색" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mt-4">
+                        <button class="px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-opacity-90 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-search-line"></i>
+                                </div>
+                                검색
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 교육과정 목록 -->
+                <div class="bg-white rounded shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center">
+                            <h2 class="text-lg font-medium text-gray-800">교육과정 목록</h2>
+                            <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">총 24개</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button id="btnExcelUpload" class="px-3 py-2 border border-gray-300 rounded-button text-gray-700 text-sm hover:bg-gray-50 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-file-excel-line"></i>
+                                    </div>
+                                    엑셀 업로드
+                                </div>
+                            </button>
+                            <button id="btnNewCourse" class="px-3 py-2 bg-primary text-white rounded-button text-sm hover:bg-opacity-90 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    신규 과정 등록
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span>No.</span>
+                                        </div>
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">과정명</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">차수</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">교육 기간</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">교육 장소</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">정원</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신청 현황</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                                    <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span class="text-sm text-gray-900">1</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">데이터 분석 기초 과정</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-1차</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025.04.15 ~ 2025.04.30</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">서울 강남 교육센터</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">30명</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">25명 / 30명</div>
+                                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                                            <div class="h-1.5 bg-primary rounded-full" style="width: 83%"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">진행 중</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <button class="p-1 text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="p-1 text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span class="text-sm text-gray-900">2</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">프로젝트 관리 전문가 과정</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-2차</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025.05.10 ~ 2025.05.25</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">부산 해운대 교육센터</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">20명</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">12명 / 20명</div>
+                                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                                            <div class="h-1.5 bg-primary rounded-full" style="width: 60%"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">예정</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <button class="p-1 text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="p-1 text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span class="text-sm text-gray-900">3</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">인공지능 활용 교육</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-1차</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025.04.05 ~ 2025.04.20</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">대전 유성구 교육센터</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">25명</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">25명 / 25명</div>
+                                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                                            <div class="h-1.5 bg-primary rounded-full" style="width: 100%"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">종료</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <button class="p-1 text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="p-1 text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span class="text-sm text-gray-900">4</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">디지털 마케팅 전략</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-2차</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025.05.15 ~ 2025.05.30</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">서울 종로 교육센터</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">40명</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">32명 / 40명</div>
+                                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                                            <div class="h-1.5 bg-primary rounded-full" style="width: 80%"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">예정</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <button class="p-1 text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="p-1 text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="custom-checkbox mr-2">
+                                            <span class="text-sm text-gray-900">5</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm font-medium text-gray-900">클라우드 컴퓨팅 기초</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-1차</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025.04.10 ~ 2025.04.25</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">인천 송도 교육센터</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">35명</div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">28명 / 35명</div>
+                                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                                            <div class="h-1.5 bg-primary rounded-full" style="width: 80%"></div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">진행 중</span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <button class="p-1 text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="p-1 text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-6">
+                        <div class="text-sm text-gray-600">
+                            총 24개 항목 중 1-5 표시
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:bg-gray-50">
+                                <div class="w-4 h-4 flex items-center justify-center">
+                                    <i class="ri-arrow-left-s-line"></i>
+                                </div>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 pagination-active">1</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-700 hover:bg-gray-50">2</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-700 hover:bg-gray-50">3</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-700 hover:bg-gray-50">4</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-700 hover:bg-gray-50">5</button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:bg-gray-50">
+                                <div class="w-4 h-4 flex items-center justify-center">
+                                    <i class="ri-arrow-right-s-line"></i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 신규 과정 등록 모달 -->
+    <div id="newCourseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">신규 교육과정 등록</h3>
+                <button id="closeNewCourseModal" class="text-gray-400 hover:text-gray-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="px-6 py-4 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <!-- 탭 메뉴 -->
+                <div class="border-b border-gray-200 mb-6">
+                    <div class="flex space-x-8">
+                        <button class="px-1 py-3 text-sm font-medium tab-active">기본 정보</button>
+                        <button class="px-1 py-3 text-sm font-medium text-gray-500">교육 장소</button>
+                        <button class="px-1 py-3 text-sm font-medium text-gray-500">수강 대상자</button>
+                        <button class="px-1 py-3 text-sm font-medium text-gray-500">시험/설문 설정</button>
+                        <button class="px-1 py-3 text-sm font-medium text-gray-500">교육 요금</button>
+                    </div>
+                </div>
+                
+                <!-- 기본 정보 탭 -->
+                <div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">과정명 <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 차수 <span class="text-red-500">*</span></label>
+                            <input type="text" placeholder="예: 2025-1차" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 기간 <span class="text-red-500">*</span></label>
+                            <div class="flex items-center space-x-2">
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                                <span class="text-gray-500">~</span>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 시간</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                                <span class="text-gray-500">~</span>
+                                <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 정원 <span class="text-red-500">*</span></label>
+                            <input type="number" min="1" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">담당자</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 소개</label>
+                            <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">교육 유형</label>
+                            <div class="flex space-x-4 mt-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="courseType" class="custom-checkbox">
+                                    <span class="ml-2 text-sm text-gray-700">오프라인</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="courseType" class="custom-checkbox">
+                                    <span class="ml-2 text-sm text-gray-700">온라인</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="courseType" class="custom-checkbox">
+                                    <span class="ml-2 text-sm text-gray-700">혼합형</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">수강 신청 기간</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                                <span class="text-gray-500">~</span>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="flex items-center">
+                                <label class="custom-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="ml-2 text-sm font-medium text-gray-700">교육 과정 공개</span>
+                            </label>
+                            <p class="mt-1 text-xs text-gray-500">이 옵션을 활성화하면 교육 과정이 공개 목록에 표시됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancelNewCourse" class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap">취소</button>
+                <button class="px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 whitespace-nowrap">다음: 교육 장소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 엑셀 업로드 모달 -->
+    <div id="excelUploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">엑셀 파일로 교육과정 등록</h3>
+                <button id="closeExcelUploadModal" class="text-gray-400 hover:text-gray-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="px-6 py-4">
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">엑셀 파일을 업로드하여 다수의 교육과정을 한 번에 등록할 수 있습니다.</p>
+                </div>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center bg-gray-100 rounded-full">
+                        <div class="w-6 h-6 flex items-center justify-center text-gray-500">
+                            <i class="ri-file-excel-line"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">파일을 여기에 끌어다 놓거나</p>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-button hover:bg-gray-200 whitespace-nowrap">파일 선택</button>
+                    <p class="text-xs text-gray-500 mt-2">최대 파일 크기: 10MB (*.xlsx, *.xls)</p>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="#" class="text-sm text-primary flex items-center">
+                        <div class="w-4 h-4 flex items-center justify-center mr-1">
+                            <i class="ri-download-line"></i>
+                        </div>
+                        엑셀 템플릿 다운로드
+                    </a>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                <button id="cancelExcelUpload" class="px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap">취소</button>
+                <button class="px-4 py-2 bg-primary text-white rounded-button hover:bg-opacity-90 whitespace-nowrap">업로드</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 고급 검색 토글
+            const btnAdvancedSearch = document.getElementById('btnAdvancedSearch');
+            const advancedSearchArea = document.getElementById('advancedSearchArea');
+            
+            btnAdvancedSearch.addEventListener('click', function() {
+                advancedSearchArea.classList.toggle('hidden');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 신규 과정 등록 모달
+            const btnNewCourse = document.getElementById('btnNewCourse');
+            const newCourseModal = document.getElementById('newCourseModal');
+            const closeNewCourseModal = document.getElementById('closeNewCourseModal');
+            const cancelNewCourse = document.getElementById('cancelNewCourse');
+            
+            btnNewCourse.addEventListener('click', function() {
+                newCourseModal.classList.remove('hidden');
+            });
+            
+            closeNewCourseModal.addEventListener('click', function() {
+                newCourseModal.classList.add('hidden');
+            });
+            
+            cancelNewCourse.addEventListener('click', function() {
+                newCourseModal.classList.add('hidden');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 엑셀 업로드 모달
+            const btnExcelUpload = document.getElementById('btnExcelUpload');
+            const excelUploadModal = document.getElementById('excelUploadModal');
+            const closeExcelUploadModal = document.getElementById('closeExcelUploadModal');
+            const cancelExcelUpload = document.getElementById('cancelExcelUpload');
+            
+            btnExcelUpload.addEventListener('click', function() {
+                excelUploadModal.classList.remove('hidden');
+            });
+            
+            closeExcelUploadModal.addEventListener('click', function() {
+                excelUploadModal.classList.add('hidden');
+            });
+            
+            cancelExcelUpload.addEventListener('click', function() {
+                excelUploadModal.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

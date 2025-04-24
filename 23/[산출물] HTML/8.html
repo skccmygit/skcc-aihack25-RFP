@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>교육장 시설 관리</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", secondary: "#10B981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Noto Sans KR', sans-serif;
+      }
+      .search-input:focus {
+          outline: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+      .custom-checkbox {
+          position: relative;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          border: 2px solid #d1d5db;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      .custom-checkbox.checked {
+          background-color: #4F46E5;
+          border-color: #4F46E5;
+      }
+      .custom-checkbox.checked::after {
+          content: '';
+          position: absolute;
+          left: 5px;
+          top: 2px;
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+      .custom-switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 24px;
+      }
+      .custom-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e5e7eb;
+          transition: .3s;
+          border-radius: 24px;
+      }
+      .slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .3s;
+          border-radius: 50%;
+      }
+      input:checked + .slider {
+          background-color: #4F46E5;
+      }
+      input:checked + .slider:before {
+          transform: translateX(20px);
+      }
+      .custom-radio {
+          position: relative;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          border: 2px solid #d1d5db;
+          border-radius: 50%;
+          cursor: pointer;
+      }
+      .custom-radio.checked {
+          border-color: #4F46E5;
+      }
+      .custom-radio.checked::after {
+          content: '';
+          position: absolute;
+          left: 3px;
+          top: 3px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #4F46E5;
+      }
+      .custom-range {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 6px;
+          border-radius: 5px;
+          background: #e5e7eb;
+          outline: none;
+      }
+      .custom-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #4F46E5;
+          cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- 헤더 -->
+    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-10">
+      <div class="flex items-center justify-between px-4 py-3">
+        <!-- 로고 및 햄버거 메뉴 -->
+        <div class="flex items-center gap-4">
+          <button
+            id="menuToggle"
+            class="lg:hidden w-10 h-10 flex items-center justify-center text-gray-500"
+          >
+            <i class="ri-menu-line ri-lg"></i>
+          </button>
+          <div class="font-['Pacifico'] text-xl text-primary">logo</div>
+          <h1 class="text-lg font-medium hidden sm:block">
+            교육장 시설 관리 시스템
+          </h1>
+        </div>
+
+        <!-- 검색바 -->
+        <div class="hidden md:flex items-center relative w-1/3">
+          <div
+            class="absolute left-3 w-5 h-5 flex items-center justify-center text-gray-400"
+          >
+            <i class="ri-search-line"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="교육장 검색"
+            class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded border-none text-sm"
+          />
+          <button
+            class="absolute right-3 w-5 h-5 flex items-center justify-center text-gray-400"
+          >
+            <i class="ri-filter-3-line"></i>
+          </button>
+        </div>
+
+        <!-- 사용자 정보 및 알림 -->
+        <div class="flex items-center gap-3">
+          <button
+            class="w-9 h-9 flex items-center justify-center text-gray-500 relative"
+          >
+            <i class="ri-notification-3-line ri-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+            ></span>
+          </button>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm"
+            >
+              김
+            </div>
+            <span class="text-sm font-medium hidden sm:block">김관리자</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모바일 검색바 -->
+      <div class="md:hidden px-4 pb-3">
+        <div class="relative">
+          <div
+            class="absolute left-3 w-5 h-5 flex items-center justify-center text-gray-400"
+          >
+            <i class="ri-search-line"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="교육장 검색"
+            class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded border-none text-sm"
+          />
+          <button
+            class="absolute right-3 w-5 h-5 flex items-center justify-center text-gray-400"
+          >
+            <i class="ri-filter-3-line"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 사이드바 및 메인 콘텐츠 -->
+    <div class="flex pt-16 md:pt-14">
+      <!-- 사이드바 -->
+      <aside
+        id="sidebar"
+        class="fixed left-0 top-14 bottom-0 w-64 bg-white shadow-sm transform -translate-x-full lg:translate-x-0 transition-transform z-20"
+      >
+        <nav class="p-4">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded text-primary bg-indigo-50 font-medium"
+              >
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-building-2-line"></i>
+                </div>
+                <span>교육장 관리</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded text-gray-600 hover:bg-gray-50"
+              >
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-home-gear-line"></i>
+                </div>
+                <span>시설 관리</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded text-gray-600 hover:bg-gray-50"
+              >
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-calendar-check-line"></i>
+                </div>
+                <span>예약 현황</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded text-gray-600 hover:bg-gray-50"
+              >
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-bar-chart-line"></i>
+                </div>
+                <span>통계/리포트</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex items-center gap-3 px-4 py-3 rounded text-gray-600 hover:bg-gray-50"
+              >
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-settings-3-line"></i>
+                </div>
+                <span>설정</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- 사이드바 하단 정보 -->
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="text-sm font-medium mb-1">시스템 상태</div>
+            <div class="text-xs text-gray-500">최근 업데이트: 2025-04-22</div>
+            <div class="mt-2 flex items-center gap-2">
+              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span class="text-xs">정상 운영 중</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 메인 콘텐츠 -->
+      <main class="flex-1 lg:ml-64 p-4 md:p-6">
+        <div class="max-w-7xl mx-auto">
+          <!-- 페이지 헤더 -->
+          <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6"
+          >
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">교육장 관리</h2>
+              <p class="text-sm text-gray-500 mt-1">
+                교육장 시설을 등록하고 관리할 수 있습니다.
+              </p>
+            </div>
+            <button
+              id="addFacilityBtn"
+              class="mt-4 sm:mt-0 flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap"
+            >
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-add-line"></i>
+              </div>
+              <span>교육장 등록</span>
+            </button>
+          </div>
+          <!-- 대시보드 요약 카드 -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+          >
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm text-gray-500">전체 교육장</div>
+                  <div class="text-2xl font-bold mt-1">24</div>
+                </div>
+                <div
+                  class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-primary"
+                >
+                  <i class="ri-building-2-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm text-gray-500">사용 가능</div>
+                  <div class="text-2xl font-bold mt-1">18</div>
+                </div>
+                <div
+                  class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"
+                >
+                  <i class="ri-check-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm text-gray-500">사용 중</div>
+                  <div class="text-2xl font-bold mt-1">6</div>
+                </div>
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"
+                >
+                  <i class="ri-time-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm text-gray-500">오늘 예약</div>
+                  <div class="text-2xl font-bold mt-1">8</div>
+                </div>
+                <div
+                  class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"
+                >
+                  <i class="ri-calendar-event-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 탭 메뉴 -->
+          <div class="bg-white rounded shadow-sm mb-6">
+            <div class="flex border-b">
+              <button
+                class="px-6 py-4 text-primary border-b-2 border-primary font-medium"
+              >
+                교육장 목록
+              </button>
+              <button class="px-6 py-4 text-gray-500 hover:text-gray-700">
+                통계 분석
+              </button>
+            </div>
+            <!-- 필터 및 정렬 영역 -->
+            <div class="p-4 border-b">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+              >
+                <div class="flex items-center gap-2">
+                  <div class="relative">
+                    <select
+                      class="appearance-none bg-gray-100 border-none rounded px-4 py-2 pr-8 text-sm"
+                    >
+                      <option>모든 상태</option>
+                      <option>사용 가능</option>
+                      <option>사용 중</option>
+                      <option>점검 중</option>
+                    </select>
+                    <div
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                    >
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <select
+                      class="appearance-none bg-gray-100 border-none rounded px-4 py-2 pr-8 text-sm"
+                    >
+                      <option>모든 지역</option>
+                      <option>서울</option>
+                      <option>경기</option>
+                      <option>인천</option>
+                      <option>부산</option>
+                    </select>
+                    <div
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                    >
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="relative">
+                    <select
+                      class="appearance-none bg-gray-100 border-none rounded px-4 py-2 pr-8 text-sm"
+                    >
+                      <option>최근 등록순</option>
+                      <option>이름순</option>
+                      <option>수용인원순</option>
+                    </select>
+                    <div
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                    >
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </div>
+                  <button
+                    class="w-9 h-9 bg-gray-100 rounded flex items-center justify-center text-gray-500"
+                  >
+                    <i class="ri-refresh-line"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- 교육장 목록 테이블 -->
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      교육장명
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      위치
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      전화번호
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      수용인원
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      상태
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      관리
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-primary mr-3"
+                        >
+                          <i class="ri-building-line"></i>
+                        </div>
+                        <div class="font-medium text-gray-900">
+                          강남 교육센터
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      서울 강남구 테헤란로 123
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      02-1234-5678
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      120명
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                        >사용 가능</span
+                      >
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-eye-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-edit-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-primary mr-3"
+                        >
+                          <i class="ri-building-line"></i>
+                        </div>
+                        <div class="font-medium text-gray-900">종로 교육원</div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      서울 종로구 종로 456
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      02-2345-6789
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      80명
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+                        >사용 중</span
+                      >
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-eye-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-edit-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-primary mr-3"
+                        >
+                          <i class="ri-building-line"></i>
+                        </div>
+                        <div class="font-medium text-gray-900">
+                          분당 교육센터
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      경기 성남시 분당구 판교로 789
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      031-345-6789
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      150명
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                        >사용 가능</span
+                      >
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-eye-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-edit-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-primary mr-3"
+                        >
+                          <i class="ri-building-line"></i>
+                        </div>
+                        <div class="font-medium text-gray-900">
+                          부산 해운대 교육원
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      부산 해운대구 해운대로 123
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      051-456-7890
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      100명
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                        >점검 중</span
+                      >
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-eye-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-edit-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-primary mr-3"
+                        >
+                          <i class="ri-building-line"></i>
+                        </div>
+                        <div class="font-medium text-gray-900">
+                          대전 교육센터
+                        </div>
+                      </div>
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      대전 유성구 대학로 456
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      042-567-8901
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      90명
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                        >사용 가능</span
+                      >
+                    </td>
+                    <td
+                      class="px-4 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-eye-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-edit-line"></i>
+                        </button>
+                        <button
+                          class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500 hover:bg-gray-200"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="px-4 py-3 flex items-center justify-between border-t">
+              <div class="flex-1 flex justify-between sm:hidden">
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  이전
+                </button>
+                <button
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  다음
+                </button>
+              </div>
+              <div
+                class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p class="text-sm text-gray-700">
+                    총 <span class="font-medium">24</span> 개 중
+                    <span class="font-medium">1</span>-<span class="font-medium"
+                      >5</span
+                    >
+                    표시
+                  </p>
+                </div>
+                <div>
+                  <nav
+                    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                    aria-label="Pagination"
+                  >
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    >
+                      <span class="sr-only">이전</span>
+                      <i class="ri-arrow-left-s-line"></i>
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-primary bg-primary text-sm font-medium text-white"
+                    >
+                      1
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      2
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      3
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      4
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      5
+                    </button>
+                    <button
+                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    >
+                      <span class="sr-only">다음</span>
+                      <i class="ri-arrow-right-s-line"></i>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 교육장 상세 정보 카드 -->
+          <div class="bg-white rounded shadow-sm mb-6">
+            <div class="p-6">
+              <h3 class="text-lg font-bold mb-4">교육장 상세 정보</h3>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 기본 정보 -->
+                <div class="col-span-1 lg:col-span-2">
+                  <div class="border rounded-lg overflow-hidden">
+                    <div class="bg-gray-50 px-4 py-3 border-b">
+                      <div class="flex items-center justify-between">
+                        <h4 class="font-medium">강남 교육센터</h4>
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800"
+                          >사용 가능</span
+                        >
+                      </div>
+                    </div>
+                    <div class="p-4">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div class="text-sm text-gray-500 mb-1">위치</div>
+                          <div class="text-sm">서울 강남구 테헤란로 123</div>
+                        </div>
+                        <div>
+                          <div class="text-sm text-gray-500 mb-1">전화번호</div>
+                          <div class="text-sm">02-1234-5678</div>
+                        </div>
+                        <div>
+                          <div class="text-sm text-gray-500 mb-1">수용인원</div>
+                          <div class="text-sm">120명</div>
+                        </div>
+                        <div>
+                          <div class="text-sm text-gray-500 mb-1">운영시간</div>
+                          <div class="text-sm">09:00 - 18:00 (평일)</div>
+                        </div>
+                      </div>
+
+                      <div class="mt-4">
+                        <div class="text-sm text-gray-500 mb-1">시설 정보</div>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                          <span
+                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800"
+                            >강의실 4개</span
+                          >
+                          <span
+                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800"
+                            >체육관 1개</span
+                          >
+                          <span
+                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800"
+                            >회의실 2개</span
+                          >
+                          <span
+                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800"
+                            >주차장</span
+                          >
+                          <span
+                            class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800"
+                            >카페테리아</span
+                          >
+                        </div>
+                      </div>
+
+                      <div class="mt-4">
+                        <div class="text-sm text-gray-500 mb-1">설명</div>
+                        <div class="text-sm text-gray-700">
+                          강남 교육센터는 최신 시설을 갖춘 교육 공간으로, 다양한
+                          교육 프로그램을 진행할 수 있습니다. 강의실은 모두
+                          빔프로젝터와 음향 시스템이 설치되어 있으며, 체육관은
+                          각종 체육 활동 및 단체 행사에 활용 가능합니다. 주변
+                          교통이 편리하고 주차 공간도 충분히 확보되어 있습니다.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 위치 지도 -->
+                <div class="col-span-1">
+                  <div class="border rounded-lg overflow-hidden h-full">
+                    <div class="bg-gray-50 px-4 py-3 border-b">
+                      <h4 class="font-medium">위치 정보</h4>
+                    </div>
+                    <div class="p-0 h-64 relative">
+                      <div
+                        class="w-full h-full bg-cover bg-center"
+                        style="background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png')"
+                      ></div>
+                      <div
+                        class="absolute bottom-0 left-0 right-0 p-3 bg-white bg-opacity-90"
+                      >
+                        <div class="text-sm">서울 강남구 테헤란로 123</div>
+                        <a
+                          href="#"
+                          class="text-xs text-primary flex items-center mt-1"
+                        >
+                          <i class="ri-map-pin-line mr-1"></i>
+                          <span>길찾기</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 시설 사진 갤러리 -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">시설 사진</h4>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                >
+                  <div class="rounded-lg overflow-hidden shadow-sm">
+                    <img
+                      src="https://readdy.ai/api/search-image?query=modern%20conference%20room%20with%20projector%20and%20comfortable%20chairs%2C%20clean%20and%20professional%20environment%2C%20natural%20lighting&width=300&height=200&seq=1&orientation=landscape"
+                      alt="강의실"
+                      class="w-full h-40 object-cover object-top"
+                    />
+                    <div class="p-2">
+                      <div class="text-sm font-medium">강의실 A</div>
+                      <div class="text-xs text-gray-500">수용인원: 30명</div>
+                    </div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden shadow-sm">
+                    <img
+                      src="https://readdy.ai/api/search-image?query=large%20seminar%20room%20with%20rows%20of%20desks%20and%20chairs%2C%20presentation%20screen%2C%20modern%20interior%20design%2C%20business%20setting&width=300&height=200&seq=2&orientation=landscape"
+                      alt="강의실"
+                      class="w-full h-40 object-cover object-top"
+                    />
+                    <div class="p-2">
+                      <div class="text-sm font-medium">강의실 B</div>
+                      <div class="text-xs text-gray-500">수용인원: 40명</div>
+                    </div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden shadow-sm">
+                    <img
+                      src="https://readdy.ai/api/search-image?query=indoor%20gymnasium%20with%20wooden%20floor%2C%20basketball%20hoops%2C%20clean%20and%20spacious%2C%20perfect%20for%20sports%20activities%20and%20group%20exercises&width=300&height=200&seq=3&orientation=landscape"
+                      alt="체육관"
+                      class="w-full h-40 object-cover object-top"
+                    />
+                    <div class="p-2">
+                      <div class="text-sm font-medium">체육관</div>
+                      <div class="text-xs text-gray-500">수용인원: 100명</div>
+                    </div>
+                  </div>
+                  <div class="rounded-lg overflow-hidden shadow-sm">
+                    <img
+                      src="https://readdy.ai/api/search-image?query=modern%20cafeteria%20with%20tables%20and%20chairs%2C%20clean%20and%20bright%20environment%2C%20food%20service%20area%2C%20perfect%20for%20breaks%20and%20lunch&width=300&height=200&seq=4&orientation=landscape"
+                      alt="카페테리아"
+                      class="w-full h-40 object-cover object-top"
+                    />
+                    <div class="p-2">
+                      <div class="text-sm font-medium">카페테리아</div>
+                      <div class="text-xs text-gray-500">수용인원: 50명</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 예약 현황 -->
+              <div class="mt-6">
+                <h4 class="font-medium mb-3">예약 현황</h4>
+                <div id="reservationChart" class="w-full h-64"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 교육장 등록 모달 -->
+    <div id="facilityModal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div
+          class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        >
+          <div class="flex items-center justify-between p-6 border-b">
+            <h3 class="text-lg font-bold">교육장 등록</h3>
+            <button
+              id="closeModalBtn"
+              class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-500"
+            >
+              <i class="ri-close-line ri-lg"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <form>
+              <!-- 기본 정보 -->
+              <div class="mb-6">
+                <h4 class="text-base font-medium mb-4">기본 정보</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >교육장명 <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="교육장명을 입력하세요"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >전화번호 <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="전화번호를 입력하세요"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >주소 <span class="text-red-500">*</span></label
+                    >
+                    <div class="flex gap-2">
+                      <input
+                        type="text"
+                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="주소를 입력하세요"
+                      />
+                      <button
+                        type="button"
+                        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-button whitespace-nowrap"
+                      >
+                        주소 검색
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >수용인원 <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="수용인원을 입력하세요"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >상태</label
+                    >
+                    <div class="relative">
+                      <select
+                        class="w-full px-3 py-2 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-8"
+                      >
+                        <option>사용 가능</option>
+                        <option>사용 중</option>
+                        <option>점검 중</option>
+                      </select>
+                      <div
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                      >
+                        <i class="ri-arrow-down-s-line"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >운영시간</label
+                    >
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <div class="relative flex-1">
+                            <input
+                              type="text"
+                              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                              placeholder="시작 시간"
+                            />
+                            <div
+                              class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                            >
+                              <i class="ri-time-line"></i>
+                            </div>
+                          </div>
+                          <span class="text-gray-500">~</span>
+                          <div class="relative flex-1">
+                            <input
+                              type="text"
+                              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                              placeholder="종료 시간"
+                            />
+                            <div
+                              class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                            >
+                              <i class="ri-time-line"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="relative">
+                        <select
+                          class="w-full px-3 py-2 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-8"
+                        >
+                          <option>평일</option>
+                          <option>주말</option>
+                          <option>매일</option>
+                        </select>
+                        <div
+                          class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-500"
+                        >
+                          <i class="ri-arrow-down-s-line"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 시설 정보 -->
+              <div class="mb-6">
+                <h4 class="text-base font-medium mb-4">시설 정보</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >강의실 수</label
+                    >
+                    <input
+                      type="number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="강의실 수"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >회의실 수</label
+                    >
+                    <input
+                      type="number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="회의실 수"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >체육시설 수</label
+                    >
+                    <input
+                      type="number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="체육시설 수"
+                    />
+                  </div>
+                </div>
+
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >부대시설</label
+                  >
+                  <div class="flex flex-wrap gap-4 mt-2">
+                    <div class="flex items-center gap-2">
+                      <div class="custom-checkbox" data-checked="false"></div>
+                      <span class="text-sm">주차장</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="custom-checkbox" data-checked="false"></div>
+                      <span class="text-sm">카페테리아</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="custom-checkbox" data-checked="false"></div>
+                      <span class="text-sm">휴게실</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="custom-checkbox" data-checked="false"></div>
+                      <span class="text-sm">장애인 시설</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="custom-checkbox" data-checked="false"></div>
+                      <span class="text-sm">WiFi</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 사진 업로드 -->
+              <div class="mb-6">
+                <h4 class="text-base font-medium mb-4">시설 사진</h4>
+                <div
+                  class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
+                >
+                  <div
+                    class="w-12 h-12 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center text-gray-400"
+                  >
+                    <i class="ri-upload-cloud-line ri-xl"></i>
+                  </div>
+                  <p class="text-sm text-gray-500 mb-2">
+                    이미지를 드래그하여 업로드하거나 클릭하세요
+                  </p>
+                  <p class="text-xs text-gray-400">
+                    PNG, JPG, GIF 파일 (최대 5MB)
+                  </p>
+                  <button
+                    type="button"
+                    class="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-button whitespace-nowrap"
+                  >
+                    파일 선택
+                  </button>
+                </div>
+              </div>
+
+              <!-- 추가 설명 -->
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >교육장 설명</label
+                >
+                <textarea
+                  class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-32"
+                  placeholder="교육장에 대한 상세 설명을 입력하세요"
+                ></textarea>
+              </div>
+
+              <!-- 버튼 영역 -->
+              <div class="flex justify-end gap-3 mt-8">
+                <button
+                  type="button"
+                  id="cancelModalBtn"
+                  class="px-4 py-2 border border-gray-300 text-gray-700 rounded-button whitespace-nowrap"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-primary text-white rounded-button whitespace-nowrap"
+                >
+                  등록하기
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 사이드바 토글
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+
+        if (menuToggle && sidebar) {
+          menuToggle.addEventListener("click", function () {
+            if (sidebar.classList.contains("-translate-x-full")) {
+              sidebar.classList.remove("-translate-x-full");
+            } else {
+              sidebar.classList.add("-translate-x-full");
+            }
+          });
+        }
+
+        // 모달 관련
+        const addFacilityBtn = document.getElementById("addFacilityBtn");
+        const facilityModal = document.getElementById("facilityModal");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const cancelModalBtn = document.getElementById("cancelModalBtn");
+
+        if (addFacilityBtn && facilityModal && closeModalBtn && cancelModalBtn) {
+          addFacilityBtn.addEventListener("click", function () {
+            facilityModal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          });
+
+          const closeModal = function () {
+            facilityModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+          };
+
+          closeModalBtn.addEventListener("click", closeModal);
+          cancelModalBtn.addEventListener("click", closeModal);
+
+          // 모달 외부 클릭 시 닫기
+          facilityModal.addEventListener("click", function (e) {
+            if (
+              e.target === facilityModal.querySelector(".absolute.inset-0.bg-black")
+            ) {
+              closeModal();
+            }
+          });
+        }
+
+        // 커스텀 체크박스
+        const customCheckboxes = document.querySelectorAll(".custom-checkbox");
+        customCheckboxes.forEach((checkbox) => {
+          checkbox.addEventListener("click", function () {
+            const isChecked = this.getAttribute("data-checked") === "true";
+            this.setAttribute("data-checked", !isChecked);
+
+            if (!isChecked) {
+              this.classList.add("checked");
+            } else {
+              this.classList.remove("checked");
+            }
+          });
+        });
+      });
+
+      // 예약 현황 차트
+      document.addEventListener("DOMContentLoaded", function () {
+        const chartDom = document.getElementById("reservationChart");
+        if (chartDom) {
+          const myChart = echarts.init(chartDom);
+          const option = {
+            animation: false,
+            tooltip: {
+              trigger: "axis",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              borderColor: "#e5e7eb",
+              textStyle: {
+                color: "#1f2937",
+              },
+            },
+            legend: {
+              data: ["강의실 A", "강의실 B", "체육관", "회의실"],
+              bottom: 0,
+            },
+            grid: {
+              left: "3%",
+              right: "4%",
+              bottom: "15%",
+              top: "3%",
+              containLabel: true,
+            },
+            xAxis: {
+              type: "category",
+              boundaryGap: false,
+              data: ["월", "화", "수", "목", "금", "토", "일"],
+              axisLine: {
+                lineStyle: {
+                  color: "#e5e7eb",
+                },
+              },
+              axisLabel: {
+                color: "#1f2937",
+              },
+            },
+            yAxis: {
+              type: "value",
+              axisLine: {
+                show: false,
+              },
+              axisTick: {
+                show: false,
+              },
+              splitLine: {
+                lineStyle: {
+                  color: "#e5e7eb",
+                },
+              },
+              axisLabel: {
+                color: "#1f2937",
+              },
+            },
+            series: [
+              {
+                name: "강의실 A",
+                type: "line",
+                stack: "Total",
+                smooth: true,
+                lineStyle: {
+                  width: 2,
+                },
+                showSymbol: false,
+                areaStyle: {
+                  opacity: 0.1,
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(87, 181, 231, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(87, 181, 231, 0.05)",
+                    },
+                  ]),
+                },
+                emphasis: {
+                  focus: "series",
+                },
+                color: "rgba(87, 181, 231, 1)",
+                data: [3, 4, 2, 5, 3, 1, 0],
+              },
+              {
+                name: "강의실 B",
+                type: "line",
+                stack: "Total",
+                smooth: true,
+                lineStyle: {
+                  width: 2,
+                },
+                showSymbol: false,
+                areaStyle: {
+                  opacity: 0.1,
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(141, 211, 199, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(141, 211, 199, 0.05)",
+                    },
+                  ]),
+                },
+                emphasis: {
+                  focus: "series",
+                },
+                color: "rgba(141, 211, 199, 1)",
+                data: [2, 3, 5, 1, 4, 2, 0],
+              },
+              {
+                name: "체육관",
+                type: "line",
+                stack: "Total",
+                smooth: true,
+                lineStyle: {
+                  width: 2,
+                },
+                showSymbol: false,
+                areaStyle: {
+                  opacity: 0.1,
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(251, 191, 114, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(251, 191, 114, 0.05)",
+                    },
+                  ]),
+                },
+                emphasis: {
+                  focus: "series",
+                },
+                color: "rgba(251, 191, 114, 1)",
+                data: [1, 2, 1, 3, 2, 4, 2],
+              },
+              {
+                name: "회의실",
+                type: "line",
+                stack: "Total",
+                smooth: true,
+                lineStyle: {
+                  width: 2,
+                },
+                showSymbol: false,
+                areaStyle: {
+                  opacity: 0.1,
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(252, 141, 98, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(252, 141, 98, 0.05)",
+                    },
+                  ]),
+                },
+                emphasis: {
+                  focus: "series",
+                },
+                color: "rgba(252, 141, 98, 1)",
+                data: [4, 2, 3, 2, 5, 1, 0],
+              },
+            ],
+          };
+
+          myChart.setOption(option);
+
+          window.addEventListener("resize", function () {
+            myChart.resize();
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 관리</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#1E88E5',secondary:'#64B5F6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9fafb;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #d1d5db;
+            background-color: white;
+            transition: all 0.2s;
+        }
+        .custom-checkbox.checked {
+            background-color: #1E88E5;
+            border-color: #1E88E5;
+        }
+        .custom-checkbox.checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-radio {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            background-color: white;
+            transition: all 0.2s;
+        }
+        .custom-radio.checked {
+            border-color: #1E88E5;
+        }
+        .custom-radio.checked::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #1E88E5;
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            background-color: #d1d5db;
+            transition: all 0.3s;
+        }
+        .custom-switch.checked {
+            background-color: #1E88E5;
+        }
+        .custom-switch::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: white;
+            transition: all 0.3s;
+        }
+        .custom-switch.checked::after {
+            left: 23px;
+        }
+        .custom-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #d1d5db;
+            outline: none;
+        }
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1E88E5;
+            cursor: pointer;
+        }
+        .custom-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1E88E5;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen bg-gray-50">
+        <!-- 사이드바 -->
+        <div class="w-64 bg-white shadow-lg">
+            <div class="p-4 flex items-center">
+                <span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+            </div>
+            <div class="mt-6">
+                <div class="px-4 py-3 text-sm font-medium text-gray-500">메인 메뉴</div>
+                <div class="space-y-1">
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-dashboard-line"></i>
+                        </div>
+                        대시보드
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-primary bg-blue-50 hover:bg-blue-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-survey-line"></i>
+                        </div>
+                        설문 관리
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        교육 대상자 관리
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-bar-chart-line"></i>
+                        </div>
+                        통계 분석
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">
+                        <div class="w-5 h-5 flex items-center justify-center mr-3">
+                            <i class="ri-settings-line"></i>
+                        </div>
+                        설정
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 헤더 -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-800">설문 관리</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="검색어를 입력하세요" class="pl-10 pr-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
+                                <i class="ri-search-line"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-notification-3-line text-gray-600"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                                    <span class="text-primary font-medium">김</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">김민수</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- 메인 컨텐츠 영역 -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+                <!-- 필터 및 버튼 영역 -->
+                <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <select class="appearance-none bg-white border border-gray-300 rounded-button px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option>모든 상태</option>
+                                <option>진행 중</option>
+                                <option>예정됨</option>
+                                <option>종료됨</option>
+                            </select>
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center pointer-events-none">
+                                <i class="ri-arrow-down-s-line text-gray-500"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="relative">
+                                <input type="date" class="appearance-none bg-white border border-gray-300 rounded-button px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <span class="text-gray-500">~</span>
+                            <div class="relative">
+                                <input type="date" class="appearance-none bg-white border border-gray-300 rounded-button px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="createSurveyBtn" class="bg-primary text-white px-4 py-2 rounded-button flex items-center !rounded-button whitespace-nowrap">
+                        <div class="w-5 h-5 flex items-center justify-center mr-1">
+                            <i class="ri-add-line"></i>
+                        </div>
+                        새 설문 작성
+                    </button>
+                </div>
+
+                <!-- 통계 카드 영역 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">진행 중인 설문</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">8</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                <div class="w-6 h-6 flex items-center justify-center text-primary">
+                                    <i class="ri-survey-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-green-500 text-sm font-medium flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-arrow-up-line"></i>
+                                </div>
+                                12.5%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">지난 달 대비</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">전체 응답자 수</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">1,248</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                <div class="w-6 h-6 flex items-center justify-center text-green-600">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-green-500 text-sm font-medium flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-arrow-up-line"></i>
+                                </div>
+                                8.2%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">지난 달 대비</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">완료된 설문</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">24</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                                <div class="w-6 h-6 flex items-center justify-center text-purple-600">
+                                    <i class="ri-check-double-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-red-500 text-sm font-medium flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-arrow-down-line"></i>
+                                </div>
+                                3.1%
+                            </span>
+                            <span class="text-gray-500 text-sm ml-2">지난 달 대비</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 설문 목록 테이블 -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-800">설문 목록</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        설문명
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        기간
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        대상자
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        응답률
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        상태
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        관리
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">2025년 상반기 직원 만족도 조사</div>
+                                        <div class="text-sm text-gray-500">총 15개 문항</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-04-15 ~ 2025-04-30</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">전체 직원</div>
+                                        <div class="text-sm text-gray-500">120명</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-primary h-2.5 rounded-full" style="width: 78%"></div>
+                                        </div>
+                                        <div class="text-sm text-gray-900 mt-1">78% (94/120)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            진행 중
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-primary-dark mr-3 !rounded-button whitespace-nowrap" id="viewResultsBtn">결과 보기</button>
+                                        <button class="text-gray-600 hover:text-gray-900 mr-3 !rounded-button whitespace-nowrap">편집</button>
+                                        <button class="text-red-600 hover:text-red-900 !rounded-button whitespace-nowrap">삭제</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">신입 사원 교육 만족도 조사</div>
+                                        <div class="text-sm text-gray-500">총 10개 문항</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-04-10 ~ 2025-04-20</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">신입 사원</div>
+                                        <div class="text-sm text-gray-500">35명</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-primary h-2.5 rounded-full" style="width: 91%"></div>
+                                        </div>
+                                        <div class="text-sm text-gray-900 mt-1">91% (32/35)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            진행 중
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-primary-dark mr-3 !rounded-button whitespace-nowrap">결과 보기</button>
+                                        <button class="text-gray-600 hover:text-gray-900 mr-3 !rounded-button whitespace-nowrap">편집</button>
+                                        <button class="text-red-600 hover:text-red-900 !rounded-button whitespace-nowrap">삭제</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">업무 환경 개선 의견 조사</div>
+                                        <div class="text-sm text-gray-500">총 12개 문항</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-05-01 ~ 2025-05-15</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">개발팀</div>
+                                        <div class="text-sm text-gray-500">45명</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                        <div class="text-sm text-gray-900 mt-1">0% (0/45)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            예정됨
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-gray-400 cursor-not-allowed mr-3 !rounded-button whitespace-nowrap">결과 보기</button>
+                                        <button class="text-gray-600 hover:text-gray-900 mr-3 !rounded-button whitespace-nowrap">편집</button>
+                                        <button class="text-red-600 hover:text-red-900 !rounded-button whitespace-nowrap">삭제</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">재택근무 효율성 평가</div>
+                                        <div class="text-sm text-gray-500">총 8개 문항</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-03-10 ~ 2025-03-25</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">전체 직원</div>
+                                        <div class="text-sm text-gray-500">120명</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-primary h-2.5 rounded-full" style="width: 100%"></div>
+                                        </div>
+                                        <div class="text-sm text-gray-900 mt-1">100% (120/120)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            종료됨
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-primary-dark mr-3 !rounded-button whitespace-nowrap">결과 보기</button>
+                                        <button class="text-gray-600 hover:text-gray-900 mr-3 !rounded-button whitespace-nowrap">편집</button>
+                                        <button class="text-red-600 hover:text-red-900 !rounded-button whitespace-nowrap">삭제</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">회사 복지 제도 만족도 조사</div>
+                                        <div class="text-sm text-gray-500">총 20개 문항</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">2025-02-15 ~ 2025-03-01</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">전체 직원</div>
+                                        <div class="text-sm text-gray-500">120명</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-primary h-2.5 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <div class="text-sm text-gray-900 mt-1">85% (102/120)</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            종료됨
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-primary hover:text-primary-dark mr-3 !rounded-button whitespace-nowrap">결과 보기</button>
+                                        <button class="text-gray-600 hover:text-gray-900 mr-3 !rounded-button whitespace-nowrap">편집</button>
+                                        <button class="text-red-600 hover:text-red-900 !rounded-button whitespace-nowrap">삭제</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-700">
+                            총 <span class="font-medium">32</span>개의 설문, <span class="font-medium">1-5</span>번 표시 중
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">이전</button>
+                            <button class="px-3 py-1 bg-primary border border-primary rounded-button text-sm text-white !rounded-button whitespace-nowrap">1</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">2</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">3</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">다음</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 새 설문 작성 모달 -->
+    <div id="createSurveyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900">새 설문 작성</h3>
+                <button id="closeSurveyModal" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3">
+                            <span>1</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900">기본 정보</h4>
+                    </div>
+                    <div class="space-y-4 ml-11">
+                        <div>
+                            <label for="surveyTitle" class="block text-sm font-medium text-gray-700 mb-1">설문 제목</label>
+                            <input type="text" id="surveyTitle" class="w-full px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="설문 제목을 입력하세요">
+                        </div>
+                        <div>
+                            <label for="surveyDescription" class="block text-sm font-medium text-gray-700 mb-1">설문 설명</label>
+                            <textarea id="surveyDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="설문에 대한 설명을 입력하세요"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">설문 기간</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="date" class="flex-1 px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <span class="text-gray-500">~</span>
+                                    <input type="date" class="flex-1 px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">응답 방식</label>
+                                <div class="flex items-center space-x-4">
+                                    <label class="flex items-center">
+                                        <div class="custom-radio checked"></div>
+                                        <span class="ml-2 text-sm text-gray-700">온라인</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <div class="custom-radio"></div>
+                                        <span class="ml-2 text-sm text-gray-700">모바일</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <div class="custom-radio"></div>
+                                        <span class="ml-2 text-sm text-gray-700">모두</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">대상자 선택</label>
+                            <div class="flex items-center space-x-4">
+                                <button class="px-4 py-2 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 flex items-center !rounded-button whitespace-nowrap">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-user-line"></i>
+                                    </div>
+                                    대상자 선택
+                                </button>
+                                <span class="text-sm text-gray-500">선택된 대상자: 없음</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3">
+                            <span>2</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900">문항 작성</h4>
+                    </div>
+                    <div class="space-y-6 ml-11">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <button class="px-4 py-2 bg-primary text-white rounded-button flex items-center !rounded-button whitespace-nowrap">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    문항 추가
+                                </button>
+                                <div class="relative">
+                                    <button class="px-4 py-2 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 flex items-center !rounded-button whitespace-nowrap">
+                                        <span>문항 유형</span>
+                                        <div class="w-4 h-4 flex items-center justify-center ml-1">
+                                            <i class="ri-arrow-down-s-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-500">총 문항 수: 0</div>
+                        </div>
+                        
+                        <!-- 문항 예시 -->
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 text-sm">1</span>
+                                    <h5 class="font-medium text-gray-900">객관식 문항</h5>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-edit-line"></i>
+                                        </div>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="회사의 업무 환경에 대한 만족도는 어떠신가요?">
+                            </div>
+                            <div class="space-y-2 ml-2">
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <input type="text" class="ml-2 flex-1 px-3 py-1 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="매우 만족">
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <input type="text" class="ml-2 flex-1 px-3 py-1 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="만족">
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <input type="text" class="ml-2 flex-1 px-3 py-1 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="보통">
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <input type="text" class="ml-2 flex-1 px-3 py-1 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="불만족">
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <input type="text" class="ml-2 flex-1 px-3 py-1 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="매우 불만족">
+                                </div>
+                                <button class="text-primary hover:text-primary-dark text-sm flex items-center mt-2">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    옵션 추가
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 text-sm">2</span>
+                                    <h5 class="font-medium text-gray-900">주관식 문항</h5>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-edit-line"></i>
+                                        </div>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="업무 환경 개선을 위한 제안사항이 있으시면 자유롭게 작성해 주세요.">
+                            </div>
+                            <div class="bg-white border border-gray-300 rounded-button p-3 text-gray-400 text-sm">
+                                [응답자 입력 영역]
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center">
+                                    <span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 text-sm">3</span>
+                                    <h5 class="font-medium text-gray-900">O/X 문항</h5>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-edit-line"></i>
+                                        </div>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="현재 재택근무 제도에 만족하시나요?">
+                            </div>
+                            <div class="flex items-center space-x-4 ml-2">
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <span class="ml-2">O (예)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="custom-radio"></div>
+                                    <span class="ml-2">X (아니오)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3">
+                            <span>3</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900">설정</h4>
+                    </div>
+                    <div class="space-y-4 ml-11">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-700">익명 응답 허용</span>
+                                <div class="w-4 h-4 flex items-center justify-center ml-1 text-gray-400">
+                                    <i class="ri-question-line"></i>
+                                </div>
+                            </div>
+                            <div class="custom-switch checked"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-700">중복 응답 방지</span>
+                                <div class="w-4 h-4 flex items-center justify-center ml-1 text-gray-400">
+                                    <i class="ri-question-line"></i>
+                                </div>
+                            </div>
+                            <div class="custom-switch checked"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-700">응답 결과 공개</span>
+                                <div class="w-4 h-4 flex items-center justify-center ml-1 text-gray-400">
+                                    <i class="ri-question-line"></i>
+                                </div>
+                            </div>
+                            <div class="custom-switch"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 px-6 py-4 flex items-center justify-end space-x-3">
+                <button class="px-4 py-2 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">취소</button>
+                <button class="px-4 py-2 bg-primary text-white rounded-button !rounded-button whitespace-nowrap">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 설문 결과 모달 -->
+    <div id="surveyResultsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900">설문 결과: 2025년 상반기 직원 만족도 조사</h3>
+                <button id="closeResultsModal" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">총 응답자</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">94명</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <div class="w-5 h-5 flex items-center justify-center text-primary">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">전체 대상자 120명 중</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">응답률</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">78%</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <div class="w-5 h-5 flex items-center justify-center text-green-600">
+                                    <i class="ri-percent-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">목표 응답률 80%</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">평균 만족도</p>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">4.2/5</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <div class="w-5 h-5 flex items-center justify-center text-yellow-600">
+                                    <i class="ri-star-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">전년 대비 +0.3점</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h4 class="text-base font-medium text-gray-800 mb-4">응답자 현황</h4>
+                        <div id="respondentsChart" style="width: 100%; height: 250px;"></div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h4 class="text-base font-medium text-gray-800 mb-4">부서별 응답률</h4>
+                        <div id="departmentChart" style="width: 100%; height: 250px;"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <h4 class="text-base font-medium text-gray-800 mb-4">주요 문항 결과</h4>
+                    <div id="questionResultsChart" style="width: 100%; height: 300px;"></div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="px-4 py-3 border-b border-gray-200">
+                        <h4 class="text-base font-medium text-gray-800">주관식 응답 요약</h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        문항
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        주요 키워드
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        응답 수
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">업무 환경 개선을 위한 제안사항</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">업무 공간</span>
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">소통</span>
+                                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">회의</span>
+                                            <span class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">장비</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">78</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">복지 제도 개선 의견</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">유연근무</span>
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">휴가</span>
+                                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">건강검진</span>
+                                            <span class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">교육지원</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">65</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">조직 문화 관련 의견</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">소통</span>
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">의사결정</span>
+                                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">협업</span>
+                                            <span class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">리더십</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">72</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3">
+                    <button class="px-4 py-2 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 flex items-center !rounded-button whitespace-nowrap">
+                        <div class="w-4 h-4 flex items-center justify-center mr-1">
+                            <i class="ri-file-excel-line"></i>
+                        </div>
+                        Excel 내보내기
+                    </button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-button text-sm text-gray-700 hover:bg-gray-50 flex items-center !rounded-button whitespace-nowrap">
+                        <div class="w-4 h-4 flex items-center justify-center mr-1">
+                            <i class="ri-file-pdf-line"></i>
+                        </div>
+                        PDF 내보내기
+                    </button>
+                    <button class="px-4 py-2 bg-primary text-white rounded-button flex items-center !rounded-button whitespace-nowrap">
+                        <div class="w-4 h-4 flex items-center justify-center mr-1">
+                            <i class="ri-share-line"></i>
+                        </div>
+                        결과 공유
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 모달 관련 요소
+            const createSurveyBtn = document.getElementById('createSurveyBtn');
+            const createSurveyModal = document.getElementById('createSurveyModal');
+            const closeSurveyModal = document.getElementById('closeSurveyModal');
+            
+            const viewResultsBtn = document.getElementById('viewResultsBtn');
+            const surveyResultsModal = document.getElementById('surveyResultsModal');
+            const closeResultsModal = document.getElementById('closeResultsModal');
+            
+            // 새 설문 작성 모달 열기/닫기
+            createSurveyBtn.addEventListener('click', function() {
+                createSurveyModal.classList.remove('hidden');
+            });
+            
+            closeSurveyModal.addEventListener('click', function() {
+                createSurveyModal.classList.add('hidden');
+            });
+            
+            // 설문 결과 모달 열기/닫기
+            viewResultsBtn.addEventListener('click', function() {
+                surveyResultsModal.classList.remove('hidden');
+                initCharts();
+            });
+            
+            closeResultsModal.addEventListener('click', function() {
+                surveyResultsModal.classList.add('hidden');
+            });
+            
+            // 모달 외부 클릭 시 닫기
+            window.addEventListener('click', function(event) {
+                if (event.target === createSurveyModal) {
+                    createSurveyModal.classList.add('hidden');
+                }
+                if (event.target === surveyResultsModal) {
+                    surveyResultsModal.classList.add('hidden');
+                }
+            });
+            
+            // 커스텀 체크박스, 라디오 버튼, 스위치 동작
+            document.querySelectorAll('.custom-checkbox, .custom-radio, .custom-switch').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    if (this.classList.contains('checked')) {
+                        this.classList.remove('checked');
+                    } else {
+                        // 라디오 버튼의 경우 같은 그룹 내 다른 라디오 버튼 선택 해제
+                        if (this.classList.contains('custom-radio')) {
+                            const parent = this.closest('div');
+                            if (parent) {
+                                parent.querySelectorAll('.custom-radio').forEach(radio => {
+                                    radio.classList.remove('checked');
+                                });
+                            }
+                        }
+                        this.classList.add('checked');
+                    }
+                });
+            });
+        });
+
+        function initCharts() {
+            // 응답자 현황 차트
+            const respondentsChart = echarts.init(document.getElementById('respondentsChart'));
+            const respondentsOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#e2e8f0',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                legend: {
+                    top: 'bottom',
+                    left: 'center',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                series: [
+                    {
+                        name: '응답자 현황',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 8,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '14',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                            { value: 78, name: '응답 완료', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
+                            { value: 16, name: '미응답', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
+                            { value: 26, name: '진행 중', itemStyle: { color: 'rgba(251, 191, 114, 1)' } }
+                        ]
+                    }
+                ]
+            };
+            respondentsChart.setOption(respondentsOption);
+            // 부서별 응답률 차트
+            const departmentChart = echarts.init(document.getElementById('departmentChart'));
+            const departmentOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#e2e8f0',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '10%',
+                    top: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['개발팀', '마케팅팀', '영업팀', '인사팀', 'CS팀'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#d1d5db'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#1f2937'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    max: 100,
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#1f2937',
+                        formatter: '{value}%'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e5e7eb'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '응답률',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [92, 78, 65, 85, 70],
+                        itemStyle: {
+                            color: 'rgba(87, 181, 231, 1)',
+                            borderRadius: 4
+                        }
+                    }
+                ]
+            };
+            departmentChart.setOption(departmentOption);
+            // 주요 문항 결과 차트
+            const questionResultsChart = echarts.init(document.getElementById('questionResultsChart'));
+            const questionResultsOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#e2e8f0',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                legend: {
+                    data: ['매우 만족', '만족', '보통', '불만족', '매우 불만족'],
+                    bottom: 0,
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    top: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['업무 환경', '복지 제도', '업무 강도', '동료 관계', '성장 기회'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#d1d5db'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#1f2937'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#1f2937'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e5e7eb'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '매우 만족',
+                        type: 'bar',
+                        stack: 'total',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [20, 15, 10, 25, 18],
+                        itemStyle: {
+                            color: 'rgba(87, 181, 231, 1)'
+                        }
+                    },
+                    {
+                        name: '만족',
+                        type: 'bar',
+                        stack: 'total',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [35, 30, 25, 40, 32],
+                        itemStyle: {
+                            color: 'rgba(141, 211, 199, 1)'
+                        }
+                    },
+                    {
+                        name: '보통',
+                        type: 'bar',
+                        stack: 'total',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [25, 35, 30, 20, 30],
+                        itemStyle: {
+                            color: 'rgba(251, 191, 114, 1)'
+                        }
+                    },
+                    {
+                        name: '불만족',
+                        type: 'bar',
+                        stack: 'total',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [10, 15, 20, 10, 12],
+                        itemStyle: {
+                            color: 'rgba(252, 141, 98, 1)'
+                        }
+                    },
+                    {
+                        name: '매우 불만족',
+                        type: 'bar',
+                        stack: 'total',
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [5, 5, 15, 5, 8],
+                        itemStyle: {
+                            color: 'rgba(231, 138, 195, 1)'
+                        }
+                    }
+                ]
+            };
+            questionResultsChart.setOption(questionResultsOption);
+            // 창 크기 변경 시 차트 크기 조정
+            window.addEventListener('resize', function() {
+                respondentsChart.resize();
+                departmentChart.resize();
+                questionResultsChart.resize();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>연계 API 구축 대시보드</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#2196F3',secondary:'#4CAF50'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .toast {
+      transform: translateY(0);
+      transition: transform 0.3s ease-in-out;
+    }
+    .toast.hidden {
+      transform: translateY(-100%);
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .custom-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+    .custom-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .custom-checkbox {
+      position: relative;
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+    }
+    .custom-checkbox input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .custom-checkbox input:checked ~ .checkmark {
+      background-color: #2196F3;
+      border-color: #2196F3;
+    }
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    .custom-checkbox input:checked ~ .checkmark:after {
+      display: block;
+    }
+    .custom-checkbox .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .custom-radio {
+      position: relative;
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+    }
+    .custom-radio input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .radio-mark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+    }
+    .custom-radio input:checked ~ .radio-mark {
+      border-color: #2196F3;
+    }
+    .radio-mark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    .custom-radio input:checked ~ .radio-mark:after {
+      display: block;
+    }
+    .custom-radio .radio-mark:after {
+      top: 4px;
+      left: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2196F3;
+    }
+    .custom-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 5px;
+      background: #e0e0e0;
+      outline: none;
+    }
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #2196F3;
+      cursor: pointer;
+    }
+    .custom-range::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #2196F3;
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen overflow-hidden">
+    <!-- 사이드바 네비게이션 -->
+    <aside class="hidden md:flex md:flex-col w-64 bg-white border-r border-gray-200 shadow-sm">
+      <div class="p-4 border-b border-gray-200">
+        <div class="font-['Pacifico'] text-2xl text-primary">logo</div>
+      </div>
+      
+      <nav class="flex-1 overflow-y-auto py-4">
+        <div class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          API 관리
+        </div>
+        
+        <div class="space-y-1">
+          <div class="px-3">
+            <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+              <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                <i class="ri-file-list-line"></i>
+              </div>
+              <span>교육과정 연계 API</span>
+            </button>
+          </div>
+          
+          <div class="px-3">
+            <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+              <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                <i class="ri-file-list-line"></i>
+              </div>
+              <span>교육수료내역 연계 API</span>
+            </button>
+          </div>
+          
+          <div class="px-3">
+            <button class="flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-md bg-primary bg-opacity-10 text-primary">
+              <div class="flex items-center">
+                <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i class="ri-file-list-line"></i>
+                </div>
+                <span>교육수료증 관련 API</span>
+              </div>
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-arrow-down-s-line"></i>
+              </div>
+            </button>
+            
+            <div class="mt-1 ml-4 pl-4 border-l border-gray-200 space-y-1">
+              <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-primary bg-primary bg-opacity-5">
+                <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i class="ri-file-paper-line"></i>
+                </div>
+                <span>발급신청 연계</span>
+              </button>
+              
+              <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+                <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i class="ri-file-paper-line"></i>
+                </div>
+                <span>수료내역 연계</span>
+              </button>
+              
+              <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+                <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i class="ri-history-line"></i>
+                </div>
+                <span>발급이력 연계</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="px-3">
+            <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+              <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                <i class="ri-file-paper-2-line"></i>
+              </div>
+              <span>증명서발급/관리 시스템 연계</span>
+            </button>
+          </div>
+          
+          <div class="px-3">
+            <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+              <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                <i class="ri-database-2-line"></i>
+              </div>
+              <span>체육정보시스템 연계</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          설정
+        </div>
+        
+        <div class="space-y-1 px-3">
+          <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+            <div class="w-5 h-5 mr-2 flex items-center justify-center">
+              <i class="ri-settings-3-line"></i>
+            </div>
+            <span>API 설정</span>
+          </button>
+          
+          <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+            <div class="w-5 h-5 mr-2 flex items-center justify-center">
+              <i class="ri-user-settings-line"></i>
+            </div>
+            <span>사용자 관리</span>
+          </button>
+          
+          <button class="flex items-center w-full px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+            <div class="w-5 h-5 mr-2 flex items-center justify-center">
+              <i class="ri-shield-keyhole-line"></i>
+            </div>
+            <span>보안 설정</span>
+          </button>
+        </div>
+      </nav>
+      
+      <div class="p-4 border-t border-gray-200">
+        <div class="flex items-center">
+          <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-3">
+            <span class="text-sm font-medium">김</span>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-700">김관리자</p>
+            <p class="text-xs text-gray-500">관리자</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- 모바일 사이드바 토글 버튼 -->
+    <div class="md:hidden fixed bottom-4 right-4 z-50">
+      <button id="sidebarToggle" class="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center !rounded-button">
+        <div class="w-6 h-6 flex items-center justify-center">
+          <i class="ri-menu-line"></i>
+        </div>
+      </button>
+    </div>
+    
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- 헤더 -->
+      <header class="bg-white border-b border-gray-200">
+        <div class="flex items-center justify-between px-4 py-3">
+          <div class="flex items-center">
+            <button class="md:hidden mr-2 text-gray-500 hover:text-gray-700">
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-menu-line"></i>
+              </div>
+            </button>
+            <h1 class="text-lg font-medium text-gray-800">연계 API 구축 대시보드</h1>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <button class="text-gray-500 hover:text-gray-700">
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-notification-3-line"></i>
+                </div>
+              </button>
+              <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </div>
+            
+            <div class="relative">
+              <button class="text-gray-500 hover:text-gray-700">
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-settings-3-line"></i>
+                </div>
+              </button>
+            </div>
+            
+            <button class="text-sm font-medium text-gray-700 hover:text-primary">
+              로그아웃
+            </button>
+          </div>
+        </div>
+        
+        <div class="px-4 py-2 bg-gray-50 text-sm text-gray-600">
+          <div class="flex items-center">
+            <div class="w-4 h-4 flex items-center justify-center">
+              <i class="ri-home-4-line"></i>
+            </div>
+            <span class="mx-1">/</span>
+            <span>교육수료증 관련 API</span>
+            <span class="mx-1">/</span>
+            <span class="text-primary">발급신청 연계</span>
+          </div>
+        </div>
+      </header>
+      
+      <!-- 알림 토스트 메시지 -->
+      <div id="toast" class="toast hidden fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-4 max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto">
+        <div class="flex p-4 items-center">
+          <div class="flex-shrink-0 w-8 h-8 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mr-3">
+            <div class="w-5 h-5 text-primary flex items-center justify-center">
+              <i class="ri-information-line"></i>
+            </div>
+          </div>
+          <div class="flex-1 text-sm font-medium text-gray-900">
+            API 테스트가 성공적으로 완료되었습니다.
+          </div>
+          <button class="ml-4 text-gray-400 hover:text-gray-500" id="closeToast">
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-close-line"></i>
+            </div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 메인 콘텐츠 -->
+      <main class="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <!-- API 상태 카드 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-800">API 상태</h2>
+              <button class="text-gray-400 hover:text-gray-600">
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-refresh-line"></i>
+                </div>
+              </button>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                  <span class="text-sm text-gray-700">발급신청 연계 API</span>
+                </div>
+                <span class="text-sm font-medium text-green-500">정상</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                  <span class="text-sm text-gray-700">수료내역 연계 API</span>
+                </div>
+                <span class="text-sm font-medium text-green-500">정상</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                  <span class="text-sm text-gray-700">발급이력 연계 API</span>
+                </div>
+                <span class="text-sm font-medium text-yellow-500">주의</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                  <span class="text-sm text-gray-700">증명서발급 시스템 연계</span>
+                </div>
+                <span class="text-sm font-medium text-red-500">오류</span>
+              </div>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                  <span class="text-sm text-gray-700">체육정보시스템 연계</span>
+                </div>
+                <span class="text-sm font-medium text-green-500">정상</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 응답 시간 그래프 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-800">평균 응답 시간</h2>
+              <div class="flex items-center space-x-2">
+                <button class="px-2 py-1 text-xs font-medium rounded-full bg-primary bg-opacity-10 text-primary !rounded-button whitespace-nowrap">일간</button>
+                <button class="px-2 py-1 text-xs font-medium rounded-full text-gray-600 hover:bg-gray-100 !rounded-button whitespace-nowrap">주간</button>
+                <button class="px-2 py-1 text-xs font-medium rounded-full text-gray-600 hover:bg-gray-100 !rounded-button whitespace-nowrap">월간</button>
+              </div>
+            </div>
+            
+            <div id="responseTimeChart" class="w-full h-56"></div>
+          </div>
+          
+          <!-- 오류 발생 현황 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-800">오류 발생 현황</h2>
+              <button class="text-primary hover:text-primary-dark text-sm font-medium !rounded-button whitespace-nowrap">자세히 보기</button>
+            </div>
+            
+            <div id="errorChart" class="w-full h-56"></div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <!-- API 사용 통계 -->
+          <div class="bg-white rounded-lg shadow p-4 lg:col-span-2">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-800">API 호출 통계</h2>
+              <div class="flex items-center space-x-2">
+                <button class="px-2 py-1 text-xs font-medium rounded-full bg-primary bg-opacity-10 text-primary !rounded-button whitespace-nowrap">일간</button>
+                <button class="px-2 py-1 text-xs font-medium rounded-full text-gray-600 hover:bg-gray-100 !rounded-button whitespace-nowrap">주간</button>
+                <button class="px-2 py-1 text-xs font-medium rounded-full text-gray-600 hover:bg-gray-100 !rounded-button whitespace-nowrap">월간</button>
+              </div>
+            </div>
+            
+            <div id="apiUsageChart" class="w-full h-64"></div>
+          </div>
+          
+          <!-- 시스템별 사용량 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-800">시스템별 사용량</h2>
+              <button class="text-gray-400 hover:text-gray-600">
+                <div class="w-5 h-5 flex items-center justify-center">
+                  <i class="ri-more-2-fill"></i>
+                </div>
+              </button>
+            </div>
+            
+            <div id="systemUsageChart" class="w-full h-64"></div>
+          </div>
+        </div>
+        
+        <!-- 최근 연계 이력 -->
+        <div class="bg-white rounded-lg shadow p-4 mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-medium text-gray-800">최근 연계 이력</h2>
+            <div class="flex items-center space-x-2">
+              <div class="relative">
+                <input type="text" placeholder="검색어를 입력하세요" class="pl-8 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <div class="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 flex items-center justify-center">
+                  <i class="ri-search-line"></i>
+                </div>
+              </div>
+              
+              <button class="px-3 py-2 text-sm font-medium rounded-md bg-primary text-white hover:bg-primary-dark !rounded-button whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="w-4 h-4 mr-1 flex items-center justify-center">
+                    <i class="ri-filter-3-line"></i>
+                  </div>
+                  <span>필터</span>
+                </div>
+              </button>
+              
+              <button class="px-3 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="w-4 h-4 mr-1 flex items-center justify-center">
+                    <i class="ri-download-line"></i>
+                  </div>
+                  <span>내보내기</span>
+                </div>
+              </button>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">시간</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">요청 시스템</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">API 종류</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">응답 시간</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2025-04-22 14:32:15</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">체육정보시스템</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">교육수료증 발급신청</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">0.24초</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">성공</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary-dark">상세보기</button>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2025-04-22 14:30:42</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">대한체육회 증명서발급시스템</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">교육수료내역 조회</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">0.18초</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">성공</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary-dark">상세보기</button>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2025-04-22 14:28:17</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">스포츠지원포털</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">교육과정 정보 조회</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">0.31초</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">성공</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary-dark">상세보기</button>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2025-04-22 14:25:03</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">대한체육회 증명서발급시스템</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">수료증 발급이력 조회</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1.24초</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">지연</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary-dark">상세보기</button>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2025-04-22 14:20:56</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">체육정보시스템</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">교육수료증 발급신청</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">-</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">실패</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-primary hover:text-primary-dark">상세보기</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="mt-4 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+              총 <span class="font-medium">253</span>개 항목 중 <span class="font-medium">1-5</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <button class="px-2 py-1 text-sm font-medium rounded-md text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed !rounded-button whitespace-nowrap" disabled>
+                이전
+              </button>
+              
+              <button class="px-3 py-1 text-sm font-medium rounded-md bg-primary text-white !rounded-button whitespace-nowrap">
+                1
+              </button>
+              
+              <button class="px-3 py-1 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 !rounded-button whitespace-nowrap">
+                2
+              </button>
+              
+              <button class="px-3 py-1 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 !rounded-button whitespace-nowrap">
+                3
+              </button>
+              
+              <button class="px-3 py-1 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 !rounded-button whitespace-nowrap">
+                4
+              </button>
+              
+              <button class="px-3 py-1 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 !rounded-button whitespace-nowrap">
+                5
+              </button>
+              
+              <button class="px-2 py-1 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 !rounded-button whitespace-nowrap">
+                다음
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- API 테스트 및 설정 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          <!-- API 테스트 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-medium text-gray-800 mb-4">API 테스트</h2>
+            
+            <div class="space-y-4">
+              <div>
+                <label for="apiSelect" class="block text-sm font-medium text-gray-700 mb-1">API 선택</label>
+                <div class="relative">
+                  <select id="apiSelect" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md appearance-none">
+                    <option>교육수료증 발급신청 연계 API</option>
+                    <option>교육수료내역 연계 API</option>
+                    <option>교육수료증 발급이력 연계 API</option>
+                    <option>증명서발급 시스템 연계 API</option>
+                    <option>체육정보시스템 연계 API</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <div class="w-5 h-5 text-gray-400 flex items-center justify-center">
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <label for="endpointInput" class="block text-sm font-medium text-gray-700 mb-1">엔드포인트</label>
+                <input type="text" id="endpointInput" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" value="/api/v1/certificate/issue-request">
+              </div>
+              
+              <div>
+                <label for="methodSelect" class="block text-sm font-medium text-gray-700 mb-1">메소드</label>
+                <div class="flex items-center space-x-4">
+                  <div class="flex items-center">
+                    <label class="custom-radio">
+                      <input type="radio" name="method" checked>
+                      <span class="radio-mark"></span>
+                    </label>
+                    <span class="ml-2 text-sm text-gray-700">GET</span>
+                  </div>
+                  
+                  <div class="flex items-center">
+                    <label class="custom-radio">
+                      <input type="radio" name="method">
+                      <span class="radio-mark"></span>
+                    </label>
+                    <span class="ml-2 text-sm text-gray-700">POST</span>
+                  </div>
+                  
+                  <div class="flex items-center">
+                    <label class="custom-radio">
+                      <input type="radio" name="method">
+                      <span class="radio-mark"></span>
+                    </label>
+                    <span class="ml-2 text-sm text-gray-700">PUT</span>
+                  </div>
+                  
+                  <div class="flex items-center">
+                    <label class="custom-radio">
+                      <input type="radio" name="method">
+                      <span class="radio-mark"></span>
+                    </label>
+                    <span class="ml-2 text-sm text-gray-700">DELETE</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <label for="paramsInput" class="block text-sm font-medium text-gray-700 mb-1">파라미터</label>
+                <textarea id="paramsInput" rows="4" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder='{"userId": "user123", "certificateType": "completion", "courseId": "course456"}'></textarea>
+              </div>
+              
+              <div class="flex justify-end">
+                <button id="testApiBtn" class="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary !rounded-button whitespace-nowrap">테스트 실행</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- API 설정 -->
+          <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-medium text-gray-800 mb-4">API 설정</h2>
+            
+            <div class="space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-sm font-medium text-gray-700">API 활성화</label>
+                  <label class="custom-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <p class="text-xs text-gray-500">API를 활성화하거나 비활성화합니다.</p>
+              </div>
+              
+              <div>
+                <label for="timeoutInput" class="block text-sm font-medium text-gray-700 mb-1">타임아웃 설정 (초)</label>
+                <input type="number" id="timeoutInput" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" value="30">
+              </div>
+              
+              <div>
+                <label for="retryInput" class="block text-sm font-medium text-gray-700 mb-1">재시도 횟수</label>
+                <input type="number" id="retryInput" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" value="3">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">캐싱 설정</label>
+                <div class="flex items-center space-x-4">
+                  <div class="flex items-center">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" checked>
+                      <span class="checkmark"></span>
+                    </label>
+                    <span class="ml-2 text-sm text-gray-700">응답 캐싱 사용</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <label for="cacheTtlInput" class="block text-sm font-medium text-gray-700 mb-1">캐시 TTL (분)</label>
+                <input type="number" id="cacheTtlInput" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" value="15">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">로깅 레벨</label>
+                <div class="relative">
+                  <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md appearance-none">
+                    <option>정보 (INFO)</option>
+                    <option>경고 (WARNING)</option>
+                    <option>오류 (ERROR)</option>
+                    <option>디버그 (DEBUG)</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <div class="w-5 h-5 text-gray-400 flex items-center justify-center">
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex justify-end space-x-3">
+                <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 !rounded-button whitespace-nowrap">취소</button>
+                <button class="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary !rounded-button whitespace-nowrap">저장</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 응답 시간 차트
+      const responseTimeChart = echarts.init(document.getElementById('responseTimeChart'));
+      const responseTimeOption = {
+        animation: false,
+        grid: {
+          top: 10,
+          right: 10,
+          bottom: 20,
+          left: 40
+        },
+        xAxis: {
+          type: 'category',
+          data: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '응답 시간(ms)',
+          nameTextStyle: {
+            color: '#1f2937'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#F3F4F6'
+            }
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#E5E7EB',
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        series: [{
+          name: '응답 시간',
+          data: [240, 220, 260, 280, 300, 240, 220],
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          lineStyle: {
+            color: 'rgba(87, 181, 231, 1)'
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: 'rgba(87, 181, 231, 0.3)'
+              },
+              {
+                offset: 1,
+                color: 'rgba(87, 181, 231, 0.1)'
+              }
+            ])
+          }
+        }]
+      };
+      responseTimeChart.setOption(responseTimeOption);
+      
+      // 오류 발생 현황 차트
+      const errorChart = echarts.init(document.getElementById('errorChart'));
+      const errorOption = {
+        animation: false,
+        grid: {
+          top: 10,
+          right: 10,
+          bottom: 20,
+          left: 40
+        },
+        xAxis: {
+          type: 'category',
+          data: ['4/16', '4/17', '4/18', '4/19', '4/20', '4/21', '4/22'],
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '오류 수',
+          nameTextStyle: {
+            color: '#1f2937'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#F3F4F6'
+            }
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#E5E7EB',
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        series: [{
+          name: '오류 수',
+          data: [2, 1, 0, 3, 5, 2, 1],
+          type: 'bar',
+          barWidth: '60%',
+          itemStyle: {
+            color: 'rgba(252, 141, 98, 1)',
+            borderRadius: [4, 4, 0, 0]
+          }
+        }]
+      };
+      errorChart.setOption(errorOption);
+      
+      // API 사용 통계 차트
+      const apiUsageChart = echarts.init(document.getElementById('apiUsageChart'));
+      const apiUsageOption = {
+        animation: false,
+        grid: {
+          top: 10,
+          right: 10,
+          bottom: 20,
+          left: 40
+        },
+        xAxis: {
+          type: 'category',
+          data: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '호출 횟수',
+          nameTextStyle: {
+            color: '#1f2937'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#E5E7EB'
+            }
+          },
+          axisLabel: {
+            color: '#1f2937'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#F3F4F6'
+            }
+          }
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#E5E7EB',
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        legend: {
+          data: ['발급신청', '수료내역', '발급이력'],
+          bottom: 0,
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        series: [
+          {
+            name: '발급신청',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            data: [5, 3, 2, 4, 8, 15, 25, 30, 28, 20, 15, 10],
+            lineStyle: {
+              color: 'rgba(87, 181, 231, 1)'
+            },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(87, 181, 231, 0.3)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(87, 181, 231, 0.1)'
+                }
+              ])
+            }
+          },
+          {
+            name: '수료내역',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            data: [3, 2, 1, 2, 5, 10, 15, 20, 18, 15, 10, 5],
+            lineStyle: {
+              color: 'rgba(141, 211, 199, 1)'
+            },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(141, 211, 199, 0.3)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(141, 211, 199, 0.1)'
+                }
+              ])
+            }
+          },
+          {
+            name: '발급이력',
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            data: [2, 1, 1, 2, 3, 8, 12, 15, 14, 10, 8, 4],
+            lineStyle: {
+              color: 'rgba(251, 191, 114, 1)'
+            },
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(251, 191, 114, 0.3)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(251, 191, 114, 0.1)'
+                }
+              ])
+            }
+          }
+        ]
+      };
+      apiUsageChart.setOption(apiUsageOption);
+      
+      // 시스템별 사용량 차트
+      const systemUsageChart = echarts.init(document.getElementById('systemUsageChart'));
+      const systemUsageOption = {
+        animation: false,
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#E5E7EB',
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        legend: {
+          bottom: 0,
+          left: 'center',
+          textStyle: {
+            color: '#1f2937'
+          }
+        },
+        series: [
+          {
+            name: '시스템별 사용량',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 8,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '14',
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              { value: 45, name: '체육정보시스템' },
+              { value: 30, name: '증명서발급시스템' },
+              { value: 15, name: '스포츠지원포털' },
+              { value: 10, name: '기타' }
+            ],
+            color: ['rgba(87, 181, 231, 1)', 'rgba(141, 211, 199, 1)', 'rgba(251, 191, 114, 1)', 'rgba(252, 141, 98, 1)']
+          }
+        ]
+      };
+      systemUsageChart.setOption(systemUsageOption);
+      
+      // 창 크기 변경 시 차트 크기 조정
+      window.addEventListener('resize', function() {
+        responseTimeChart.resize();
+        errorChart.resize();
+        apiUsageChart.resize();
+        systemUsageChart.resize();
+      });
+      
+      // API 테스트 버튼 클릭 이벤트
+      const testApiBtn = document.getElementById('testApiBtn');
+      const toast = document.getElementById('toast');
+      const closeToast = document.getElementById('closeToast');
+      
+      testApiBtn.addEventListener('click', function() {
+        toast.classList.remove('hidden');
+        setTimeout(function() {
+          toast.classList.add('hidden');
+        }, 3000);
+      });
+      
+      closeToast.addEventListener('click', function() {
+        toast.classList.add('hidden');
+      });
+      
+      // 모바일 사이드바 토글
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+          const sidebar = document.querySelector('aside');
+          sidebar.classList.toggle('hidden');
+          sidebar.classList.toggle('fixed');
+          sidebar.classList.toggle('inset-0');
+          sidebar.classList.toggle('z-40');
+          sidebar.classList.toggle('md:relative');
+          sidebar.classList.toggle('md:flex');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

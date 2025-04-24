@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육이수 관리시스템</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9fafb;
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            width: 0.5rem;
+            height: 0.25rem;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -70%) rotate(-45deg);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .switch-slider {
+            background-color: #4F46E5;
+        }
+        input:checked + .switch-slider:before {
+            transform: translateX(20px);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #4F46E5;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #4F46E5;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .calendar-day.has-event::after {
+            content: "";
+            position: absolute;
+            bottom: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #4F46E5;
+        }
+        .calendar-day.today {
+            background-color: rgba(79, 70, 229, 0.1);
+            border-radius: 50%;
+            font-weight: 600;
+            color: #4F46E5;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex min-h-screen">
+        <!-- 사이드바 -->
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:block">
+            <div class="p-6">
+                <h1 class="text-2xl font-['Pacifico'] text-primary">logo</h1>
+            </div>
+            <nav class="mt-4">
+                <div class="px-4 py-2 text-sm font-medium text-gray-500">메인 메뉴</div>
+                <a href="#" class="flex items-center px-6 py-3 text-primary bg-indigo-50 border-l-4 border-primary">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-dashboard-line"></i>
+                    </div>
+                    <span>대시보드</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-book-open-line"></i>
+                    </div>
+                    <span>나의 강의실</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-calendar-line"></i>
+                    </div>
+                    <span>교육 일정</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-medal-line"></i>
+                    </div>
+                    <span>수료 관리</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-bar-chart-line"></i>
+                    </div>
+                    <span>학습 통계</span>
+                </a>
+                
+                <div class="px-4 py-2 mt-6 text-sm font-medium text-gray-500">설정</div>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-user-settings-line"></i>
+                    </div>
+                    <span>계정 설정</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50">
+                    <div class="w-5 h-5 flex items-center justify-center mr-3">
+                        <i class="ri-question-line"></i>
+                    </div>
+                    <span>도움말</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="flex-1 flex flex-col">
+            <!-- 헤더 -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center md:hidden">
+                        <button class="text-gray-600 hover:text-gray-900">
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <i class="ri-menu-line ri-lg"></i>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+                                    <i class="ri-search-line"></i>
+                                </div>
+                            </div>
+                            <input type="text" class="bg-gray-50 border-none text-gray-900 text-sm rounded-lg block w-64 pl-10 p-2.5" placeholder="강의 검색...">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button class="relative text-gray-600 hover:text-gray-900">
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <i class="ri-notification-3-line ri-lg"></i>
+                            </div>
+                            <span class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">3</span>
+                        </button>
+                        
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-primary font-medium mr-2">김</div>
+                            <span class="text-sm font-medium text-gray-700">김민준</span>
+                            <div class="w-5 h-5 flex items-center justify-center ml-1 text-gray-500">
+                                <i class="ri-arrow-down-s-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-2 flex items-center text-sm text-gray-500">
+                    <a href="#" class="hover:text-primary">홈</a>
+                    <div class="w-4 h-4 flex items-center justify-center mx-1">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </div>
+                    <span class="text-gray-900 font-medium">나의 학습 현황</span>
+                </div>
+            </header>
+
+            <!-- 콘텐츠 영역 -->
+            <main class="flex-1 p-6 bg-gray-50">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">나의 학습 현황</h1>
+                    <p class="text-gray-600 mt-1">김민준님의 교육 이수 현황 및 학습 진행 상황을 확인하세요.</p>
+                </div>
+
+                <!-- 요약 정보 카드 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-primary mr-4">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-book-open-line"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">진행중인 강의</p>
+                                <h3 class="text-2xl font-bold text-gray-900">5</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">전체 진도율</span>
+                                <span class="font-medium text-gray-900">68%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mr-4">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-check-line"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">완료한 강의</p>
+                                <h3 class="text-2xl font-bold text-gray-900">12</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">지난 달 대비</span>
+                                <span class="text-emerald-600 font-medium flex items-center">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                        <i class="ri-arrow-up-line"></i>
+                                    </div>
+                                    25%
+                                </span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-time-line"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">이번 달 학습 시간</p>
+                                <h3 class="text-2xl font-bold text-gray-900">32시간</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">목표 달성률</span>
+                                <span class="font-medium text-gray-900">80%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-amber-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-medal-line"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">획득한 수료증</p>
+                                <h3 class="text-2xl font-bold text-gray-900">8</h3>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">발급 가능한 수료증</span>
+                                <span class="font-medium text-primary">2개</span>
+                            </div>
+                            <button class="w-full mt-2 bg-primary text-white py-1.5 text-sm font-medium !rounded-button whitespace-nowrap">수료증 발급받기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 나의 강의실 & 학습 통계 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- 나의 강의실 -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold text-gray-900">나의 강의실</h2>
+                                <a href="#" class="text-sm text-primary font-medium flex items-center">
+                                    전체보기
+                                    <div class="w-4 h-4 flex items-center justify-center ml-1">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="flex space-x-4 mt-4">
+                                <button class="px-4 py-2 text-primary bg-indigo-50 rounded-full text-sm font-medium">진행중인 강의</button>
+                                <button class="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-full text-sm font-medium">완료된 강의</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="space-y-6">
+                                <!-- 강의 항목 1 -->
+                                <div class="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden">
+                                    <div class="w-full md:w-1/3 h-48 md:h-auto bg-gray-200">
+                                        <img src="https://readdy.ai/api/search-image?query=modern%20professional%20office%20environment%20with%20computer%20screens%20showing%20data%20visualization%20and%20analytics%2C%20clean%20corporate%20setting%2C%20business%20education%20concept&width=400&height=300&seq=1&orientation=landscape" alt="데이터 분석 기초" class="w-full h-full object-cover object-top">
+                                    </div>
+                                    <div class="flex-1 p-4 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center mb-2">
+                                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">데이터 분석</span>
+                                                <span class="ml-2 text-xs text-gray-500">수강기간: 2025.03.15 ~ 2025.06.15</span>
+                                            </div>
+                                            <h3 class="text-lg font-bold text-gray-900 mb-2">데이터 분석 기초와 비즈니스 인사이트 도출</h3>
+                                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                                    <i class="ri-user-line"></i>
+                                                </div>
+                                                <span>강사: 박지훈 교수</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <div class="flex justify-between text-sm mb-1">
+                                                    <span class="text-gray-500">진도율</span>
+                                                    <span class="font-medium text-gray-900">75%</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-4">
+                                            <div class="text-sm text-gray-500">최근 학습: 2025.04.20</div>
+                                            <button class="bg-primary text-white px-4 py-2 text-sm font-medium !rounded-button whitespace-nowrap">학습하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 강의 항목 2 -->
+                                <div class="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden">
+                                    <div class="w-full md:w-1/3 h-48 md:h-auto bg-gray-200">
+                                        <img src="https://readdy.ai/api/search-image?query=professional%20marketing%20strategy%20meeting%20with%20presentation%20board%2C%20digital%20marketing%20education%2C%20business%20professionals%20in%20modern%20conference%20room&width=400&height=300&seq=2&orientation=landscape" alt="마케팅 전략" class="w-full h-full object-cover object-top">
+                                    </div>
+                                    <div class="flex-1 p-4 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center mb-2">
+                                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">마케팅</span>
+                                                <span class="ml-2 text-xs text-gray-500">수강기간: 2025.02.01 ~ 2025.05.01</span>
+                                            </div>
+                                            <h3 class="text-lg font-bold text-gray-900 mb-2">디지털 마케팅 전략 수립과 실행</h3>
+                                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                                    <i class="ri-user-line"></i>
+                                                </div>
+                                                <span>강사: 이수진 팀장</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <div class="flex justify-between text-sm mb-1">
+                                                    <span class="text-gray-500">진도율</span>
+                                                    <span class="font-medium text-gray-900">45%</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-primary h-2 rounded-full" style="width: 45%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-4">
+                                            <div class="text-sm text-gray-500">최근 학습: 2025.04.18</div>
+                                            <button class="bg-primary text-white px-4 py-2 text-sm font-medium !rounded-button whitespace-nowrap">학습하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 학습 통계 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-lg font-bold text-gray-900">학습 통계</h2>
+                        </div>
+                        <div class="p-6">
+                            <div id="learningChart" class="w-full h-64"></div>
+                            
+                            <div class="mt-6">
+                                <h3 class="text-sm font-medium text-gray-900 mb-3">카테고리별 학습 비율</h3>
+                                <div id="categoryChart" class="w-full h-48"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 교육 일정 & 수료 관리 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 교육 일정 -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold text-gray-900">교육 일정</h2>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-sm font-medium text-primary bg-indigo-50 rounded-full">월간</button>
+                                    <button class="px-3 py-1 text-sm font-medium text-gray-500 hover:bg-gray-100 rounded-full">연간</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <button class="text-gray-500 hover:text-gray-900">
+                                    <div class="w-6 h-6 flex items-center justify-center">
+                                        <i class="ri-arrow-left-s-line ri-lg"></i>
+                                    </div>
+                                </button>
+                                <h3 class="text-lg font-medium text-gray-900">2025년 4월</h3>
+                                <button class="text-gray-500 hover:text-gray-900">
+                                    <div class="w-6 h-6 flex items-center justify-center">
+                                        <i class="ri-arrow-right-s-line ri-lg"></i>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-2 text-center mb-2">
+                                <div class="text-sm font-medium text-gray-500">일</div>
+                                <div class="text-sm font-medium text-gray-500">월</div>
+                                <div class="text-sm font-medium text-gray-500">화</div>
+                                <div class="text-sm font-medium text-gray-500">수</div>
+                                <div class="text-sm font-medium text-gray-500">목</div>
+                                <div class="text-sm font-medium text-gray-500">금</div>
+                                <div class="text-sm font-medium text-gray-500">토</div>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-2 text-center">
+                                <div class="calendar-day text-gray-400">30</div>
+                                <div class="calendar-day text-gray-400">31</div>
+                                <div class="calendar-day">1</div>
+                                <div class="calendar-day">2</div>
+                                <div class="calendar-day">3</div>
+                                <div class="calendar-day">4</div>
+                                <div class="calendar-day">5</div>
+                                <div class="calendar-day">6</div>
+                                <div class="calendar-day">7</div>
+                                <div class="calendar-day">8</div>
+                                <div class="calendar-day has-event">9</div>
+                                <div class="calendar-day">10</div>
+                                <div class="calendar-day has-event">11</div>
+                                <div class="calendar-day">12</div>
+                                <div class="calendar-day">13</div>
+                                <div class="calendar-day has-event">14</div>
+                                <div class="calendar-day">15</div>
+                                <div class="calendar-day">16</div>
+                                <div class="calendar-day">17</div>
+                                <div class="calendar-day">18</div>
+                                <div class="calendar-day">19</div>
+                                <div class="calendar-day">20</div>
+                                <div class="calendar-day">21</div>
+                                <div class="calendar-day today">22</div>
+                                <div class="calendar-day has-event">23</div>
+                                <div class="calendar-day">24</div>
+                                <div class="calendar-day">25</div>
+                                <div class="calendar-day">26</div>
+                                <div class="calendar-day">27</div>
+                                <div class="calendar-day has-event">28</div>
+                                <div class="calendar-day">29</div>
+                                <div class="calendar-day">30</div>
+                                <div class="calendar-day text-gray-400">1</div>
+                                <div class="calendar-day text-gray-400">2</div>
+                                <div class="calendar-day text-gray-400">3</div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <h3 class="text-sm font-medium text-gray-900 mb-3">다가오는 일정</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mr-3">
+                                            <div class="w-5 h-5 flex items-center justify-center">
+                                                <i class="ri-video-line"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-medium text-gray-900">프로젝트 관리 실무 워크숍</h4>
+                                            <p class="text-xs text-gray-500">2025.04.23 (화) 14:00-16:00</p>
+                                        </div>
+                                        <button class="text-primary text-sm font-medium">참여하기</button>
+                                    </div>
+                                    
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white mr-3">
+                                            <div class="w-5 h-5 flex items-center justify-center">
+                                                <i class="ri-calendar-check-line"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-medium text-gray-900">리더십 과정 중간 평가</h4>
+                                            <p class="text-xs text-gray-500">2025.04.28 (일) 10:00-12:00</p>
+                                        </div>
+                                        <button class="text-primary text-sm font-medium">상세보기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 수료 관리 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-lg font-bold text-gray-900">수료 관리</h2>
+                        </div>
+                        
+                        <div class="p-6">
+                            <h3 class="text-sm font-medium text-gray-900 mb-3">수료 가능한 과정</h3>
+                            <div class="space-y-4 mb-6">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="text-sm font-medium text-gray-900 mb-1">클라우드 컴퓨팅 기초</h4>
+                                    <p class="text-xs text-gray-500 mb-3">완료일: 2025.04.10</p>
+                                    <button class="w-full bg-primary text-white py-1.5 text-xs font-medium !rounded-button whitespace-nowrap">수료증 발급받기</button>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="text-sm font-medium text-gray-900 mb-1">비즈니스 커뮤니케이션 스킬</h4>
+                                    <p class="text-xs text-gray-500 mb-3">완료일: 2025.03.25</p>
+                                    <button class="w-full bg-primary text-white py-1.5 text-xs font-medium !rounded-button whitespace-nowrap">수료증 발급받기</button>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-sm font-medium text-gray-900 mb-3">최근 발급 수료증</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-file-text-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-sm font-medium text-gray-900">AI 기초와 활용</h4>
+                                        <p class="text-xs text-gray-500">발급일: 2025.03.15</p>
+                                    </div>
+                                    <button class="text-gray-500 hover:text-gray-900">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-download-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-file-text-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-sm font-medium text-gray-900">프로젝트 관리 방법론</h4>
+                                        <p class="text-xs text-gray-500">발급일: 2025.02.28</p>
+                                    </div>
+                                    <button class="text-gray-500 hover:text-gray-900">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-download-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-file-text-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-sm font-medium text-gray-900">데이터 시각화 기법</h4>
+                                        <p class="text-xs text-gray-500">발급일: 2025.01.20</p>
+                                    </div>
+                                    <button class="text-gray-500 hover:text-gray-900">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-download-line"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full mt-4 border border-gray-300 text-gray-700 py-2 text-sm font-medium !rounded-button whitespace-nowrap">모든 수료증 보기</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 학습 시간 차트
+            const learningChart = echarts.init(document.getElementById('learningChart'));
+            const learningOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#e5e7eb',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                grid: {
+                    top: 10,
+                    right: 10,
+                    bottom: 30,
+                    left: 40
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['3/22', '3/29', '4/5', '4/12', '4/19', '4/22'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e5e7eb'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#6b7280'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '학습시간(시간)',
+                    nameTextStyle: {
+                        color: '#6b7280'
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#6b7280'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f3f4f6'
+                        }
+                    }
+                },
+                series: [{
+                    name: '주간 학습시간',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'none',
+                    data: [4.5, 6.2, 5.8, 8.1, 7.5, 2.1],
+                    lineStyle: {
+                        color: 'rgba(87, 181, 231, 1)'
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(87, 181, 231, 0.2)' },
+                            { offset: 1, color: 'rgba(87, 181, 231, 0.05)' }
+                        ])
+                    }
+                }]
+            };
+            learningChart.setOption(learningOption);
+            // 카테고리별 학습 비율 차트
+            const categoryChart = echarts.init(document.getElementById('categoryChart'));
+            const categoryOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#e5e7eb',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: {
+                        color: '#6b7280'
+                    }
+                },
+                series: [{
+                    name: '학습 비율',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 8,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false
+                    },
+                    emphasis: {
+                        label: {
+                            show: false
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 35, name: '데이터 분석', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
+                        { value: 25, name: '마케팅', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
+                        { value: 20, name: '리더십', itemStyle: { color: 'rgba(251, 191, 114, 1)' } },
+                        { value: 20, name: '기술 교육', itemStyle: { color: 'rgba(252, 141, 98, 1)' } }
+                    ]
+                }]
+            };
+            categoryChart.setOption(categoryOption);
+
+            // 창 크기 변경 시 차트 크기 조정
+            window.addEventListener('resize', function() {
+                learningChart.resize();
+                categoryChart.resize();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>교육 결과 관리</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", secondary: "#10B981" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Noto Sans KR', sans-serif;
+          background-color: #f9fafb;
+      }
+      input:focus, select:focus, button:focus {
+          outline: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+      .custom-checkbox {
+          position: relative;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          border-radius: 4px;
+          border: 2px solid #d1d5db;
+          background-color: white;
+          transition: all 0.2s;
+      }
+      .custom-checkbox.checked {
+          background-color: #4F46E5;
+          border-color: #4F46E5;
+      }
+      .custom-checkbox.checked::after {
+          content: '';
+          position: absolute;
+          left: 5px;
+          top: 2px;
+          width: 5px;
+          height: 9px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+      .custom-switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 24px;
+      }
+      .custom-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .switch-slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e5e7eb;
+          transition: .4s;
+          border-radius: 34px;
+      }
+      .switch-slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+          background-color: #4F46E5;
+      }
+      input:checked + .switch-slider:before {
+          transform: translateX(20px);
+      }
+      .tab-active {
+          color: #4F46E5;
+          border-bottom: 2px solid #4F46E5;
+      }
+      .custom-range {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 6px;
+          border-radius: 5px;
+          background: #e5e7eb;
+          outline: none;
+      }
+      .custom-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #4F46E5;
+          cursor: pointer;
+      }
+      .custom-range::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #4F46E5;
+          cursor: pointer;
+          border: none;
+      }
+      .progress-bar {
+          height: 6px;
+          border-radius: 3px;
+          background: #e5e7eb;
+          overflow: hidden;
+      }
+      .progress-value {
+          height: 100%;
+          border-radius: 3px;
+          background: #4F46E5;
+          transition: width 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen overflow-hidden bg-white">
+      <!-- 사이드바 -->
+      <aside
+        class="w-64 border-r border-gray-200 bg-white shadow-sm hidden md:block"
+      >
+        <div class="p-5 border-b border-gray-200">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+            <span class="font-medium">교육 관리 시스템</span>
+          </div>
+        </div>
+
+        <div class="p-5">
+          <p class="text-xs text-gray-500 mb-4">메뉴</p>
+          <nav class="space-y-1">
+            <a
+              href="#"
+              class="flex items-center px-3 py-2 text-sm rounded-md text-primary bg-indigo-50 font-medium"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-3">
+                <i class="ri-dashboard-line"></i>
+              </div>
+              <span>대시보드</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-3">
+                <i class="ri-book-open-line"></i>
+              </div>
+              <span>교육 과정 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-3">
+                <i class="ri-user-line"></i>
+              </div>
+              <span>수강생 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-3">
+                <i class="ri-file-chart-line"></i>
+              </div>
+              <span>결과 보고서</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-3">
+                <i class="ri-settings-line"></i>
+              </div>
+              <span>설정</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-5 border-t border-gray-200">
+          <p class="text-xs text-gray-500 mb-4">필터</p>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >진행 상태</label
+            >
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <div class="custom-checkbox checked" id="checkbox1"></div>
+                <span class="ml-2 text-sm">진행중</span>
+              </label>
+              <label class="flex items-center">
+                <div class="custom-checkbox" id="checkbox2"></div>
+                <span class="ml-2 text-sm">완료</span>
+              </label>
+              <label class="flex items-center">
+                <div class="custom-checkbox" id="checkbox3"></div>
+                <span class="ml-2 text-sm">예정</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >기간</label
+            >
+            <div class="relative">
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                value="2025-04-01"
+              />
+            </div>
+            <div class="relative mt-2">
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                value="2025-04-30"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >교육 유형</label
+            >
+            <div class="relative">
+              <select
+                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm pr-8 appearance-none"
+              >
+                <option>모든 유형</option>
+                <option>온라인 교육</option>
+                <option>오프라인 교육</option>
+                <option>혼합형 교육</option>
+              </select>
+              <div
+                class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+              >
+                <div class="w-4 h-4 flex items-center justify-center">
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 메인 콘텐츠 -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 헤더 -->
+        <header class="bg-white border-b border-gray-200">
+          <div class="flex items-center justify-between px-6 py-3">
+            <div class="flex items-center md:hidden">
+              <button
+                type="button"
+                class="text-gray-500 hover:text-gray-600 focus:outline-none"
+              >
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-menu-line"></i>
+                </div>
+              </button>
+            </div>
+
+            <div class="flex-1 flex items-center justify-between">
+              <h1 class="text-xl font-medium">교육 결과 관리</h1>
+
+              <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center text-sm text-gray-500">
+                  <div class="w-4 h-4 flex items-center justify-center mr-1">
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                  <span>2025년 4월 22일 화요일</span>
+                </div>
+
+                <div class="relative">
+                  <button
+                    type="button"
+                    class="relative p-1 rounded-full text-gray-500 hover:bg-gray-100"
+                  >
+                    <div class="w-6 h-6 flex items-center justify-center">
+                      <i class="ri-notification-3-line"></i>
+                    </div>
+                    <span
+                      class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"
+                    ></span>
+                  </button>
+                </div>
+
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium"
+                  >
+                    김
+                  </div>
+                  <span class="ml-2 text-sm font-medium hidden md:block"
+                    >김민수</span
+                  >
+                  <div class="w-4 h-4 flex items-center justify-center ml-1">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- 메인 콘텐츠 스크롤 영역 -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <!-- 통계 카드 섹션 -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
+          >
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">
+                  전체 교육 과정
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-primary"
+                >
+                  <i class="ri-book-open-line"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold">24</p>
+              <div class="flex items-center mt-2 text-xs">
+                <span class="text-green-500 flex items-center">
+                  <i class="ri-arrow-up-s-line"></i> 12%
+                </span>
+                <span class="text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">진행중인 과정</h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500"
+                >
+                  <i class="ri-time-line"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold">8</p>
+              <div class="flex items-center mt-2 text-xs">
+                <span class="text-green-500 flex items-center">
+                  <i class="ri-arrow-up-s-line"></i> 5%
+                </span>
+                <span class="text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">미이수자 현황</h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500"
+                >
+                  <i class="ri-error-warning-line"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold">42</p>
+              <div class="flex items-center mt-2 text-xs">
+                <span class="text-red-500 flex items-center">
+                  <i class="ri-arrow-up-s-line"></i> 8%
+                </span>
+                <span class="text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500">평균 이수율</h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-500"
+                >
+                  <i class="ri-pie-chart-line"></i>
+                </div>
+              </div>
+              <p class="text-2xl font-bold">78.5%</p>
+              <div class="flex items-center mt-2 text-xs">
+                <span class="text-green-500 flex items-center">
+                  <i class="ri-arrow-up-s-line"></i> 3.2%
+                </span>
+                <span class="text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 이수율 차트 -->
+          <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-medium">교육 이수율 추이</h2>
+              <div class="flex space-x-2">
+                <button
+                  class="px-3 py-1 text-xs border border-gray-300 rounded-full bg-white text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                >
+                  주간
+                </button>
+                <button
+                  class="px-3 py-1 text-xs border border-primary rounded-full bg-indigo-50 text-primary !rounded-button whitespace-nowrap"
+                >
+                  월간
+                </button>
+                <button
+                  class="px-3 py-1 text-xs border border-gray-300 rounded-full bg-white text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                >
+                  분기
+                </button>
+              </div>
+            </div>
+            <div
+              id="completionRateChart"
+              style="width: 100%; height: 300px;"
+            ></div>
+          </div>
+
+          <!-- 교육 과정 목록 -->
+          <div class="bg-white rounded-lg shadow-sm mb-6">
+            <div class="p-6 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium">교육 과정별 현황</h2>
+                <div class="flex items-center space-x-3">
+                  <div class="relative">
+                    <input
+                      type="text"
+                      placeholder="과정명 검색"
+                      class="pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm w-64"
+                    />
+                    <div
+                      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    >
+                      <div class="w-4 h-4 flex items-center justify-center">
+                        <i class="ri-search-line"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    class="px-4 py-2 bg-primary text-white rounded-md text-sm flex items-center !rounded-button whitespace-nowrap"
+                  >
+                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                      <i class="ri-add-line"></i>
+                    </div>
+                    <span>새 과정 추가</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      과정명
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      기간
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      참여인원
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      이수현황
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      상태
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      관리
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        2025년 신입사원 기본교육
+                      </div>
+                      <div class="text-xs text-gray-500">온라인 교육</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      2025.03.15 - 2025.04.30
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      78명
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="mr-2 text-sm">85%</div>
+                        <div class="w-24 progress-bar">
+                          <div class="progress-value" style="width: 85%;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+                        >진행중</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        직장 내 괴롭힘 예방 교육
+                      </div>
+                      <div class="text-xs text-gray-500">온라인 교육</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      2025.02.01 - 2025.03.31
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      156명
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="mr-2 text-sm">92%</div>
+                        <div class="w-24 progress-bar">
+                          <div class="progress-value" style="width: 92%;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800"
+                        >완료</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        프로젝트 관리 역량 강화 과정
+                      </div>
+                      <div class="text-xs text-gray-500">오프라인 교육</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      2025.04.10 - 2025.05.20
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      42명
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="mr-2 text-sm">65%</div>
+                        <div class="w-24 progress-bar">
+                          <div class="progress-value" style="width: 65%;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+                        >진행중</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        리더십 향상 워크샵
+                      </div>
+                      <div class="text-xs text-gray-500">혼합형 교육</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      2025.05.15 - 2025.06.30
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      35명
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="mr-2 text-sm">0%</div>
+                        <div class="w-24 progress-bar">
+                          <div class="progress-value" style="width: 0%;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800"
+                        >예정</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        데이터 분석 기초 과정
+                      </div>
+                      <div class="text-xs text-gray-500">온라인 교육</div>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      2025.03.01 - 2025.04.15
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      64명
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="mr-2 text-sm">78%</div>
+                        <div class="w-24 progress-bar">
+                          <div class="progress-value" style="width: 78%;"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+                        >진행중</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="px-6 py-4 border-t border-gray-200">
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                  총 <span class="font-medium">24</span>개 중
+                  <span class="font-medium">1-5</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-500 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    이전
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-primary bg-primary rounded-md text-sm text-white !rounded-button whitespace-nowrap"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    다음
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 세부 관리 탭 -->
+          <div class="bg-white rounded-lg shadow-sm">
+            <div class="border-b border-gray-200">
+              <div class="flex px-6">
+                <button
+                  class="px-4 py-4 text-sm font-medium text-primary tab-active"
+                >
+                  출석부 관리
+                </button>
+                <button
+                  class="px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                >
+                  이수자 명단
+                </button>
+                <button
+                  class="px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                >
+                  미이수자 관리
+                </button>
+                <button
+                  class="px-4 py-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                >
+                  결과보고서
+                </button>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-3">
+                  <div class="relative">
+                    <select
+                      class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm appearance-none"
+                    >
+                      <option>2025년 신입사원 기본교육</option>
+                      <option>직장 내 괴롭힘 예방 교육</option>
+                      <option>프로젝트 관리 역량 강화 과정</option>
+                      <option>리더십 향상 워크샵</option>
+                      <option>데이터 분석 기초 과정</option>
+                    </select>
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+                    >
+                      <div class="w-4 h-4 flex items-center justify-center">
+                        <i class="ri-arrow-down-s-line"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <select
+                      class="pl-3 pr-8 py-2 border border-gray-300 rounded-md text-sm appearance-none"
+                    >
+                      <option>모든 부서</option>
+                      <option>인사팀</option>
+                      <option>마케팅팀</option>
+                      <option>개발팀</option>
+                      <option>영업팀</option>
+                      <option>경영지원팀</option>
+                    </select>
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
+                    >
+                      <div class="w-4 h-4 flex items-center justify-center">
+                        <i class="ri-arrow-down-s-line"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                  <button
+                    class="px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center bg-white text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                      <i class="ri-download-line"></i>
+                    </div>
+                    <span>엑셀 다운로드</span>
+                  </button>
+                  <button
+                    class="px-4 py-2 bg-primary text-white rounded-md text-sm flex items-center !rounded-button whitespace-nowrap"
+                  >
+                    <div class="w-4 h-4 flex items-center justify-center mr-1">
+                      <i class="ri-mail-send-line"></i>
+                    </div>
+                    <span>미이수자 독려메일</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        <div class="flex items-center">
+                          <div class="custom-checkbox" id="checkAll"></div>
+                        </div>
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        이름
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        부서
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        직급
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        진도율
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        최종 접속일
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        이수 상태
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        관리
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="custom-checkbox" id="check1"></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          박지훈
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          jhpark@company.com
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        개발팀
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        책임
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="mr-2 text-sm">100%</div>
+                          <div class="w-24 progress-bar">
+                            <div
+                              class="progress-value"
+                              style="width: 100%; background-color: #10B981;"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        2025.04.18
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800"
+                          >이수 완료</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                        >
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="custom-checkbox" id="check2"></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          이서연
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          sylee@company.com
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        마케팅팀
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        선임
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="mr-2 text-sm">85%</div>
+                          <div class="w-24 progress-bar">
+                            <div
+                              class="progress-value"
+                              style="width: 85%;"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        2025.04.20
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+                          >진행중</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                        >
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="custom-checkbox" id="check3"></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          김도현
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          dhkim@company.com
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        인사팀
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        과장
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="mr-2 text-sm">100%</div>
+                          <div class="w-24 progress-bar">
+                            <div
+                              class="progress-value"
+                              style="width: 100%; background-color: #10B981;"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        2025.04.15
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800"
+                          >이수 완료</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                        >
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="custom-checkbox" id="check4"></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          최민지
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          mjchoi@company.com
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        영업팀
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        대리
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="mr-2 text-sm">45%</div>
+                          <div class="w-24 progress-bar">
+                            <div
+                              class="progress-value"
+                              style="width: 45%;"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        2025.04.10
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800"
+                          >지연</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                        >
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="custom-checkbox" id="check5"></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          정현우
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          hwjung@company.com
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        개발팀
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        사원
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="mr-2 text-sm">20%</div>
+                          <div class="w-24 progress-bar">
+                            <div
+                              class="progress-value"
+                              style="width: 20%;"
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        2025.04.05
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800"
+                          >미이수 위험</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-primary hover:text-indigo-900 !rounded-button whitespace-nowrap"
+                        >
+                          상세보기
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                  총 <span class="font-medium">78</span>명 중
+                  <span class="font-medium">1-5</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-500 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    이전
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-primary bg-primary rounded-md text-sm text-white !rounded-button whitespace-nowrap"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    4
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 !rounded-button whitespace-nowrap"
+                  >
+                    다음
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 체크박스 토글 기능
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("click", function () {
+            this.classList.toggle("checked");
+          });
+        });
+
+        // 전체 선택 체크박스
+        const checkAll = document.getElementById("checkAll");
+        if (checkAll) {
+          checkAll.addEventListener("click", function () {
+            const isChecked = this.classList.contains("checked");
+            const tableCheckboxes = document.querySelectorAll(
+              "tbody .custom-checkbox",
+            );
+            tableCheckboxes.forEach((cb) => {
+              if (isChecked) {
+                cb.classList.remove("checked");
+              } else {
+                cb.classList.add("checked");
+              }
+            });
+          });
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // 이수율 차트 초기화
+        const chartDom = document.getElementById("completionRateChart");
+        if (chartDom) {
+          const myChart = echarts.init(chartDom);
+          const option = {
+            animation: false,
+            tooltip: {
+              trigger: "axis",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              borderColor: "#e5e7eb",
+              borderWidth: 1,
+              textStyle: {
+                color: "#1f2937",
+              },
+            },
+            grid: {
+              left: "3%",
+              right: "4%",
+              bottom: "3%",
+              top: "3%",
+              containLabel: true,
+            },
+            xAxis: {
+              type: "category",
+              boundaryGap: false,
+              data: [
+                "1월",
+                "2월",
+                "3월",
+                "4월",
+                "5월",
+                "6월",
+                "7월",
+                "8월",
+                "9월",
+                "10월",
+                "11월",
+                "12월",
+              ],
+              axisLine: {
+                lineStyle: {
+                  color: "#e5e7eb",
+                },
+              },
+              axisLabel: {
+                color: "#6b7280",
+              },
+            },
+            yAxis: {
+              type: "value",
+              axisLine: {
+                show: false,
+              },
+              axisLabel: {
+                color: "#6b7280",
+                formatter: "{value}%",
+              },
+              splitLine: {
+                lineStyle: {
+                  color: "#f3f4f6",
+                },
+              },
+            },
+            series: [
+              {
+                name: "전체 이수율",
+                type: "line",
+                smooth: true,
+                lineStyle: {
+                  width: 3,
+                  color: "rgba(87, 181, 231, 1)",
+                },
+                symbol: "none",
+                areaStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(87, 181, 231, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(87, 181, 231, 0)",
+                    },
+                  ]),
+                },
+                data: [65, 68, 70, 72, 75, 78, 76, 79, 80, 82, 85, 78.5],
+              },
+              {
+                name: "온라인 교육",
+                type: "line",
+                smooth: true,
+                lineStyle: {
+                  width: 3,
+                  color: "rgba(141, 211, 199, 1)",
+                },
+                symbol: "none",
+                areaStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(141, 211, 199, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(141, 211, 199, 0)",
+                    },
+                  ]),
+                },
+                data: [70, 72, 75, 78, 80, 83, 81, 84, 86, 88, 90, 85],
+              },
+              {
+                name: "오프라인 교육",
+                type: "line",
+                smooth: true,
+                lineStyle: {
+                  width: 3,
+                  color: "rgba(251, 191, 114, 1)",
+                },
+                symbol: "none",
+                areaStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                      offset: 0,
+                      color: "rgba(251, 191, 114, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(251, 191, 114, 0)",
+                    },
+                  ]),
+                },
+                data: [60, 62, 65, 67, 70, 72, 70, 73, 75, 76, 78, 72],
+              },
+            ],
+          };
+          myChart.setOption(option);
+
+          window.addEventListener("resize", function () {
+            myChart.resize();
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

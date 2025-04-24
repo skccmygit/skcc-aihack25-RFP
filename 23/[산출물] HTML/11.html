@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수강신청 정산관리</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#2196F3", secondary: "#4CAF50" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Noto Sans KR', sans-serif;
+      }
+      .custom-shadow {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .custom-checkbox {
+          position: relative;
+          width: 18px;
+          height: 18px;
+          border-radius: 4px;
+          border: 2px solid #e2e8f0;
+          background-color: white;
+          transition: all 0.2s;
+          cursor: pointer;
+      }
+      .custom-checkbox.checked {
+          background-color: #2196F3;
+          border-color: #2196F3;
+      }
+      .custom-checkbox.checked::after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 5px;
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+      .custom-switch {
+          position: relative;
+          width: 44px;
+          height: 22px;
+          border-radius: 22px;
+          background-color: #e2e8f0;
+          transition: all 0.3s;
+          cursor: pointer;
+      }
+      .custom-switch::after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background-color: white;
+          transition: all 0.3s;
+      }
+      .custom-switch.active {
+          background-color: #2196F3;
+      }
+      .custom-switch.active::after {
+          left: 24px;
+      }
+      input:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+      }
+      .tab-active {
+          color: #2196F3;
+          border-bottom: 2px solid #2196F3;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="flex min-h-screen">
+      <!-- 좌측 사이드바 -->
+      <div class="w-64 bg-white shadow-md hidden lg:block">
+        <div class="p-4 border-b">
+          <div class="font-['Pacifico'] text-2xl text-primary">logo</div>
+        </div>
+        <div class="py-4">
+          <div class="px-4 py-2 text-sm font-medium text-gray-400">메뉴</div>
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 text-sm text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-6 h-6 flex items-center justify-center mr-3">
+              <i class="ri-dashboard-line"></i>
+            </div>
+            <span>대시보드</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 text-sm bg-blue-50 text-primary hover:bg-blue-50"
+          >
+            <div class="w-6 h-6 flex items-center justify-center mr-3">
+              <i class="ri-money-dollar-circle-line"></i>
+            </div>
+            <span>수강신청 정산관리</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 text-sm text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-6 h-6 flex items-center justify-center mr-3">
+              <i class="ri-user-line"></i>
+            </div>
+            <span>회원 관리</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 text-sm text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-6 h-6 flex items-center justify-center mr-3">
+              <i class="ri-book-open-line"></i>
+            </div>
+            <span>강의 관리</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center px-4 py-3 text-sm text-gray-600 hover:bg-gray-100"
+          >
+            <div class="w-6 h-6 flex items-center justify-center mr-3">
+              <i class="ri-settings-line"></i>
+            </div>
+            <span>환경설정</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 메인 컨텐츠 -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 상단 헤더 -->
+        <header class="bg-white shadow-sm z-10">
+          <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center">
+              <button
+                class="lg:hidden mr-4 w-8 h-8 flex items-center justify-center"
+              >
+                <i class="ri-menu-line text-lg"></i>
+              </button>
+              <h1 class="text-xl font-bold text-gray-800">수강신청 정산관리</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div
+                class="relative w-8 h-8 flex items-center justify-center cursor-pointer"
+              >
+                <i class="ri-notification-3-line text-gray-600"></i>
+                <span
+                  class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
+                ></span>
+              </div>
+              <div class="flex items-center">
+                <div
+                  class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2"
+                >
+                  <span class="text-sm">KJ</span>
+                </div>
+                <span class="text-sm font-medium text-gray-700">김지연</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex flex-wrap items-center justify-between px-6 py-3 border-t border-gray-100"
+          >
+            <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-600">기간:</span>
+                <div class="relative">
+                  <input
+                    type="date"
+                    class="border border-gray-300 rounded text-sm px-3 py-1.5"
+                    value="2025-04-01"
+                  />
+                </div>
+                <span class="text-gray-500">~</span>
+                <div class="relative">
+                  <input
+                    type="date"
+                    class="border border-gray-300 rounded text-sm px-3 py-1.5"
+                    value="2025-04-22"
+                  />
+                </div>
+              </div>
+              <button
+                class="bg-primary text-white px-3 py-1.5 text-sm !rounded-button"
+              >
+                적용
+              </button>
+            </div>
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="수강명 또는 회원명 검색"
+                class="border border-gray-300 rounded pl-9 pr-3 py-1.5 text-sm w-full sm:w-64"
+              />
+              <div
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center"
+              >
+                <i class="ri-search-line text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- 메인 컨텐츠 영역 -->
+        <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+          <!-- 대시보드 요약 정보 -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <p class="text-sm text-gray-500">총 결제 금액</p>
+                  <h3 class="text-2xl font-bold text-gray-800">₩15,245,000</h3>
+                </div>
+                <div
+                  class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center"
+                >
+                  <i class="ri-money-dollar-circle-line text-primary"></i>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600"
+                >
+                  <i class="ri-arrow-up-line text-xs"></i> 12.5%
+                </span>
+                <span class="text-xs text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <p class="text-sm text-gray-500">정산 완료 금액</p>
+                  <h3 class="text-2xl font-bold text-gray-800">₩12,780,000</h3>
+                </div>
+                <div
+                  class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"
+                >
+                  <i class="ri-checkbox-circle-line text-green-600"></i>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600"
+                >
+                  <i class="ri-arrow-up-line text-xs"></i> 8.3%
+                </span>
+                <span class="text-xs text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <p class="text-sm text-gray-500">미정산 금액</p>
+                  <h3 class="text-2xl font-bold text-gray-800">₩1,865,000</h3>
+                </div>
+                <div
+                  class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center"
+                >
+                  <i class="ri-time-line text-yellow-600"></i>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-600"
+                >
+                  <i class="ri-arrow-up-line text-xs"></i> 5.2%
+                </span>
+                <span class="text-xs text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+            <div class="bg-white rounded shadow-sm p-5">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <p class="text-sm text-gray-500">취소/환불 금액</p>
+                  <h3 class="text-2xl font-bold text-gray-800">₩600,000</h3>
+                </div>
+                <div
+                  class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"
+                >
+                  <i class="ri-refund-2-line text-red-600"></i>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600"
+                >
+                  <i class="ri-arrow-down-line text-xs"></i> 3.1%
+                </span>
+                <span class="text-xs text-gray-500 ml-2">전월 대비</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 결제 수단 선택 섹션 -->
+          <div class="bg-white rounded shadow-sm mb-8">
+            <div class="border-b">
+              <div class="flex overflow-x-auto">
+                <button
+                  class="tab-active px-6 py-4 text-sm font-medium whitespace-nowrap"
+                >
+                  간편결제
+                </button>
+                <button
+                  class="px-6 py-4 text-sm font-medium text-gray-600 whitespace-nowrap"
+                >
+                  신용카드
+                </button>
+                <button
+                  class="px-6 py-4 text-sm font-medium text-gray-600 whitespace-nowrap"
+                >
+                  계좌이체
+                </button>
+                <button
+                  class="px-6 py-4 text-sm font-medium text-gray-600 whitespace-nowrap"
+                >
+                  기타결제
+                </button>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >결제 방법</label
+                  >
+                  <div class="grid grid-cols-2 gap-3">
+                    <div
+                      class="flex items-center p-3 border border-gray-200 rounded cursor-pointer bg-blue-50 border-primary"
+                    >
+                      <div
+                        class="w-6 h-6 flex items-center justify-center mr-2"
+                      >
+                        <i class="ri-kakao-talk-fill text-yellow-500"></i>
+                      </div>
+                      <span class="text-sm">카카오페이</span>
+                    </div>
+                    <div
+                      class="flex items-center p-3 border border-gray-200 rounded cursor-pointer"
+                    >
+                      <div
+                        class="w-6 h-6 flex items-center justify-center mr-2"
+                      >
+                        <i class="ri-paypal-fill text-blue-600"></i>
+                      </div>
+                      <span class="text-sm">페이코</span>
+                    </div>
+                    <div
+                      class="flex items-center p-3 border border-gray-200 rounded cursor-pointer"
+                    >
+                      <div
+                        class="w-6 h-6 flex items-center justify-center mr-2"
+                      >
+                        <i class="ri-alipay-fill text-blue-500"></i>
+                      </div>
+                      <span class="text-sm">네이버페이</span>
+                    </div>
+                    <div
+                      class="flex items-center p-3 border border-gray-200 rounded cursor-pointer"
+                    >
+                      <div
+                        class="w-6 h-6 flex items-center justify-center mr-2"
+                      >
+                        <i class="ri-apple-fill"></i>
+                      </div>
+                      <span class="text-sm">토스</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >결제 금액</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="text"
+                      value="150,000"
+                      class="w-full border border-gray-300 rounded py-2 px-3 text-gray-700 text-right pr-8"
+                    />
+                    <div
+                      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                      원
+                    </div>
+                  </div>
+                  <div class="mt-2 text-xs text-gray-500">
+                    * 최소 결제 금액은 1,000원 입니다.
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >할인 적용</label
+                  >
+                  <div class="flex items-center mb-3">
+                    <div class="custom-checkbox" id="checkbox1"></div>
+                    <label
+                      for="checkbox1"
+                      class="ml-2 text-sm text-gray-700 cursor-pointer"
+                      >쿠폰 적용</label
+                    >
+                  </div>
+                  <div class="flex">
+                    <input
+                      type="text"
+                      placeholder="쿠폰 코드 입력"
+                      class="flex-1 border border-gray-300 rounded-l py-2 px-3 text-gray-700"
+                      disabled
+                    />
+                    <button
+                      class="bg-gray-200 text-gray-500 px-4 py-2 !rounded-button rounded-l-none whitespace-nowrap"
+                      disabled
+                    >
+                      적용하기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 정산 내역 테이블 -->
+          <div class="bg-white rounded shadow-sm mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-lg font-medium text-gray-800">정산 내역</h2>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      <div class="flex items-center">
+                        <span>결제일시</span>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center ml-1"
+                        >
+                          <i class="ri-arrow-down-s-line text-gray-400"></i>
+                        </div>
+                      </div>
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      수강명
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      결제금액
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      결제수단
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      정산상태
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      취소여부
+                    </th>
+                    <th
+                      class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      관리
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2025-04-22 09:15:32
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                      실전 디지털 마케팅 기초
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      ₩350,000
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div
+                          class="w-5 h-5 flex items-center justify-center mr-1"
+                        >
+                          <i class="ri-kakao-talk-fill text-yellow-500"></i>
+                        </div>
+                        <span>카카오페이</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                        >정산완료</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      -
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        class="text-primary hover:text-blue-700 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2025-04-21 14:23:05
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                      비즈니스 영어 스피킹 중급
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      ₩420,000
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div
+                          class="w-5 h-5 flex items-center justify-center mr-1"
+                        >
+                          <i class="ri-bank-card-fill text-blue-500"></i>
+                        </div>
+                        <span>신용카드</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800"
+                        >정산대기</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      -
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        class="text-primary hover:text-blue-700 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2025-04-20 10:45:18
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                      파이썬 데이터 분석 마스터
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      ₩550,000
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div
+                          class="w-5 h-5 flex items-center justify-center mr-1"
+                        >
+                          <i class="ri-bank-fill text-green-600"></i>
+                        </div>
+                        <span>계좌이체</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                        >정산완료</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      -
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        class="text-primary hover:text-blue-700 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2025-04-19 16:37:42
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                      웹 디자인 기초 과정
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      ₩280,000
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div
+                          class="w-5 h-5 flex items-center justify-center mr-1"
+                        >
+                          <i class="ri-alipay-fill text-blue-500"></i>
+                        </div>
+                        <span>네이버페이</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800"
+                        >정산실패</span
+                      >
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800"
+                        >취소</span
+                      >
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        class="text-primary hover:text-blue-700 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2025-04-18 11:20:53
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                      UX/UI 디자인 실무 과정
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      ₩480,000
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div
+                          class="w-5 h-5 flex items-center justify-center mr-1"
+                        >
+                          <i class="ri-apple-fill"></i>
+                        </div>
+                        <span>토스</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                        >정산완료</span
+                      >
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      -
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        class="text-primary hover:text-blue-700 !rounded-button whitespace-nowrap"
+                      >
+                        상세보기
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              class="px-6 py-4 flex items-center justify-between border-t border-gray-200"
+            >
+              <div class="text-sm text-gray-700">
+                총 <span class="font-medium">28</span>건 중
+                <span class="font-medium">1</span>-<span class="font-medium"
+                  >5</span
+                >건 표시
+              </div>
+              <div class="flex items-center space-x-2">
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500"
+                >
+                  <i class="ri-arrow-left-s-line"></i>
+                </button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-white"
+                >
+                  1
+                </button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
+                >
+                  2
+                </button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
+                >
+                  3
+                </button>
+                <button
+                  class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500"
+                >
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 정산 요약 그래프 -->
+          <div class="bg-white rounded shadow-sm mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-lg font-medium text-gray-800">월별 정산 현황</h2>
+            </div>
+            <div class="p-6">
+              <div id="chart" style="width: 100%; height: 300px;"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 플로팅 버튼 -->
+    <div class="fixed bottom-6 right-6 flex flex-col space-y-3">
+      <button
+        class="w-12 h-12 rounded-full bg-gray-200 text-gray-600 shadow-lg flex items-center justify-center"
+      >
+        <i class="ri-download-line"></i>
+      </button>
+      <button
+        class="w-12 h-12 rounded-full bg-red-500 text-white shadow-lg flex items-center justify-center"
+      >
+        <i class="ri-refund-2-line"></i>
+      </button>
+      <button
+        class="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center"
+      >
+        <i class="ri-money-dollar-circle-line"></i>
+      </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 체크박스 토글 기능
+        const checkbox1 = document.getElementById("checkbox1");
+        checkbox1.addEventListener("click", function () {
+          this.classList.toggle("checked");
+          const inputs = document.querySelectorAll(
+            'input[placeholder="쿠폰 코드 입력"], button[disabled]',
+          );
+          inputs.forEach((input) => {
+            input.disabled = !this.classList.contains("checked");
+            if (input.tagName === "BUTTON") {
+              if (this.classList.contains("checked")) {
+                input.classList.remove("bg-gray-200", "text-gray-500");
+                input.classList.add("bg-primary", "text-white");
+              } else {
+                input.classList.add("bg-gray-200", "text-gray-500");
+                input.classList.remove("bg-primary", "text-white");
+              }
+            }
+          });
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // 차트 초기화
+        const chartDom = document.getElementById("chart");
+        const myChart = echarts.init(chartDom);
+
+        const option = {
+          animation: false,
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            borderColor: "#e2e8f0",
+            borderWidth: 1,
+            textStyle: {
+              color: "#1f2937",
+            },
+          },
+          legend: {
+            data: ["총 결제 금액", "정산 완료 금액", "취소/환불 금액"],
+            bottom: 0,
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "15%",
+            top: "3%",
+            containLabel: true,
+          },
+          xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: ["1월", "2월", "3월", "4월", "5월", "6월"],
+          },
+          yAxis: {
+            type: "value",
+            axisLabel: {
+              formatter: "{value} 만원",
+            },
+          },
+          series: [
+            {
+              name: "총 결제 금액",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(87, 181, 231, 1)",
+              },
+              areaStyle: {
+                color: {
+                  type: "linear",
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: "rgba(87, 181, 231, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(87, 181, 231, 0.01)",
+                    },
+                  ],
+                },
+              },
+              emphasis: {
+                focus: "series",
+              },
+              data: [1200, 1320, 1010, 1340, 900, 1530],
+            },
+            {
+              name: "정산 완료 금액",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(141, 211, 199, 1)",
+              },
+              areaStyle: {
+                color: {
+                  type: "linear",
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: "rgba(141, 211, 199, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(141, 211, 199, 0.01)",
+                    },
+                  ],
+                },
+              },
+              emphasis: {
+                focus: "series",
+              },
+              data: [1000, 1100, 900, 1278, 800, 1300],
+            },
+            {
+              name: "취소/환불 금액",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(252, 141, 98, 1)",
+              },
+              areaStyle: {
+                color: {
+                  type: "linear",
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: "rgba(252, 141, 98, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(252, 141, 98, 0.01)",
+                    },
+                  ],
+                },
+              },
+              emphasis: {
+                focus: "series",
+              },
+              data: [50, 70, 30, 60, 40, 80],
+            },
+          ],
+        };
+        myChart.setOption(option);
+
+        // 반응형 차트
+        window.addEventListener("resize", function () {
+          myChart.resize();
+        });
+      });
+    </script>
+  </body>
+</html>

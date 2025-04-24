@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육과정 신청 관리</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',secondary:'#10B981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9fafb;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #d1d5db;
+            background-color: white;
+            transition: all 0.2s;
+        }
+        .custom-checkbox.checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        .custom-checkbox.checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .custom-switch-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .custom-switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .custom-switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .custom-switch-input:checked + .custom-switch-slider {
+            background-color: #4F46E5;
+        }
+        .custom-switch-input:checked + .custom-switch-slider:before {
+            transform: translateX(20px);
+        }
+        .custom-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4F46E5;
+            cursor: pointer;
+        }
+        .custom-range::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4F46E5;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 네비게이션 -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="font-['Pacifico'] text-primary text-2xl">logo</div>
+                    <div class="ml-4 text-lg font-medium">교육 관리 시스템</div>
+                </div>
+                
+                <div class="flex items-center">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium">교육과정</a>
+                        <a href="#" class="text-primary border-b-2 border-primary px-3 py-2 text-sm font-medium">신청내역</a>
+                        <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium">마이페이지</a>
+                        <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium">고객센터</a>
+                    </div>
+                    
+                    <div class="flex items-center ml-6 space-x-4">
+                        <div class="relative w-8 h-8 flex items-center justify-center">
+                            <i class="ri-notification-3-line text-gray-600"></i>
+                            <span class="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">2</span>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                                <img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20Korean%20person%2C%20neutral%20expression%2C%20business%20attire%2C%20high%20quality%20portrait%2C%20simple%20background&width=100&height=100&seq=1&orientation=squarish" alt="프로필" class="w-full h-full object-cover">
+                            </div>
+                            <span class="ml-2 text-sm font-medium text-gray-700">김민수 님</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 페이지 제목 -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">교육과정 신청 관리</h1>
+            <p class="mt-2 text-sm text-gray-600">교육과정 신청 현황 및 관리를 한눈에 확인하세요.</p>
+        </div>
+        <!-- 요약 카드 섹션 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- 진행중인 교육 카드 -->
+            <div class="bg-white shadow rounded p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                    <i class="ri-play-circle-line text-blue-600 ri-lg"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">진행중인 교육</p>
+                    <p class="text-2xl font-bold text-gray-900">3</p>
+                </div>
+            </div>
+            
+            <!-- 대기중인 신청 카드 -->
+            <div class="bg-white shadow rounded p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                    <i class="ri-time-line text-yellow-600 ri-lg"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">대기중인 신청</p>
+                    <p class="text-2xl font-bold text-gray-900">2</p>
+                </div>
+            </div>
+            
+            <!-- 완료된 교육 카드 -->
+            <div class="bg-white shadow rounded p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                    <i class="ri-check-double-line text-green-600 ri-lg"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">완료된 교육</p>
+                    <p class="text-2xl font-bold text-gray-900">8</p>
+                </div>
+            </div>
+            
+            <!-- 취소된 신청 카드 -->
+            <div class="bg-white shadow rounded p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                    <i class="ri-close-circle-line text-red-600 ri-lg"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">취소된 신청</p>
+                    <p class="text-2xl font-bold text-gray-900">1</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 필터 및 검색 섹션 -->
+        <div class="bg-white shadow rounded-lg p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-4 md:mb-0">교육과정 검색 필터</h2>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex items-center bg-gray-50 rounded px-1">
+                        <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-full">전체</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary">접수중</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary">진행중</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary">완료</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary">취소</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">기간 선택</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="2025-04-01">
+                        <span class="text-gray-500">~</span>
+                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="2025-04-22">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">교육 카테고리</label>
+                    <div class="relative">
+                        <div class="flex items-center w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
+                            <span>전체 카테고리</span>
+                            <i class="ri-arrow-down-s-line ml-auto"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">검색어</label>
+                    <div class="relative">
+                        <input type="text" placeholder="과정명 또는 키워드 입력" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ri-search-line text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button class="px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap">필터 적용</button>
+            </div>
+        </div>
+
+        <!-- 교육과정 신청 현황 테이블 -->
+        <div class="bg-white shadow rounded-lg overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-medium text-gray-900">교육과정 신청 현황</h2>
+                <button class="px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap">
+                    <i class="ri-add-line mr-1"></i> 수기 등록
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">과정명</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">신청일</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">교육기간</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">정원/신청</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진행상태</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">결제상태</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">2025 디지털 마케팅 전략 과정</div>
+                                <div class="text-xs text-gray-500">온라인 실시간</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-05-10 ~ 2025-05-24</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">30/28</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">접수중</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">결제완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80">상세</button>
+                                    <button class="text-red-600 hover:text-red-800">취소</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">AI 기반 데이터 분석 기초</div>
+                                <div class="text-xs text-gray-500">오프라인</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-20 ~ 2025-05-15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20/20</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">마감</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">결제완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80">상세</button>
+                                    <button class="text-gray-400 cursor-not-allowed">취소</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">UX/UI 디자인 심화 워크샵</div>
+                                <div class="text-xs text-gray-500">오프라인</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-05</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-15 ~ 2025-04-30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15/12</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">진행중</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">결제완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80">상세</button>
+                                    <button class="text-gray-400 cursor-not-allowed">취소</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">비즈니스 리더십 과정</div>
+                                <div class="text-xs text-gray-500">온라인 VOD</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-03-28</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-04-05 ~ 2025-04-19</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50/32</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">진행중</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">결제완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80">상세</button>
+                                    <button class="text-gray-400 cursor-not-allowed">취소</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">프로젝트 관리 실무</div>
+                                <div class="text-xs text-gray-500">오프라인</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-03-20</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-03-25 ~ 2025-04-10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/25</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">결제완료</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80">상세</button>
+                                    <button class="text-gray-400 cursor-not-allowed">취소</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    총 <span class="font-medium">14</span>개 중 <span class="font-medium">1</span>-<span class="font-medium">5</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">이전</button>
+                    <button class="px-3 py-1 bg-primary border border-primary rounded-md text-sm font-medium text-white">1</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">다음</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 교육과정 관리 섹션 -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">교육과정 관리</h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 추가 모집 설정 -->
+                    <div class="bg-gray-50 rounded-lg p-5">
+                        <h3 class="text-md font-medium text-gray-900 mb-4">추가 모집 설정</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-medium text-gray-700">추가 모집 활성화</label>
+                                <label class="custom-switch">
+                                    <input type="checkbox" class="custom-switch-input">
+                                    <span class="custom-switch-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">추가 모집 인원</label>
+                                <div class="flex items-center">
+                                    <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="5">
+                                    <span class="ml-2 text-sm text-gray-500">명</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">추가 모집 기간</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="2025-04-22">
+                                    <span class="text-gray-500">~</span>
+                                    <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="2025-04-30">
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button class="w-full px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap">설정 저장</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 수기 입력/수정 기능 -->
+                    <div class="bg-gray-50 rounded-lg p-5">
+                        <h3 class="text-md font-medium text-gray-900 mb-4">수기 입력/수정 기능</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">교육과정 선택</label>
+                                <div class="relative">
+                                    <div class="flex items-center w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
+                                        <span>2025 디지털 마케팅 전략 과정</span>
+                                        <i class="ri-arrow-down-s-line ml-auto"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">신청자 정보</label>
+                                <input type="text" placeholder="신청자 이름" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2">
+                                <input type="text" placeholder="연락처 (010-0000-0000)" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2">
+                                <input type="email" placeholder="이메일" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">결제 상태</label>
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex items-center">
+                                        <div class="custom-checkbox checked" onclick="this.classList.toggle('checked')"></div>
+                                        <label class="ml-2 text-sm text-gray-700">결제 완료</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="custom-checkbox" onclick="this.classList.toggle('checked')"></div>
+                                        <label class="ml-2 text-sm text-gray-700">미결제</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2 flex space-x-2">
+                                <button class="flex-1 px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap">등록하기</button>
+                                <button class="flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-button font-medium text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 whitespace-nowrap">초기화</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 상세 정보 모달 (기본적으로 숨겨져 있음) -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">
+                <h3 class="text-lg font-medium text-gray-900">교육과정 상세 정보</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-500">
+                    <i class="ri-close-line ri-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-6">
+                    <h4 class="text-xl font-semibold text-gray-900 mb-2">2025 디지털 마케팅 전략 과정</h4>
+                    <p class="text-sm text-gray-600">온라인 실시간 | 2025-05-10 ~ 2025-05-24</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h5 class="text-sm font-medium text-gray-700 mb-2">교육 정보</h5>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-3 gap-2 text-sm">
+                                <div class="text-gray-500">교육 형태</div>
+                                <div class="col-span-2 text-gray-900">온라인 실시간</div>
+                                
+                                <div class="text-gray-500">교육 기간</div>
+                                <div class="col-span-2 text-gray-900">2025-05-10 ~ 2025-05-24</div>
+                                
+                                <div class="text-gray-500">교육 시간</div>
+                                <div class="col-span-2 text-gray-900">14:00 ~ 18:00 (주 3회)</div>
+                                
+                                <div class="text-gray-500">정원</div>
+                                <div class="col-span-2 text-gray-900">30명</div>
+                                
+                                <div class="text-gray-500">현재 신청</div>
+                                <div class="col-span-2 text-gray-900">28명</div>
+                                
+                                <div class="text-gray-500">교육비</div>
+                                <div class="col-span-2 text-gray-900">350,000원</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="text-sm font-medium text-gray-700 mb-2">신청자 정보</h5>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-3 gap-2 text-sm">
+                                <div class="text-gray-500">신청자명</div>
+                                <div class="col-span-2 text-gray-900">김민수</div>
+                                
+                                <div class="text-gray-500">연락처</div>
+                                <div class="col-span-2 text-gray-900">010-1234-5678</div>
+                                
+                                <div class="text-gray-500">이메일</div>
+                                <div class="col-span-2 text-gray-900">minsu.kim@example.com</div>
+                                
+                                <div class="text-gray-500">소속</div>
+                                <div class="col-span-2 text-gray-900">ABC 마케팅</div>
+                                
+                                <div class="text-gray-500">신청일</div>
+                                <div class="col-span-2 text-gray-900">2025-04-15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h5 class="text-sm font-medium text-gray-700 mb-2">결제 정보</h5>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="text-gray-500">결제 상태</div>
+                                    <div class="col-span-2 text-green-600 font-medium">결제 완료</div>
+                                    
+                                    <div class="text-gray-500">결제 방법</div>
+                                    <div class="col-span-2 text-gray-900">신용카드</div>
+                                    
+                                    <div class="text-gray-500">결제일</div>
+                                    <div class="col-span-2 text-gray-900">2025-04-15</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="text-gray-500">결제 금액</div>
+                                    <div class="col-span-2 text-gray-900">350,000원</div>
+                                    
+                                    <div class="text-gray-500">할인 금액</div>
+                                    <div class="col-span-2 text-gray-900">0원</div>
+                                    
+                                    <div class="text-gray-500">최종 금액</div>
+                                    <div class="col-span-2 font-medium text-gray-900">350,000원</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-button font-medium text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 whitespace-nowrap">수정하기</button>
+                    <button class="px-4 py-2 bg-red-600 text-white rounded-button font-medium text-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 whitespace-nowrap">신청 취소</button>
+                    <button class="px-4 py-2 bg-primary text-white rounded-button font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 상세 버튼 클릭 시 모달 표시
+            const detailButtons = document.querySelectorAll('button.text-primary');
+            const detailModal = document.getElementById('detailModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            detailButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    detailModal.classList.remove('hidden');
+                });
+            });
+            
+            closeModal.addEventListener('click', function() {
+                detailModal.classList.add('hidden');
+            });
+            
+            // 모달 외부 클릭 시 닫기
+            detailModal.addEventListener('click', function(e) {
+                if (e.target === detailModal) {
+                    detailModal.classList.add('hidden');
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // 체크박스 토글 기능
+            const checkboxes = document.querySelectorAll('.custom-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    // 같은 그룹의 다른 체크박스 찾기
+                    const parent = this.parentElement.parentElement;
+                    const siblingCheckboxes = parent.querySelectorAll('.custom-checkbox');
+                    
+                    // 다른 체크박스 해제
+                    siblingCheckboxes.forEach(cb => {
+                        if (cb !== this) {
+                            cb.classList.remove('checked');
+                        }
+                    });
+                    
+                    // 현재 체크박스 토글
+                    this.classList.toggle('checked');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

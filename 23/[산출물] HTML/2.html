@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>교육 정보시스템</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#1E88E5", secondary: "#FF9800" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Noto Sans KR', sans-serif;
+          background-color: #f9fafb;
+      }
+      .progress-bar {
+          height: 8px;
+          border-radius: 4px;
+          background-color: #e0e0e0;
+          overflow: hidden;
+      }
+      .progress-value {
+          height: 100%;
+          border-radius: 4px;
+          background-color: #1E88E5;
+      }
+      .custom-checkbox {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border: 2px solid #e0e0e0;
+          border-radius: 4px;
+          position: relative;
+          cursor: pointer;
+          transition: all 0.2s;
+      }
+      .custom-checkbox:checked {
+          background-color: #1E88E5;
+          border-color: #1E88E5;
+      }
+      .custom-checkbox:checked::after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 6px;
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+      .custom-switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 24px;
+      }
+      .custom-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .switch-slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e0e0e0;
+          transition: .4s;
+          border-radius: 24px;
+      }
+      .switch-slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+          background-color: #1E88E5;
+      }
+      input:checked + .switch-slider:before {
+          transform: translateX(20px);
+      }
+      .custom-range {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 6px;
+          border-radius: 3px;
+          background: #e0e0e0;
+          outline: none;
+      }
+      .custom-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #1E88E5;
+          cursor: pointer;
+      }
+      .custom-range::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #1E88E5;
+          cursor: pointer;
+          border: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen overflow-hidden">
+      <!-- 사이드바 -->
+      <aside
+        class="hidden md:flex md:flex-col w-64 bg-white border-r border-gray-200 shadow-sm"
+      >
+        <div class="p-4 border-b border-gray-200">
+          <h1 class="font-['Pacifico'] text-2xl text-primary">logo</h1>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+          <nav class="px-2 space-y-1">
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-primary bg-blue-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-primary"
+              >
+                <i class="ri-dashboard-line"></i>
+              </div>
+              대시보드
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+              >
+                <i class="ri-book-open-line"></i>
+              </div>
+              교육과정 카테고리
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+              >
+                <i class="ri-user-line"></i>
+              </div>
+              나의 학습 현황
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+              >
+                <i class="ri-thumb-up-line"></i>
+              </div>
+              추천 과정
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+              >
+                <i class="ri-star-line"></i>
+              </div>
+              즐겨찾기
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center mr-3 text-gray-500"
+              >
+                <i class="ri-calendar-line"></i>
+              </div>
+              학습 캘린더
+            </a>
+          </nav>
+        </div>
+        <div class="p-4 border-t border-gray-200">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h3 class="text-sm font-medium text-primary mb-2">학습 진행률</h3>
+            <div class="progress-bar">
+              <div class="progress-value" style="width: 65%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">전체 과정의 65% 완료</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 메인 콘텐츠 -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 상단 네비게이션 바 -->
+        <header class="bg-white border-b border-gray-200 shadow-sm">
+          <div class="flex items-center justify-between h-16 px-4 md:px-6">
+            <div class="flex items-center md:hidden">
+              <button
+                type="button"
+                class="text-gray-500 hover:text-gray-600 focus:outline-none"
+              >
+                <div class="w-10 h-10 flex items-center justify-center">
+                  <i class="ri-menu-line ri-lg"></i>
+                </div>
+              </button>
+              <h1 class="font-['Pacifico'] text-xl text-primary ml-2 md:hidden">
+                logo
+              </h1>
+            </div>
+            <div class="hidden md:flex md:flex-1 md:max-w-xl mx-4">
+              <div class="relative w-full">
+                <div
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+                >
+                  <div
+                    class="w-5 h-5 flex items-center justify-center text-gray-400"
+                  >
+                    <i class="ri-search-line"></i>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="block w-full pl-10 pr-3 py-2 border-none rounded-lg bg-gray-100 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                  placeholder="교육과정 검색"
+                />
+              </div>
+            </div>
+            <div class="flex items-center">
+              <button
+                type="button"
+                class="relative p-1 rounded-full text-gray-500 hover:text-gray-600 focus:outline-none mr-3"
+              >
+                <div class="w-8 h-8 flex items-center justify-center">
+                  <i class="ri-notification-3-line"></i>
+                </div>
+                <span
+                  class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"
+                ></span>
+              </button>
+              <div class="flex items-center">
+                <img
+                  class="h-8 w-8 rounded-full"
+                  src="https://readdy.ai/api/search-image?query=professional%20asian%20male%20portrait%2C%20professional%20headshot%2C%20neutral%20background%2C%20high%20quality%2C%20detailed&width=100&height=100&seq=1&orientation=squarish"
+                  alt="사용자 프로필"
+                />
+                <span
+                  class="ml-2 text-sm font-medium text-gray-700 hidden md:block"
+                  >김민준</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="md:hidden px-4 pb-3">
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+              >
+                <div
+                  class="w-5 h-5 flex items-center justify-center text-gray-400"
+                >
+                  <i class="ri-search-line"></i>
+                </div>
+              </div>
+              <input
+                type="text"
+                class="block w-full pl-10 pr-3 py-2 border-none rounded-lg bg-gray-100 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                placeholder="교육과정 검색"
+              />
+            </div>
+          </div>
+        </header>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
+          <!-- 환영 메시지 및 진행중인 교육과정 요약 -->
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">
+              안녕하세요, 김민준님!
+            </h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div
+                class="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+              >
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full"
+                  >
+                    <i class="ri-book-open-line"></i>
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-gray-900">
+                      진행 중인 과정
+                    </h3>
+                    <p class="text-xl font-bold text-primary">3개</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+              >
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-orange-100 text-secondary rounded-full"
+                  >
+                    <i class="ri-time-line"></i>
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-gray-900">
+                      이번 주 학습 시간
+                    </h3>
+                    <p class="text-xl font-bold text-secondary">12시간 30분</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+              >
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full"
+                  >
+                    <i class="ri-medal-line"></i>
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-gray-900">
+                      완료한 과정
+                    </h3>
+                    <p class="text-xl font-bold text-green-600">7개</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 학습 진도율 그래프 -->
+          <div
+            class="bg-white rounded-lg shadow-sm p-4 mb-6 border border-gray-100"
+          >
+            <h2 class="text-lg font-medium text-gray-900 mb-4">학습 진도율</h2>
+            <div id="progressChart" class="w-full h-64"></div>
+          </div>
+
+          <!-- 추천 교육과정 -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-900">추천 교육과정</h2>
+              <a
+                href="#"
+                class="text-sm font-medium text-primary hover:text-primary-dark"
+                >모두 보기</a
+              >
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=professional%20data%20analysis%20visualization%2C%20data%20charts%2C%20analytics%20dashboard%2C%20clean%20modern%20design%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=2&orientation=landscape"
+                    alt="데이터 분석 기초"
+                    class="w-full h-full object-cover object-top"
+                  />
+                  <div
+                    class="absolute top-2 right-2 bg-primary text-white text-xs px-2 py-1 rounded-full"
+                  >
+                    인기
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    데이터 분석 기초
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    데이터 분석의 기본 개념과 방법론을 배우는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>8주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>초급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-gray-300"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(128)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=artificial%20intelligence%20concept%2C%20machine%20learning%2C%20neural%20networks%2C%20futuristic%20technology%20visualization%2C%20blue%20and%20white%20color%20scheme%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=3&orientation=landscape"
+                    alt="인공지능 입문"
+                    class="w-full h-full object-cover object-top"
+                  />
+                  <div
+                    class="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-1 rounded-full"
+                  >
+                    신규
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    인공지능 입문
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    AI의 기본 원리와 활용 사례를 학습하는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>6주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>중급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(86)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=cloud%20computing%20concept%2C%20server%20infrastructure%2C%20digital%20cloud%20technology%2C%20modern%20IT%20infrastructure%20visualization%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=4&orientation=landscape"
+                    alt="클라우드 컴퓨팅 기초"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    클라우드 컴퓨팅 기초
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    클라우드 서비스의 개념과 활용법을 배우는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>4주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>초급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-gray-300"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(92)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 인기 교육과정 -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-900">인기 교육과정</h2>
+              <a
+                href="#"
+                class="text-sm font-medium text-primary hover:text-primary-dark"
+                >모두 보기</a
+              >
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=programming%20code%20on%20screen%2C%20software%20development%2C%20coding%2C%20web%20development%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=5&orientation=landscape"
+                    alt="웹 개발 기초"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    웹 개발 기초
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    HTML, CSS, JavaScript의 기초를 배우는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>10주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>초급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(215)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=project%20management%2C%20team%20collaboration%2C%20kanban%20board%2C%20task%20management%2C%20professional%20business%20setting%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=6&orientation=landscape"
+                    alt="프로젝트 관리 방법론"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    프로젝트 관리 방법론
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    효율적인 프로젝트 관리 기법을 배우는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>6주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>중급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-gray-300"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(178)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+              >
+                <div class="h-40 bg-gray-200 relative">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=cybersecurity%20concept%2C%20digital%20security%2C%20data%20protection%2C%20network%20security%20visualization%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=400&height=200&seq=7&orientation=landscape"
+                    alt="사이버 보안 기초"
+                    class="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="text-md font-medium text-gray-900 mb-1">
+                    사이버 보안 기초
+                  </h3>
+                  <p class="text-sm text-gray-500 mb-3">
+                    정보 보안의 기본 개념과 실무를 배우는 과정
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 mb-3">
+                    <div class="flex items-center mr-3">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-time-line"></i>
+                      </div>
+                      <span>8주 과정</span>
+                    </div>
+                    <div class="flex items-center">
+                      <div
+                        class="w-4 h-4 flex items-center justify-center mr-1"
+                      >
+                        <i class="ri-bar-chart-line"></i>
+                      </div>
+                      <span>중급</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <div
+                          class="w-4 h-4 flex items-center justify-center text-gray-300"
+                        >
+                          <i class="ri-star-fill"></i>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-500 ml-1">(156)</span>
+                    </div>
+                    <button
+                      class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                    >
+                      수강신청
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 교육과정 전체 목록 -->
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-medium text-gray-900">
+                교육과정 전체 목록
+              </h2>
+              <div class="flex items-center">
+                <div class="relative mr-2">
+                  <button
+                    class="flex items-center text-sm text-gray-700 bg-white border border-gray-200 rounded-lg px-3 py-2"
+                  >
+                    <span>카테고리</span>
+                    <div class="w-4 h-4 flex items-center justify-center ml-1">
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </button>
+                </div>
+                <div class="relative">
+                  <button
+                    class="flex items-center text-sm text-gray-700 bg-white border border-gray-200 rounded-lg px-3 py-2"
+                  >
+                    <span>난이도</span>
+                    <div class="w-4 h-4 flex items-center justify-center ml-1">
+                      <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+            >
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        과정명
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        교육기간
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        난이도
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        수강인원
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        평점
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      ></th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md overflow-hidden"
+                          >
+                            <img
+                              src="https://readdy.ai/api/search-image?query=programming%20code%20on%20screen%2C%20software%20development%2C%20coding%2C%20web%20development%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=40&height=40&seq=8&orientation=squarish"
+                              alt="웹 개발 기초"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              웹 개발 기초
+                            </div>
+                            <div class="text-xs text-gray-500">프로그래밍</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        10주
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                          >초급</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        1,245명
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex">
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                          </div>
+                          <span class="text-xs text-gray-500 ml-1">(4.9)</span>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                        >
+                          수강신청
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md overflow-hidden"
+                          >
+                            <img
+                              src="https://readdy.ai/api/search-image?query=data%20analysis%20visualization%2C%20data%20charts%2C%20analytics%20dashboard%2C%20clean%20modern%20design%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=40&height=40&seq=9&orientation=squarish"
+                              alt="데이터 분석 기초"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              데이터 분석 기초
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              데이터 사이언스
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        8주
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                          >초급</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        987명
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex">
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-gray-300"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                          </div>
+                          <span class="text-xs text-gray-500 ml-1">(4.2)</span>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                        >
+                          수강신청
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md overflow-hidden"
+                          >
+                            <img
+                              src="https://readdy.ai/api/search-image?query=artificial%20intelligence%20concept%2C%20machine%20learning%2C%20neural%20networks%2C%20futuristic%20technology%20visualization%2C%20blue%20and%20white%20color%20scheme%2C%20high%20quality%2C%20detailed&width=40&height=40&seq=10&orientation=squarish"
+                              alt="인공지능 입문"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              인공지능 입문
+                            </div>
+                            <div class="text-xs text-gray-500">AI/머신러닝</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        6주
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                          >중급</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        756명
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex">
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                          </div>
+                          <span class="text-xs text-gray-500 ml-1">(4.8)</span>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                        >
+                          수강신청
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md overflow-hidden"
+                          >
+                            <img
+                              src="https://readdy.ai/api/search-image?query=cloud%20computing%20concept%2C%20server%20infrastructure%2C%20digital%20cloud%20technology%2C%20modern%20IT%20infrastructure%20visualization%2C%20blue%20color%20scheme%2C%20high%20quality%2C%20detailed&width=40&height=40&seq=11&orientation=squarish"
+                              alt="클라우드 컴퓨팅 기초"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              클라우드 컴퓨팅 기초
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              클라우드/인프라
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        4주
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                          >초급</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        623명
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex">
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-gray-300"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                          </div>
+                          <span class="text-xs text-gray-500 ml-1">(4.1)</span>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                        >
+                          수강신청
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md overflow-hidden"
+                          >
+                            <img
+                              src="https://readdy.ai/api/search-image?query=project%20management%2C%20team%20collaboration%2C%20kanban%20board%2C%20task%20management%2C%20professional%20business%20setting%2C%20high%20quality%2C%20detailed&width=40&height=40&seq=12&orientation=squarish"
+                              alt="프로젝트 관리 방법론"
+                              class="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">
+                              프로젝트 관리 방법론
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              비즈니스/관리
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        6주
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                          >중급</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        542명
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex">
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-yellow-400"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                            <div
+                              class="w-4 h-4 flex items-center justify-center text-gray-300"
+                            >
+                              <i class="ri-star-fill"></i>
+                            </div>
+                          </div>
+                          <span class="text-xs text-gray-500 ml-1">(4.3)</span>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                      >
+                        <button
+                          class="text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-button whitespace-nowrap"
+                        >
+                          수강신청
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+              >
+                <div class="flex-1 flex justify-between sm:hidden">
+                  <a
+                    href="#"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >이전</a
+                  >
+                  <a
+                    href="#"
+                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >다음</a
+                  >
+                </div>
+                <div
+                  class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+                >
+                  <div>
+                    <p class="text-sm text-gray-700">
+                      <span class="font-medium">총 42</span> 개 과정 중
+                      <span class="font-medium">1</span> 에서
+                      <span class="font-medium">5</span> 까지 표시
+                    </p>
+                  </div>
+                  <div>
+                    <nav
+                      class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                      aria-label="Pagination"
+                    >
+                      <a
+                        href="#"
+                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        <span class="sr-only">이전</span>
+                        <div class="w-5 h-5 flex items-center justify-center">
+                          <i class="ri-arrow-left-s-line"></i>
+                        </div>
+                      </a>
+                      <a
+                        href="#"
+                        aria-current="page"
+                        class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                        >1</a
+                      >
+                      <a
+                        href="#"
+                        class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                        >2</a
+                      >
+                      <a
+                        href="#"
+                        class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                        >3</a
+                      >
+                      <span
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                        >...</span
+                      >
+                      <a
+                        href="#"
+                        class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                        >8</a
+                      >
+                      <a
+                        href="#"
+                        class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                        >9</a
+                      >
+                      <a
+                        href="#"
+                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        <span class="sr-only">다음</span>
+                        <div class="w-5 h-5 flex items-center justify-center">
+                          <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                      </a>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 학습 진도율 차트
+        var progressChart = echarts.init(document.getElementById("progressChart"));
+        var progressOption = {
+          animation: false,
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            borderColor: "#e0e0e0",
+            borderWidth: 1,
+            textStyle: {
+              color: "#1f2937",
+            },
+          },
+          grid: {
+            top: 10,
+            right: 10,
+            bottom: 30,
+            left: 50,
+          },
+          xAxis: {
+            type: "category",
+            data: ["1월", "2월", "3월", "4월", "5월", "6월", "7월"],
+            axisLine: {
+              lineStyle: {
+                color: "#e0e0e0",
+              },
+            },
+            axisLabel: {
+              color: "#1f2937",
+            },
+          },
+          yAxis: {
+            type: "value",
+            name: "학습 시간(시간)",
+            nameTextStyle: {
+              color: "#1f2937",
+            },
+            axisLine: {
+              lineStyle: {
+                color: "#e0e0e0",
+              },
+            },
+            axisLabel: {
+              color: "#1f2937",
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#f0f0f0",
+              },
+            },
+          },
+          series: [
+            {
+              name: "학습 시간",
+              type: "line",
+              data: [10, 15, 8, 20, 25, 18, 30],
+              smooth: true,
+              symbol: "none",
+              lineStyle: {
+                color: "rgba(87, 181, 231, 1)",
+              },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "rgba(87, 181, 231, 0.3)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(87, 181, 231, 0.1)",
+                  },
+                ]),
+              },
+            },
+            {
+              name: "완료한 과정",
+              type: "bar",
+              data: [1, 2, 1, 2, 3, 2, 4],
+              barWidth: 10,
+              itemStyle: {
+                color: "rgba(141, 211, 199, 1)",
+                borderRadius: [4, 4, 0, 0],
+              },
+            },
+          ],
+        };
+        progressChart.setOption(progressOption);
+
+        // 반응형 차트 조정
+        window.addEventListener("resize", function () {
+          progressChart.resize();
+        });
+      });
+    </script>
+  </body>
+</html>

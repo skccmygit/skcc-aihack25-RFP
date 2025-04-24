@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육 운영관리 시스템</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4f46e5',secondary:'#10b981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            background-color: #f9fafb;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4f46e5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #4f46e5;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .custom-radio {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 28px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .custom-radio input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .radio-checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #fff;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+        }
+        .custom-radio:hover input ~ .radio-checkmark {
+            border-color: #9ca3af;
+        }
+        .custom-radio input:checked ~ .radio-checkmark {
+            border-color: #4f46e5;
+        }
+        .radio-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .custom-radio input:checked ~ .radio-checkmark:after {
+            display: block;
+        }
+        .custom-radio .radio-checkmark:after {
+            top: 3px;
+            left: 3px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4f46e5;
+        }
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 28px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .checkbox-checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #fff;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+        }
+        .custom-checkbox:hover input ~ .checkbox-checkmark {
+            border-color: #9ca3af;
+        }
+        .custom-checkbox input:checked ~ .checkbox-checkmark {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .checkbox-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .custom-checkbox input:checked ~ .checkbox-checkmark:after {
+            display: block;
+        }
+        .custom-checkbox .checkbox-checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .tab-active {
+            color: #4f46e5;
+            border-bottom: 2px solid #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen bg-gray-50">
+        <!-- 사이드바 -->
+        <div class="w-64 bg-white shadow-md z-10 flex flex-col">
+            <div class="p-4 border-b flex items-center">
+                <div class="font-['Pacifico'] text-2xl text-primary">logo</div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar">
+                <nav class="mt-4">
+                    <div class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase">메인 메뉴</div>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 border-l-4 border-primary">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-dashboard-line"></i>
+                        </div>
+                        <span>대시보드</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-list-check-2-line"></i>
+                        </div>
+                        <span>기수관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-user-add-line"></i>
+                        </div>
+                        <span>신청관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-calendar-check-line"></i>
+                        </div>
+                        <span>교육운영관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-award-line"></i>
+                        </div>
+                        <span>수료관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-notification-2-line"></i>
+                        </div>
+                        <span>알림설정</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-settings-3-line"></i>
+                        </div>
+                        <span>시스템설정</span>
+                    </a>
+                </nav>
+                <div class="px-4 py-2 mt-6 text-xs font-semibold text-gray-400 uppercase">관리자 도구</div>
+                <nav>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-shield-user-line"></i>
+                        </div>
+                        <span>권한관리</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                        <div class="w-6 h-6 flex items-center justify-center mr-3">
+                            <i class="ri-file-chart-line"></i>
+                        </div>
+                        <span>통계/리포트</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex items-center">
+                    <img src="https://readdy.ai/api/search-image?query=professional%20asian%20man%20portrait%2C%20business%20attire%2C%20neutral%20background%2C%20high%20quality%2C%20photorealistic&width=100&height=100&seq=1&orientation=squarish" alt="프로필 이미지" class="w-10 h-10 rounded-full object-cover object-top">
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-700">김민준 관리자</p>
+                        <p class="text-xs text-gray-500">시스템 관리자</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 상단 네비게이션 -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex justify-between items-center px-6 py-3">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold text-gray-800">교육 운영관리 시스템</h1>
+                        <div class="ml-6 flex space-x-1 bg-gray-100 p-1 rounded-full">
+                            <button class="px-4 py-1.5 text-sm font-medium rounded-full bg-white shadow-sm text-gray-800">온라인</button>
+                            <button class="px-4 py-1.5 text-sm font-medium rounded-full text-gray-600">오프라인</button>
+                            <button class="px-4 py-1.5 text-sm font-medium rounded-full text-gray-600">혼합교육</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 rounded-full text-gray-500 hover:bg-gray-100">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-notification-3-line"></i>
+                                </div>
+                                <span class="absolute top-0 right-0 h-5 w-5 flex items-center justify-center bg-red-500 text-white text-xs rounded-full">3</span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button class="p-2 rounded-full text-gray-500 hover:bg-gray-100">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-question-line"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button class="p-2 rounded-full text-gray-500 hover:bg-gray-100">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-settings-4-line"></i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 영역 -->
+            <main class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-50">
+                <!-- 대시보드 요약 카드 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">운영 중인 과정</p>
+                                <h3 class="text-2xl font-bold mt-1">24</h3>
+                                <p class="text-xs text-green-500 mt-1">
+                                    <span class="font-medium">↑ 12%</span> 지난달 대비
+                                </p>
+                            </div>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 text-primary">
+                                <i class="ri-book-open-line ri-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">총 교육생</p>
+                                <h3 class="text-2xl font-bold mt-1">1,254</h3>
+                                <p class="text-xs text-green-500 mt-1">
+                                    <span class="font-medium">↑ 8%</span> 지난달 대비
+                                </p>
+                            </div>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-50 text-primary">
+                                <i class="ri-user-3-line ri-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">평균 수료율</p>
+                                <h3 class="text-2xl font-bold mt-1">87.5%</h3>
+                                <p class="text-xs text-red-500 mt-1">
+                                    <span class="font-medium">↓ 2.3%</span> 지난달 대비
+                                </p>
+                            </div>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600">
+                                <i class="ri-award-line ri-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded shadow p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">신규 신청</p>
+                                <h3 class="text-2xl font-bold mt-1">78</h3>
+                                <p class="text-xs text-green-500 mt-1">
+                                    <span class="font-medium">↑ 24%</span> 지난달 대비
+                                </p>
+                            </div>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-purple-50 text-purple-600">
+                                <i class="ri-user-add-line ri-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 차트 및 통계 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded shadow p-6 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">월별 교육 현황</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">연간</button>
+                                <button class="px-3 py-1 text-xs font-medium text-white bg-primary rounded-full !rounded-button">월간</button>
+                            </div>
+                        </div>
+                        <div id="monthlyChart" style="height: 300px;"></div>
+                    </div>
+                    <div class="bg-white rounded shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">교육 유형 분포</h3>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-more-2-fill"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <div id="eduTypeChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+
+                <!-- 최근 기수 목록 -->
+                <div class="bg-white rounded shadow mb-6">
+                    <div class="flex justify-between items-center p-6 border-b">
+                        <h3 class="text-lg font-semibold text-gray-800">최근 기수 목록</h3>
+                        <button class="px-4 py-2 bg-primary text-white rounded font-medium text-sm flex items-center !rounded-button whitespace-nowrap">
+                            <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                <i class="ri-add-line"></i>
+                            </div>
+                            신규 기수 등록
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-3 text-left">기수명</th>
+                                    <th class="px-6 py-3 text-left">교육 유형</th>
+                                    <th class="px-6 py-3 text-left">교육 기간</th>
+                                    <th class="px-6 py-3 text-left">신청 인원</th>
+                                    <th class="px-6 py-3 text-left">수료율</th>
+                                    <th class="px-6 py-3 text-left">상태</th>
+                                    <th class="px-6 py-3 text-left">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">2025년 1분기 신입사원 교육</div>
+                                        <div class="text-xs text-gray-500">GS-2025-Q1-001</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">온라인</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        2025.03.15 ~ 2025.04.30
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        42/50
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">92%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">진행중</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex space-x-2">
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-eye-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">2025년 리더십 역량 강화 과정</div>
+                                        <div class="text-xs text-gray-500">LD-2025-001</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">혼합</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        2025.03.10 ~ 2025.05.20
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        28/30
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">85%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">진행중</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex space-x-2">
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-eye-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">2025년 디지털 트랜스포메이션 과정</div>
+                                        <div class="text-xs text-gray-500">DT-2025-002</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">오프라인</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        2025.04.05 ~ 2025.04.15
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        20/20
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">100%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">완료</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex space-x-2">
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-eye-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="font-medium text-gray-900">2025년 AI 기초 교육</div>
+                                        <div class="text-xs text-gray-500">AI-2025-001</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">온라인</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        2025.04.01 ~ 2025.05.15
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        65/70
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">75%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">진행중</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex space-x-2">
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-eye-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-primary">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-edit-line"></i>
+                                                </div>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-red-500">
+                                                <div class="w-5 h-5 flex items-center justify-center">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t">
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-500">총 24개 기수 중 1-4 표시</div>
+                            <div class="flex space-x-1">
+                                <button class="w-8 h-8 flex items-center justify-center rounded text-gray-500 bg-gray-100">
+                                    <div class="w-4 h-4 flex items-center justify-center">
+                                        <i class="ri-arrow-left-s-line"></i>
+                                    </div>
+                                </button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded text-white bg-primary">1</button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:bg-gray-100">2</button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:bg-gray-100">3</button>
+                                <button class="w-8 h-8 flex items-center justify-center rounded text-gray-500 bg-gray-100">
+                                    <div class="w-4 h-4 flex items-center justify-center">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 최근 활동 및 알림 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded shadow">
+                        <div class="flex justify-between items-center p-6 border-b">
+                            <h3 class="text-lg font-semibold text-gray-800">최근 활동</h3>
+                            <button class="text-sm text-primary font-medium">모두 보기</button>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-6">
+                                <div class="flex">
+                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                                        <i class="ri-user-add-line"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-900">박지영님이 '2025년 AI 기초 교육'에 신청했습니다.</p>
+                                        <p class="text-xs text-gray-500 mt-1">10분 전</p>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-600">
+                                        <i class="ri-award-line"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-900">'2025년 디지털 트랜스포메이션 과정' 수료 처리가 완료되었습니다.</p>
+                                        <p class="text-xs text-gray-500 mt-1">1시간 전</p>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600">
+                                        <i class="ri-edit-line"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-900">이현우 관리자가 '2025년 리더십 역량 강화 과정'을 수정했습니다.</p>
+                                        <p class="text-xs text-gray-500 mt-1">3시간 전</p>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
+                                        <i class="ri-notification-2-line"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-900">'2025년 1분기 신입사원 교육' 알림이 발송되었습니다.</p>
+                                        <p class="text-xs text-gray-500 mt-1">5시간 전</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded shadow">
+                        <div class="flex justify-between items-center p-6 border-b">
+                            <h3 class="text-lg font-semibold text-gray-800">빠른 작업</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition-colors">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-3">
+                                        <i class="ri-add-line ri-lg"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">기수 등록</span>
+                                </button>
+                                <button class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition-colors">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-600 mb-3">
+                                        <i class="ri-user-add-line ri-lg"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">교육생 등록</span>
+                                </button>
+                                <button class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition-colors">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mb-3">
+                                        <i class="ri-award-line ri-lg"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">수료 처리</span>
+                                </button>
+                                <button class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition-colors">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 mb-3">
+                                        <i class="ri-file-chart-line ri-lg"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">리포트 생성</span>
+                                </button>
+                            </div>
+                            <div class="mt-6">
+                                <div class="bg-blue-50 rounded p-4 border border-blue-100">
+                                    <div class="flex">
+                                        <div class="w-6 h-6 flex items-center justify-center text-blue-600 mr-3">
+                                            <i class="ri-information-line"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-medium text-blue-800">알림</h4>
+                                            <p class="text-xs text-blue-600 mt-1">오늘 마감되는 교육이 2개 있습니다. 수료 처리를 확인해주세요.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 월별 교육 현황 차트
+            const monthlyChart = echarts.init(document.getElementById('monthlyChart'));
+            const monthlyOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                legend: {
+                    data: ['온라인 교육', '오프라인 교육', '혼합 교육'],
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#e5e7eb'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#1f2937'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: '#1f2937'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#e5e7eb'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '온라인 교육',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 3,
+                            color: 'rgba(87, 181, 231, 1)'
+                        },
+                        symbol: 'none',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(87, 181, 231, 0.3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(87, 181, 231, 0.05)'
+                                }
+                            ])
+                        },
+                        data: [12, 15, 18, 24, 22, 20]
+                    },
+                    {
+                        name: '오프라인 교육',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 3,
+                            color: 'rgba(141, 211, 199, 1)'
+                        },
+                        symbol: 'none',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(141, 211, 199, 0.3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(141, 211, 199, 0.05)'
+                                }
+                            ])
+                        },
+                        data: [8, 10, 12, 14, 16, 15]
+                    },
+                    {
+                        name: '혼합 교육',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 3,
+                            color: 'rgba(251, 191, 114, 1)'
+                        },
+                        symbol: 'none',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(251, 191, 114, 0.3)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(251, 191, 114, 0.05)'
+                                }
+                            ])
+                        },
+                        data: [5, 6, 8, 10, 12, 14]
+                    }
+                ]
+            };
+            monthlyChart.setOption(monthlyOption);
+
+            // 교육 유형 분포 차트
+            const eduTypeChart = echarts.init(document.getElementById('eduTypeChart'));
+            const eduTypeOption = {
+                animation: false,
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: {
+                        color: '#1f2937'
+                    }
+                },
+                series: [
+                    {
+                        name: '교육 유형',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 8,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '14',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                            { value: 45, name: '온라인', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
+                            { value: 30, name: '오프라인', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
+                            { value: 25, name: '혼합', itemStyle: { color: 'rgba(251, 191, 114, 1)' } }
+                        ]
+                    }
+                ]
+            };
+            eduTypeChart.setOption(eduTypeOption);
+            // 창 크기 변경 시 차트 크기 조정
+            window.addEventListener('resize', function() {
+                monthlyChart.resize();
+                eduTypeChart.resize();
+            });
+        });
+    </script>
+</body>
+</html>

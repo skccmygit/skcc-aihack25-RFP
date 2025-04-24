@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>시스템 관리 대시보드</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#007BFF", secondary: "#6C757D" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+          font-family: 'Noto Sans KR', sans-serif;
+          background-color: #f8f9fa;
+      }
+      .custom-switch {
+          position: relative;
+          display: inline-block;
+          width: 46px;
+          height: 24px;
+      }
+      .custom-switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .switch-slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: .4s;
+          border-radius: 24px;
+      }
+      .switch-slider:before {
+          position: absolute;
+          content: "";
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+          background-color: #007BFF;
+      }
+      input:checked + .switch-slider:before {
+          transform: translateX(22px);
+      }
+      .custom-checkbox {
+          position: relative;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+      }
+      .custom-checkbox input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .checkbox-mark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 18px;
+          width: 18px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+      }
+      .custom-checkbox input:checked ~ .checkbox-mark {
+          background-color: #007BFF;
+          border-color: #007BFF;
+      }
+      .checkbox-mark:after {
+          content: "";
+          position: absolute;
+          display: none;
+      }
+      .custom-checkbox input:checked ~ .checkbox-mark:after {
+          display: block;
+      }
+      .custom-checkbox .checkbox-mark:after {
+          left: 6px;
+          top: 2px;
+          width: 5px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+      }
+      .custom-radio {
+          position: relative;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+      }
+      .custom-radio input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      .radio-mark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 18px;
+          width: 18px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 50%;
+      }
+      .custom-radio input:checked ~ .radio-mark {
+          border-color: #007BFF;
+      }
+      .radio-mark:after {
+          content: "";
+          position: absolute;
+          display: none;
+      }
+      .custom-radio input:checked ~ .radio-mark:after {
+          display: block;
+      }
+      .custom-radio .radio-mark:after {
+          top: 4px;
+          left: 4px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #007BFF;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen bg-gray-50">
+      <!-- 사이드바 -->
+      <div class="w-64 bg-white shadow-lg hidden lg:block">
+        <div class="p-4 flex items-center">
+          <span class="text-2xl font-['Pacifico'] text-primary">logo</span>
+          <span class="ml-2 text-lg font-medium">관리자</span>
+        </div>
+        <div class="mt-6">
+          <div class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase">
+            공통 관리
+          </div>
+          <div class="mt-2">
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-700 bg-gray-100 border-l-4 border-primary"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-dashboard-line"></i>
+              </div>
+              <span class="ml-2">대시보드</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-file-list-line"></i>
+              </div>
+              <span class="ml-2">게시판 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-team-line"></i>
+              </div>
+              <span class="ml-2">커뮤니티 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-code-box-line"></i>
+              </div>
+              <span class="ml-2">코드 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-window-line"></i>
+              </div>
+              <span class="ml-2">팝업 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-shield-user-line"></i>
+              </div>
+              <span class="ml-2">권한 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-menu-line"></i>
+              </div>
+              <span class="ml-2">메뉴 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-message-2-line"></i>
+              </div>
+              <span class="ml-2">SMS 관리</span>
+            </a>
+            <a
+              href="#"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"
+            >
+              <div class="w-6 h-6 flex items-center justify-center">
+                <i class="ri-file-text-line"></i>
+              </div>
+              <span class="ml-2">약관 관리</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 콘텐츠 -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 상단 헤더 -->
+        <header class="bg-white shadow-sm">
+          <div class="flex items-center justify-between px-6 py-3">
+            <div class="flex items-center">
+              <button class="lg:hidden mr-4 text-gray-500">
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-menu-line"></i>
+                </div>
+              </button>
+              <h1 class="text-lg font-medium">시스템 관리</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-gray-600">2025-04-22 화요일</span>
+              <div class="relative">
+                <button class="p-1 text-gray-500 hover:text-gray-700">
+                  <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-notification-3-line"></i>
+                  </div>
+                </button>
+                <span
+                  class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
+                ></span>
+              </div>
+              <div class="flex items-center">
+                <div
+                  class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
+                >
+                  <div class="w-4 h-4 flex items-center justify-center">
+                    <i class="ri-user-line"></i>
+                  </div>
+                </div>
+                <span class="ml-2 text-sm font-medium">김관리자</span>
+                <div class="w-4 h-4 ml-1 flex items-center justify-center">
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+        <!-- 콘텐츠 영역 -->
+        <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">대시보드</h2>
+            <div class="text-sm text-gray-500 mt-1">
+              시스템 전체 현황을 한눈에 확인하세요.
+            </div>
+          </div>
+
+          <!-- 대시보드 카드 그리드 -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <!-- 게시판 현황 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">게시판 현황</h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-primary"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-file-list-line"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-3xl font-bold text-gray-800">42</p>
+                  <p class="text-sm text-gray-500">최근 게시물</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-red-500">12</p>
+                  <p class="text-xs text-gray-500">미처리 건수</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div
+                    class="h-2 bg-primary rounded-full"
+                    style="width: 65%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1:1 문의 현황 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">
+                  1:1 문의 현황
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-customer-service-line"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-3xl font-bold text-gray-800">18</p>
+                  <p class="text-sm text-gray-500">전체 문의</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-red-500">7</p>
+                  <p class="text-xs text-gray-500">답변 대기</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div
+                    class="h-2 bg-green-500 rounded-full"
+                    style="width: 40%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMS 발송 현황 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">
+                  SMS 발송 현황
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-message-2-line"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-3xl font-bold text-gray-800">156</p>
+                  <p class="text-sm text-gray-500">금일 발송</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-green-500">98%</p>
+                  <p class="text-xs text-gray-500">성공률</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div
+                    class="h-2 bg-purple-500 rounded-full"
+                    style="width: 98%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 시스템 접속 현황 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">
+                  시스템 접속 현황
+                </h3>
+                <div
+                  class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-user-3-line"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-3xl font-bold text-gray-800">24</p>
+                  <p class="text-sm text-gray-500">현재 접속자</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-blue-500">+12%</p>
+                  <p class="text-xs text-gray-500">전일 대비</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div
+                    class="h-2 bg-orange-500 rounded-full"
+                    style="width: 75%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 차트 섹션 -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- 방문자 통계 차트 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">방문자 통계</h3>
+                <select
+                  class="text-sm border-none bg-gray-100 rounded px-3 py-1 focus:outline-none"
+                >
+                  <option>최근 7일</option>
+                  <option>최근 30일</option>
+                  <option>최근 90일</option>
+                </select>
+              </div>
+              <div id="visitors-chart" class="w-full h-64"></div>
+            </div>
+            <!-- 게시판 활동 분석 -->
+            <div class="bg-white rounded shadow p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-medium text-gray-700">
+                  게시판 활동 분석
+                </h3>
+                <select
+                  class="text-sm border-none bg-gray-100 rounded px-3 py-1 focus:outline-none"
+                >
+                  <option>전체 게시판</option>
+                  <option>공지사항</option>
+                  <option>자유게시판</option>
+                  <option>갤러리</option>
+                </select>
+              </div>
+              <div id="activity-chart" class="w-full h-64"></div>
+            </div>
+          </div>
+
+          <!-- 최근 활동 섹션 -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 최근 게시글 -->
+            <div class="bg-white rounded shadow">
+              <div class="px-5 py-4 border-b border-gray-100">
+                <h3 class="text-base font-medium text-gray-700">최근 게시글</h3>
+              </div>
+              <div class="p-3">
+                <ul class="divide-y divide-gray-100">
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >시스템 업데이트 안내</span
+                      >
+                      <span class="text-xs text-gray-500">공지사항</span>
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">관리자</span>
+                      <span class="text-xs text-gray-500">오늘</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >신규 기능 추가 요청</span
+                      >
+                      <span class="text-xs text-gray-500">건의사항</span>
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">박지원</span>
+                      <span class="text-xs text-gray-500">어제</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >4월 행사 사진 공유</span
+                      >
+                      <span class="text-xs text-gray-500">갤러리</span>
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">이미영</span>
+                      <span class="text-xs text-gray-500">2일 전</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >로그인 오류 문의</span
+                      >
+                      <span class="text-xs text-gray-500">1:1문의</span>
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">김현우</span>
+                      <span class="text-xs text-gray-500">3일 전</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >게시판 이용 안내</span
+                      >
+                      <span class="text-xs text-gray-500">FAQ</span>
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">관리자</span>
+                      <span class="text-xs text-gray-500">4일 전</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="px-5 py-3 border-t border-gray-100 text-center">
+                <a href="#" class="text-sm text-primary hover:underline"
+                  >모두 보기</a
+                >
+              </div>
+            </div>
+
+            <!-- 최근 1:1 문의 -->
+            <div class="bg-white rounded shadow">
+              <div class="px-5 py-4 border-b border-gray-100">
+                <h3 class="text-base font-medium text-gray-700">
+                  최근 1:1 문의
+                </h3>
+              </div>
+              <div class="p-3">
+                <ul class="divide-y divide-gray-100">
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >결제 오류 문의</span
+                      >
+                      <span
+                        class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full"
+                        >미답변</span
+                      >
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">최서연</span>
+                      <span class="text-xs text-gray-500">오늘</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >회원정보 수정 방법</span
+                      >
+                      <span
+                        class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full"
+                        >미답변</span
+                      >
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">정민호</span>
+                      <span class="text-xs text-gray-500">어제</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >첨부파일 용량 문의</span
+                      >
+                      <span
+                        class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full"
+                        >답변완료</span
+                      >
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">이지훈</span>
+                      <span class="text-xs text-gray-500">2일 전</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >계정 삭제 요청</span
+                      >
+                      <span
+                        class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full"
+                        >답변완료</span
+                      >
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">김태희</span>
+                      <span class="text-xs text-gray-500">3일 전</span>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex justify-between">
+                      <span class="text-sm font-medium text-gray-800"
+                        >비밀번호 초기화</span
+                      >
+                      <span
+                        class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full"
+                        >답변완료</span
+                      >
+                    </div>
+                    <div class="flex justify-between mt-1">
+                      <span class="text-xs text-gray-500">박준영</span>
+                      <span class="text-xs text-gray-500">4일 전</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="px-5 py-3 border-t border-gray-100 text-center">
+                <a href="#" class="text-sm text-primary hover:underline"
+                  >모두 보기</a
+                >
+              </div>
+            </div>
+
+            <!-- 시스템 알림 -->
+            <div class="bg-white rounded shadow">
+              <div class="px-5 py-4 border-b border-gray-100">
+                <h3 class="text-base font-medium text-gray-700">시스템 알림</h3>
+              </div>
+              <div class="p-3">
+                <ul class="divide-y divide-gray-100">
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex items-start">
+                      <div
+                        class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 flex-shrink-0 mr-3"
+                      >
+                        <div class="w-4 h-4 flex items-center justify-center">
+                          <i class="ri-error-warning-line"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-800">
+                          디스크 공간 부족 경고
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          서버 디스크 공간이 85% 사용 중입니다.
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">30분 전</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex items-start">
+                      <div
+                        class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 flex-shrink-0 mr-3"
+                      >
+                        <div class="w-4 h-4 flex items-center justify-center">
+                          <i class="ri-refresh-line"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-800">
+                          시스템 업데이트 완료
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          버전 2.3.5 업데이트가 성공적으로 완료되었습니다.
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">2시간 전</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex items-start">
+                      <div
+                        class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 mr-3"
+                      >
+                        <div class="w-4 h-4 flex items-center justify-center">
+                          <i class="ri-shield-check-line"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-800">
+                          보안 점검 완료
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          정기 보안 점검이 완료되었습니다. 이상 없음.
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">어제</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="py-3 px-2 hover:bg-gray-50 rounded">
+                    <div class="flex items-start">
+                      <div
+                        class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 flex-shrink-0 mr-3"
+                      >
+                        <div class="w-4 h-4 flex items-center justify-center">
+                          <i class="ri-database-2-line"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-800">
+                          데이터베이스 백업
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          자동 백업이 성공적으로 완료되었습니다.
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">2일 전</p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="px-5 py-3 border-t border-gray-100 text-center">
+                <a href="#" class="text-sm text-primary hover:underline"
+                  >모두 보기</a
+                >
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 방문자 통계 차트
+        const visitorsChart = echarts.init(document.getElementById("visitors-chart"));
+        const visitorsOption = {
+          animation: false,
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            borderColor: "#eee",
+            borderWidth: 1,
+            textStyle: {
+              color: "#1f2937",
+            },
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            top: "3%",
+            containLabel: true,
+          },
+          xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: ["4/16", "4/17", "4/18", "4/19", "4/20", "4/21", "4/22"],
+            axisLine: {
+              lineStyle: {
+                color: "#ddd",
+              },
+            },
+            axisLabel: {
+              color: "#666",
+            },
+          },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#eee",
+              },
+            },
+            axisLabel: {
+              color: "#666",
+            },
+          },
+          series: [
+            {
+              name: "방문자 수",
+              type: "line",
+              smooth: true,
+              lineStyle: {
+                width: 3,
+                color: "rgba(87, 181, 231, 1)",
+              },
+              areaStyle: {
+                color: {
+                  type: "linear",
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [
+                    {
+                      offset: 0,
+                      color: "rgba(87, 181, 231, 0.2)",
+                    },
+                    {
+                      offset: 1,
+                      color: "rgba(87, 181, 231, 0.05)",
+                    },
+                  ],
+                },
+              },
+              symbol: "none",
+              data: [120, 132, 101, 134, 90, 180, 210],
+            },
+          ],
+        };
+        visitorsChart.setOption(visitorsOption);
+        // 게시판 활동 분석 차트
+        const activityChart = echarts.init(document.getElementById("activity-chart"));
+        const activityOption = {
+          animation: false,
+          tooltip: {
+            trigger: "axis",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            borderColor: "#eee",
+            borderWidth: 1,
+            textStyle: {
+              color: "#1f2937",
+            },
+          },
+          legend: {
+            data: ["게시글", "댓글", "조회수"],
+            right: 0,
+            textStyle: {
+              color: "#666",
+            },
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            top: "15%",
+            containLabel: true,
+          },
+          xAxis: {
+            type: "category",
+            data: ["4/16", "4/17", "4/18", "4/19", "4/20", "4/21", "4/22"],
+            axisLine: {
+              lineStyle: {
+                color: "#ddd",
+              },
+            },
+            axisLabel: {
+              color: "#666",
+            },
+          },
+          yAxis: {
+            type: "value",
+            axisLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#eee",
+              },
+            },
+            axisLabel: {
+              color: "#666",
+            },
+          },
+          series: [
+            {
+              name: "게시글",
+              type: "bar",
+              barWidth: 6,
+              itemStyle: {
+                color: "rgba(87, 181, 231, 1)",
+                borderRadius: [4, 4, 0, 0],
+              },
+              data: [12, 15, 9, 14, 10, 18, 21],
+            },
+            {
+              name: "댓글",
+              type: "bar",
+              barWidth: 6,
+              itemStyle: {
+                color: "rgba(141, 211, 199, 1)",
+                borderRadius: [4, 4, 0, 0],
+              },
+              data: [32, 28, 24, 36, 25, 30, 42],
+            },
+            {
+              name: "조회수",
+              type: "line",
+              smooth: true,
+              symbol: "circle",
+              symbolSize: 6,
+              lineStyle: {
+                width: 3,
+                color: "rgba(251, 191, 114, 1)",
+              },
+              itemStyle: {
+                color: "rgba(251, 191, 114, 1)",
+              },
+              data: [150, 180, 120, 210, 190, 240, 280],
+            },
+          ],
+        };
+        activityChart.setOption(activityOption);
+        // 창 크기 변경 시 차트 크기 조정
+        window.addEventListener("resize", function () {
+          visitorsChart.resize();
+          activityChart.resize();
+        });
+      });
+
+      // 체크박스, 라디오 버튼, 스위치 기능
+      document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll(".custom-checkbox input");
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("change", function () {
+            // 체크박스 상태 변경 시 처리할 로직
+          });
+        });
+
+        const radios = document.querySelectorAll(".custom-radio input");
+        radios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            // 라디오 버튼 상태 변경 시 처리할 로직
+          });
+        });
+
+        const switches = document.querySelectorAll(".custom-switch input");
+        switches.forEach((switchEl) => {
+          switchEl.addEventListener("change", function () {
+            // 스위치 상태 변경 시 처리할 로직
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
